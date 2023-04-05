@@ -1,16 +1,16 @@
-package security.auth;
+package arguewise.demo.security.auth;
 
-import dto.UserCredentialsDto;
+import arguewise.demo.dto.UserCredentialsDto;
 import lombok.RequiredArgsConstructor;
-import model.User;
+import arguewise.demo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import repository.UserRepository;
-import security.config.JwtService;
+import arguewise.demo.repository.UserRepository;
+import arguewise.demo.security.config.JwtService;
 
 
 @RestController

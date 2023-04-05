@@ -1,8 +1,8 @@
-package dto;
+package arguewise.demo.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import model.User;
+import arguewise.demo.model.User;
 
 @Data
 @NoArgsConstructor

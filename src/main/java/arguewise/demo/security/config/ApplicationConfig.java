@@ -1,4 +1,4 @@
-package security.config;
+package arguewise.demo.security.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import repository.UserRepository;
+import arguewise.demo.repository.UserRepository;
 
 @Configuration
 @RequiredArgsConstructor

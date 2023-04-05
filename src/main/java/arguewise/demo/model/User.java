@@ -1,4 +1,4 @@
-package model;
+package arguewise.demo.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

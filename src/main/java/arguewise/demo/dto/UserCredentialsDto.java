@@ -1,4 +1,4 @@
-package dto;
+package arguewise.demo.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

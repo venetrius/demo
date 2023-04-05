@@ -1,6 +1,6 @@
-package repository;
+package arguewise.demo.repository;
 
-import model.User;
+import arguewise.demo.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

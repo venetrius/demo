@@ -1,13 +1,13 @@
-package security.auth;
+package arguewise.demo.security.auth;
 
 
 import lombok.RequiredArgsConstructor;
-import model.User;
+import arguewise.demo.model.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import repository.UserRepository;
-import security.config.JwtService;
+import arguewise.demo.repository.UserRepository;
+import arguewise.demo.security.config.JwtService;
 
 @Service
 @RequiredArgsConstructor

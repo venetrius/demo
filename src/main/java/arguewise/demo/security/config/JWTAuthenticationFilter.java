@@ -1,4 +1,4 @@
-package security.config;
+package arguewise.demo.security.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
