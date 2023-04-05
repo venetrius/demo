@@ -32,7 +32,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
-    @PostMapping("/api/auth/register")
+    @PostMapping("/register")
     @ResponseStatus(code = HttpStatus.CREATED)
     public String register(@RequestBody UserCredentialsDto userCredentialsDto) {
         String encodedPassword = passwordEncoder.encode(userCredentialsDto.getPassword());
