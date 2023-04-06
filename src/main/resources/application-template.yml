@@ -4,3 +4,7 @@ spring:
     url: ""
     username: ''
     password: ''
+spring.jpa:
+  generate-ddl: true
+SECRET_KEY: ""
+CLIENT_URL: ""
