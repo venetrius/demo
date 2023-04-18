@@ -1,13 +1,12 @@
 package arguewise.demo.model;
 
-import arguewise.demo.dto.CreateDiscussionDTO;
+import arguewise.demo.dto.Discussion.CreateDiscussionDTO;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -50,11 +50,24 @@ public class Discussion {
 
     @NotNull(message = "Discussion status is required")
     @Enumerated(EnumType.STRING)
-    private DiscussionStatus status;
+    private DiscussionStatus status = DiscussionStatus.ACTIVE;
 
     public enum DiscussionStatus {
         ACTIVE,
         COMPLETED
     }
 
+    public Discussion(CreateDiscussionDTO dto, User creator, Space space) {
+        this.space = space;
+        this.creator = creator;
+        if(dto == null) {
+            this.topic = "issue";
+            this.timeLimit = LocalDateTime.now();
+        } else {
+            this.topic = dto.getTopic();
+            this.timeLimit = dto.getTimeLimit();
+        }
+
+        this.status = DiscussionStatus.ACTIVE;
+    }
 }
