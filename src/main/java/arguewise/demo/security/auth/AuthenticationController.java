@@ -34,14 +34,16 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public String register(@RequestBody UserCredentialsDto userCredentialsDto) {
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody UserCredentialsDto userCredentialsDto) {
         String encodedPassword = passwordEncoder.encode(userCredentialsDto.getPassword());
         User user = User.builder().build();
         user.setUserName(userCredentialsDto.getUserName());
         user.setPassword(encodedPassword);
         user.setEmail(userCredentialsDto.getEmail());
         userRepository.save(user);
-        return jwtService.generateToken(user);
+        return ResponseEntity.ok(
+                new AuthenticationResponse(jwtService.generateToken(user))
+        );
     }
 }
 
