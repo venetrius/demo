@@ -1,33 +1,72 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
-
-export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
+const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
 
-  const login = (jwtToken) => {
-    setToken(jwtToken);
+  useEffect(() => {
+    const savedToken = localStorage.getItem('token');
+    if (savedToken) {
+      setToken(savedToken);
+      setIsLoggedIn(true);
+      fetchUserProfile(savedToken);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      fetchUserProfile(token);
+    }
+  }, [token]);
+
+  const login = (token) => {
+    setToken(token);
     setIsLoggedIn(true);
-    localStorage.setItem('jwtToken', jwtToken);
+    localStorage.setItem('token', token);
+    fetchUserProfile(token)
   };
 
   const logout = () => {
     setToken(null);
     setIsLoggedIn(false);
-    localStorage.removeItem('jwtToken');
+    setUserProfile(null);
+    localStorage.removeItem('token');
   };
 
-  const value = {
-    token,
-    isLoggedIn,
-    login,
-    logout,
+  const fetchUserProfile = async (token) => {
+    const response = await fetch('http://localhost:8080/api/profile', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setUserProfile(data);
+    } else {
+      logout();
+    }
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        isLoggedIn,
+        token,
+        userProfile,
+        login,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
+
+const useAuth = () => useContext(AuthContext);
+
+export { AuthProvider, useAuth };
