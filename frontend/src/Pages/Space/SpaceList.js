@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Row, Col } from 'antd';
 import { useNavigate } from "react-router-dom";
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import SpaceItem from './SpaceItem';
 
 const SpaceList = () => {

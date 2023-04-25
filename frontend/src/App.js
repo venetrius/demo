@@ -5,8 +5,8 @@ import HeaderComponent from './components/Header/Header.jsx';
 import FooterComponent from './components/Footer/Footer.js';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
-import NewSpace from './Pages/NewSpace';
-import SpaceList from './Pages/SpaceList';
+import NewSpace from './Pages/Space/NewSpace';
+import SpaceList from './Pages/Space/SpaceList';
 
 import { AuthProvider } from './contexts/AuthContext';
 import { SpaceProvider } from './contexts/SpaceContext';

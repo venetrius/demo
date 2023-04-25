@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import { useNavigate } from "react-router-dom";
-import { useSpaces } from '../contexts/SpaceContext';
+import { useSpaces } from '../../contexts/SpaceContext';
 
 const SpaceForm = () => {
   let navigate = useNavigate();
