@@ -48,6 +48,9 @@ public class DiscussionControllerIntegrationTest {
     private Faker faker;
 
     private static final String BASE_URL = "http://localhost:";
+    private String getDiscussionUrl(){
+        return BASE_URL + port + "/api/discussions";
+    }
 
 
     @BeforeEach
@@ -67,7 +70,7 @@ public class DiscussionControllerIntegrationTest {
         createDiscussionDTO.setTimeLimit(LocalDateTime.now().plus(1, ChronoUnit.WEEKS));
 
         HttpEntity<CreateDiscussionDTO> requestEntity = new HttpEntity<>(createDiscussionDTO, headers);
-        ResponseEntity<DiscussionResponseDTO> response = restTemplate.exchange(BASE_URL + port + "/discussions", HttpMethod.POST, requestEntity, DiscussionResponseDTO.class);
+        ResponseEntity<DiscussionResponseDTO> response = restTemplate.exchange(getDiscussionUrl(), HttpMethod.POST, requestEntity, DiscussionResponseDTO.class);
 
         return response.getBody();
     }
@@ -78,7 +81,7 @@ public class DiscussionControllerIntegrationTest {
         DiscussionResponseDTO discussionResponseDTO2 = createDiscussion();
 
         HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
-        ResponseEntity<Discussion[]> response = restTemplate.exchange(BASE_URL + port + "/discussions", HttpMethod.GET, requestEntity, Discussion[].class);
+        ResponseEntity<Discussion[]> response = restTemplate.exchange(getDiscussionUrl(), HttpMethod.GET, requestEntity, Discussion[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().length).isGreaterThanOrEqualTo(2);
     }
@@ -87,7 +90,7 @@ public class DiscussionControllerIntegrationTest {
     public void testGetDiscussionById() {
         DiscussionResponseDTO discussion = createDiscussion();
         HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
-        ResponseEntity<Discussion> response = restTemplate.exchange(BASE_URL + port + "/discussions/" + discussion.getId(), HttpMethod.GET, requestEntity, Discussion.class);
+        ResponseEntity<Discussion> response = restTemplate.exchange(getDiscussionUrl() + "/" + discussion.getId(), HttpMethod.GET, requestEntity, Discussion.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getTopic()).isEqualTo(discussion.getTopic());
     }
@@ -105,7 +108,7 @@ public class DiscussionControllerIntegrationTest {
 
         HttpEntity<CreateDiscussionDTO> requestEntity = new HttpEntity<>(createDiscussionDTO, headers);
 
-        ResponseEntity<DiscussionResponseDTO> response = restTemplate.exchange(BASE_URL + port + "/discussions", HttpMethod.POST, requestEntity, DiscussionResponseDTO.class);
+        ResponseEntity<DiscussionResponseDTO> response = restTemplate.exchange(getDiscussionUrl(), HttpMethod.POST, requestEntity, DiscussionResponseDTO.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getTopic()).isEqualTo(createDiscussionDTO.getTopic());
         assertThat(response.getBody().getSpaceID()).isEqualTo(space.getId());
@@ -118,7 +121,7 @@ public class DiscussionControllerIntegrationTest {
         updatedDiscussion.setTopic("Updated Test Topic");
 
         HttpEntity<UpdateDiscussionDTO> requestEntity = new HttpEntity<>(updatedDiscussion, headers);
-        ResponseEntity<DiscussionResponseDTO> response = restTemplate.exchange(BASE_URL + port + "/discussions/" + discussion.getId(), HttpMethod.PUT, requestEntity, DiscussionResponseDTO.class);
+        ResponseEntity<DiscussionResponseDTO> response = restTemplate.exchange(getDiscussionUrl() + "/" + discussion.getId(), HttpMethod.PUT, requestEntity, DiscussionResponseDTO.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getTopic()).isEqualTo(updatedDiscussion.getTopic());
     }
@@ -127,7 +130,7 @@ public class DiscussionControllerIntegrationTest {
     public void testDeleteDiscussion() {
         DiscussionResponseDTO discussion = createDiscussion();
         HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
-        ResponseEntity<Void> response = restTemplate.exchange(BASE_URL + port + "/discussions/" + discussion.getId(), HttpMethod.DELETE, requestEntity, Void.class);
+        ResponseEntity<Void> response = restTemplate.exchange(getDiscussionUrl() + "/" + discussion.getId(), HttpMethod.DELETE, requestEntity, Void.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         assertThat(discussionRepository.findById(discussion.getId())).isEmpty();
     }

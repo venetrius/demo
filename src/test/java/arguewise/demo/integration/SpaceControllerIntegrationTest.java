@@ -23,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SpaceControllerIntegrationTest {
 
+    private static final String BASE_URL = "http://localhost:";
+
     @LocalServerPort
     private int port;
 
@@ -36,6 +38,11 @@ public class SpaceControllerIntegrationTest {
     private AuthTestUtil authTestUtil;
 
     private HttpHeaders headers;
+
+
+    private String getSpacesURL(){
+        return BASE_URL + port + "/api/spaces";
+    }
 
     @BeforeEach
     public void setUp() {
@@ -55,7 +62,7 @@ public class SpaceControllerIntegrationTest {
         Space space = new Space(null, "Technology", "A space for discussing technology-related topics.");
         HttpEntity<Space> request = new HttpEntity<>(space, headers);
 
-        ResponseEntity<Space> responseEntity = restTemplate.postForEntity("http://localhost:" + port + "/spaces", request, Space.class);
+        ResponseEntity<Space> responseEntity = restTemplate.postForEntity(getSpacesURL(), request, Space.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(responseEntity.getBody().getId()).isNotNull();
@@ -71,7 +78,7 @@ public class SpaceControllerIntegrationTest {
         Space updatedSpace = new Space(space.getId(), "Science", "A space for discussing science-related topics and discoveries.");
         HttpEntity<Space> request = new HttpEntity<>(updatedSpace, headers);
 
-        restTemplate.put("http://localhost:" + port + "/spaces/" + space.getId(), request);
+        restTemplate.put(getSpacesURL() + "/" + space.getId(), request);
 
         Space retrievedSpace = spaceRepository.findById(space.getId()).orElse(null);
 
@@ -89,7 +96,7 @@ public class SpaceControllerIntegrationTest {
 
         HttpEntity<String> request = new HttpEntity<>("parameters", headers);
 
-        ResponseEntity<List> responseEntity = restTemplate.exchange("http://localhost:" + port + "/spaces", HttpMethod.GET, request, List.class);
+        ResponseEntity<List> responseEntity = restTemplate.exchange(getSpacesURL(), HttpMethod.GET, request, List.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody().size()).isGreaterThan(1);
@@ -102,7 +109,7 @@ public class SpaceControllerIntegrationTest {
 
         HttpEntity<String> request = new HttpEntity<>("parameters", headers);
 
-        ResponseEntity<Space> responseEntity = restTemplate.exchange("http://localhost:" + port + "/spaces/" + space.getId(), HttpMethod.GET, request, Space.class);
+        ResponseEntity<Space> responseEntity = restTemplate.exchange(getSpacesURL() + "/" + space.getId(), HttpMethod.GET, request, Space.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody().getId()).isEqualTo(space.getId());
@@ -117,7 +124,7 @@ public class SpaceControllerIntegrationTest {
 
         HttpEntity<String> request = new HttpEntity<>("parameters", headers);
 
-        ResponseEntity<Void> responseEntity = restTemplate.exchange("http://localhost:" + port + "/spaces/" + space.getId(), HttpMethod.DELETE, request, Void.class);
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(getSpacesURL() + "/" + space.getId(), HttpMethod.DELETE, request, Void.class);
 
         assertThat(spaceRepository.findById(space.getId())).isEmpty();
 

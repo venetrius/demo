@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/spaces")
+@RequestMapping("api/spaces")
 public class SpaceController {
 
     @Autowired

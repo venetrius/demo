@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping("/discussions")
+@RequestMapping("api/discussions")
 public class DiscussionController {
 
     private static final Logger logger = LoggerFactory.getLogger(DiscussionController.class);
