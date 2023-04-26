@@ -1,5 +1,6 @@
 package arguewise.demo.controller;
 
+import arguewise.demo.dto.Discussion.DiscussionResponseDTO;
 import arguewise.demo.model.Space;
 import arguewise.demo.service.SpaceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/spaces")
@@ -46,5 +48,13 @@ public class SpaceController {
         return spaceService.deleteSpace(id)
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/discussions")
+    public List<DiscussionResponseDTO> getSpaceDiscussions(@PathVariable Long id) {
+        return spaceService.getDiscussionBySpaceId(id)
+                .stream()
+                .map(discussion -> new DiscussionResponseDTO(discussion))
+                .collect(Collectors.toList());
     }
 }

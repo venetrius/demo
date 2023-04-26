@@ -1,8 +1,10 @@
 package arguewise.demo.model;
 
 import arguewise.demo.dto.Discussion.CreateDiscussionDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
@@ -30,11 +32,12 @@ public class Discussion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "space_id", nullable = false)
     private Space space;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 

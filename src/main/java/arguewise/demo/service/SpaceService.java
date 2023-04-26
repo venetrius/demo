@@ -1,5 +1,7 @@
 package arguewise.demo.service;
 
+import arguewise.demo.exception.NotFoundException;
+import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
 import arguewise.demo.repository.SpaceRepository;
 import jakarta.transaction.Transactional;
@@ -7,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.SortedMap;
 
 @Service
 public class SpaceService implements ISpaceService {
@@ -19,6 +23,15 @@ public class SpaceService implements ISpaceService {
     @Override
     public List<Space> getAllSpaces() {
         return spaceRepository.findAll();
+    }
+
+    @Override
+    public List<Discussion> getDiscussionBySpaceId(Long id) {
+        Optional<Space> space = spaceRepository.findById(id);
+        if(space.isEmpty()) {
+            throw new NotFoundException("Space with id " + id + " not found");
+        }
+        return space.get().getDiscussions();
     }
 
     @Override
