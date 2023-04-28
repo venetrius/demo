@@ -1,22 +1,28 @@
 package arguewise.demo.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class KafkaConsumerService implements IEmailConfirmationListener {
 
+    @Autowired
+    private EmailService emailService;
 
     @KafkaListener(topics = "email-confirmation", groupId = "email-group")
     @Override
-    public void onEmailConfirmation(String userEmail) {
-        sendConfirmationEmail(userEmail);
+    public void onEmailConfirmation(String userEmail, String userName) {
+        sendConfirmationEmail(userEmail, userName);
     }
 
-    private void sendConfirmationEmail(String userEmail) {
-        System.out.println("Sending confirmation email to " + userEmail);
-        // TODO:
-        // Use MailGun's API to send the confirmation email.
-        // Implement your logic here.
+    private void sendConfirmationEmail(String userEmail, String userName) {
+        try {
+            emailService.sendSimpleMessage(userEmail, userName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

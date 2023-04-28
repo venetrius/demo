@@ -2,5 +2,5 @@ package arguewise.demo.service;
 
 public interface IEmailConfirmationListener {
 
-    void onEmailConfirmation(String userEmail);
+    void onEmailConfirmation(String userEmail, String userName);
 }

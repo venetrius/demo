@@ -11,8 +11,8 @@ public class KafkaProducerService implements IEmailConfirmationSender {
     private KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
-    public void sendEmailConfirmation(String userEmail) {
+    public void sendEmailConfirmation(String userEmail, String userName) {
         String topic = "email-confirmation";
-        kafkaTemplate.send(topic, userEmail);
+        kafkaTemplate.send(topic, userEmail, userName);
     }
 }

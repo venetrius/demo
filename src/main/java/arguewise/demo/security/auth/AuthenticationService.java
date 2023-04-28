@@ -2,7 +2,6 @@ package arguewise.demo.security.auth;
 
 
 import arguewise.demo.dto.UserCredentialsDto;
-import arguewise.demo.service.IEmailConfirmationListener;
 import arguewise.demo.service.IEmailConfirmationSender;
 import lombok.RequiredArgsConstructor;
 import arguewise.demo.model.User;
@@ -45,9 +44,9 @@ public class AuthenticationService {
         user.setUserName(userCredentialsDto.getUserName());
         user.setPassword(encodedPassword);
         user.setEmail(userCredentialsDto.getEmail());
-        repository.save(user);
 
-        emailConfirmationSender.sendEmailConfirmation(user.getEmail());
+        repository.save(user);
+        emailConfirmationSender.sendEmailConfirmation(user.getEmail(), user.getUsername());
 
         return AuthenticationResponse.builder().token(jwtService.generateToken(user)).build();
     }
