@@ -14,6 +14,18 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  mail:
+    host: smtp.mailgun.org
+    port: 587
+    username: postmaster@YOUR_DOMAIN_NAME
+    password: YOUR_API_KEY
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 spring.jpa:
   generate-ddl: true
 SECRET_KEY: ""
