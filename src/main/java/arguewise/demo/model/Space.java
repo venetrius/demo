@@ -44,5 +44,10 @@ public class Space {
     @Size(min = 10, max = 200, message = "Description must be between 10 and 200 characters")
     private String description;
 
+    public Space(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
 }
 

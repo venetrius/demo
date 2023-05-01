@@ -59,7 +59,7 @@ public class SpaceControllerIntegrationTest {
     @Test
     public void testCreateSpace() {
 
-        Space space = new Space(null, "Technology", "A space for discussing technology-related topics.");
+        Space space = new Space("Technology", "A space for discussing technology-related topics.");
         HttpEntity<Space> request = new HttpEntity<>(space, headers);
 
         ResponseEntity<Space> responseEntity = restTemplate.postForEntity(getSpacesURL(), request, Space.class);
@@ -72,10 +72,10 @@ public class SpaceControllerIntegrationTest {
 
     @Test
     public void testUpdateSpace() {
-        Space space = new Space(null, "Technology", "A space for discussing technology-related topics.");
+        Space space = new Space("Technology", "A space for discussing technology-related topics.");
         space = spaceRepository.save(space);
 
-        Space updatedSpace = new Space(space.getId(), "Science", "A space for discussing science-related topics and discoveries.");
+        Space updatedSpace = new Space("Science", "A space for discussing science-related topics and discoveries.");
         HttpEntity<Space> request = new HttpEntity<>(updatedSpace, headers);
 
         restTemplate.put(getSpacesURL() + "/" + space.getId(), request);
@@ -89,12 +89,12 @@ public class SpaceControllerIntegrationTest {
 
     @Test
     public void testGetSpaces() {
-        Space space1 = new Space(null, "Technology", "A space for discussing technology-related topics.");
-        Space space2 = new Space(null, "Science", "A space for discussing science-related topics and discoveries.");
+        Space space1 = new Space( "Technology", "A space for discussing technology-related topics.");
+        Space space2 = new Space("Science", "A space for discussing science-related topics and discoveries.");
         spaceRepository.save(space1);
         spaceRepository.save(space2);
 
-        HttpEntity<String> request = new HttpEntity<>("parameters", headers);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<List> responseEntity = restTemplate.exchange(getSpacesURL(), HttpMethod.GET, request, List.class);
 
@@ -104,10 +104,10 @@ public class SpaceControllerIntegrationTest {
 
     @Test
     public void testGetSpaceById() {
-        Space space = new Space(null, "Technology", "A space for discussing technology-related topics.");
+        Space space = new Space("Technology", "A space for discussing technology-related topics.");
         space = spaceRepository.save(space);
 
-        HttpEntity<String> request = new HttpEntity<>("parameters", headers);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<Space> responseEntity = restTemplate.exchange(getSpacesURL() + "/" + space.getId(), HttpMethod.GET, request, Space.class);
 
@@ -119,10 +119,10 @@ public class SpaceControllerIntegrationTest {
 
     @Test
     public void testDeleteSpace() {
-        Space space = new Space(null, "Technology", "A space for discussing technology-related topics.");
+        Space space = new Space("Technology", "A space for discussing technology-related topics.");
         space = spaceRepository.save(space);
 
-        HttpEntity<String> request = new HttpEntity<>("parameters", headers);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(getSpacesURL() + "/" + space.getId(), HttpMethod.DELETE, request, Void.class);
 

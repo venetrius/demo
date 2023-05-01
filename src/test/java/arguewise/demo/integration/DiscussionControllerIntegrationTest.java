@@ -80,7 +80,7 @@ public class DiscussionControllerIntegrationTest {
         DiscussionResponseDTO discussionResponseDTO1 = createDiscussion();
         DiscussionResponseDTO discussionResponseDTO2 = createDiscussion();
 
-        HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<Discussion[]> response = restTemplate.exchange(getDiscussionUrl(), HttpMethod.GET, requestEntity, Discussion[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().length).isGreaterThanOrEqualTo(2);
@@ -89,7 +89,7 @@ public class DiscussionControllerIntegrationTest {
     @Test
     public void testGetDiscussionById() {
         DiscussionResponseDTO discussion = createDiscussion();
-        HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<Discussion> response = restTemplate.exchange(getDiscussionUrl() + "/" + discussion.getId(), HttpMethod.GET, requestEntity, Discussion.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getTopic()).isEqualTo(discussion.getTopic());
