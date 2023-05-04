@@ -6,10 +6,6 @@ import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
 import arguewise.demo.model.User;
 import arguewise.demo.model.UsersDiscussion;
-import arguewise.demo.repository.DiscussionRepository;
-import arguewise.demo.repository.SpaceRepository;
-import arguewise.demo.repository.UserDiscussionRepository;
-import arguewise.demo.repository.UserRepository;
 import com.github.javafaker.Faker;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,16 +35,10 @@ public class UsersDiscussionControllerIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private DiscussionRepository discussionRepository;
+    private DiscussionTestUtility discussionTestUtility;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserDiscussionRepository userDiscussionRepository;
-
-    @Autowired
-    private SpaceRepository spaceRepository;
+    private SpaceTestUtility spaceTestUtility;
 
     @Autowired
     private AuthTestUtil authTestUtil;
@@ -75,74 +65,73 @@ public class UsersDiscussionControllerIntegrationTest {
 
     @Test
     public void testJoinDiscussion() {
-        Space space = SpaceTestUtility.createSpace(spaceRepository);
-        User user = userRepository.findByEmail(email).orElseThrow();
+        Space space = spaceTestUtility.createSpace();
+        User user = authTestUtil.getUserByEmail(email);
         Discussion discussion = getDiscussion(space, user);
         UsersDiscussion.Side side = UsersDiscussion.Side.PRO;
 
-        ResponseEntity<Void> response = DiscussionTestUtility.joinDiscussion(restTemplate, getUserDiscussionUrl(), discussion.getId(), side, headers);;
+        ResponseEntity<Void> response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), side, headers);;
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(userDiscussionRepository.findByUserIdAndDiscussionId(user.getId(), discussion.getId())).isNotEmpty();
+        assertThat(discussionTestUtility.findUserDiscussionByUserIdAndDiscussionId(user.getId(), discussion.getId())).isNotEmpty();
     }
 
     @NotNull
     private Discussion getDiscussion(Space space, User user) {
-        Discussion discussion = DiscussionTestUtility.createDiscussion(space, user, faker);
-        return discussionRepository.save(discussion);
+        return discussionTestUtility.createDiscussion(space, user);
     }
 
     @Test
-    public void testJoinDiscussionWithSameSide() {
-        Space space = SpaceTestUtility.createSpace(spaceRepository);
-        User user = userRepository.findByEmail(email).orElseThrow();
+    public void testTryToJoinSameDiscussionTwiceWithSameSide() {
+        Space space = spaceTestUtility.createSpace();
+        User user = authTestUtil.getUserByEmail(email);
         Discussion discussion = getDiscussion(space, user);
         UsersDiscussion.Side side = UsersDiscussion.Side.PRO;
 
         // First join attempt
-        ResponseEntity<Void> response = DiscussionTestUtility.joinDiscussion(restTemplate, getUserDiscussionUrl(), discussion.getId(), side, headers);;
+        ResponseEntity<Void> response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), side, headers);;
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         // Second join attempt with the same side
-        response = DiscussionTestUtility.joinDiscussion(restTemplate, getUserDiscussionUrl(), discussion.getId(), side, headers);;
+        response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), side, headers);;
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
-    public void testJoinDiscussionWithDifferentSide() {
-        Space space = SpaceTestUtility.createSpace(spaceRepository);
-        User user = userRepository.findByEmail(email).orElseThrow();
+    public void testTryJoinDiscussionTwiceWithDifferentSide() {
+        Space space = spaceTestUtility.createSpace();
+        User user = authTestUtil.getUserByEmail(email);
         Discussion discussion = getDiscussion(space, user);
         UsersDiscussion.Side firstSide = UsersDiscussion.Side.PRO;
         UsersDiscussion.Side secondSide = UsersDiscussion.Side.CONTRA;
 
         // First join attempt
-        ResponseEntity<Void> response = DiscussionTestUtility.joinDiscussion(restTemplate, getUserDiscussionUrl(), discussion.getId(), firstSide, headers);
+        ResponseEntity<Void> response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), firstSide, headers);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         // Second join attempt with a different side
-        response = DiscussionTestUtility.joinDiscussion(restTemplate, getUserDiscussionUrl(), discussion.getId(), secondSide, headers);;
+        response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), secondSide, headers);;
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
 
     @Test
     public void testGetUserDiscussions() {
         // Create two spaces
-        Space space1 = SpaceTestUtility.createSpace(spaceRepository);
-        Space space2 = SpaceTestUtility.createSpace(spaceRepository);
+        Space space1 = spaceTestUtility.createSpace();
+        Space space2 = spaceTestUtility.createSpace();
 
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = authTestUtil.getUserByEmail(email); 
 
         // Create two discussions
         Discussion discussion1 = getDiscussion(space1, user);
         Discussion discussion2 = getDiscussion(space2, user);
         // Join both discussions
-        DiscussionTestUtility.joinDiscussion(restTemplate, getUserDiscussionUrl(), discussion1.getId(), UsersDiscussion.Side.PRO, headers);
-        DiscussionTestUtility.joinDiscussion(restTemplate, getUserDiscussionUrl(), discussion2.getId(), UsersDiscussion.Side.CONTRA, headers);
+        discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion1.getId(), UsersDiscussion.Side.PRO, headers);
+        discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion2.getId(), UsersDiscussion.Side.CONTRA, headers);
 
         // Get the list of joined discussions
-        ResponseEntity<List<DiscussionResponseDTO>> response = DiscussionTestUtility.getUserDiscussions(restTemplate, getUserDiscussionUrl(), headers);
+        ResponseEntity<List<DiscussionResponseDTO>> response = discussionTestUtility.getUserDiscussions(getUserDiscussionUrl(), headers);
 
         // Check the response
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

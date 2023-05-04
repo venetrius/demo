@@ -1,5 +1,6 @@
 package arguewise.demo.integration;
 
+import arguewise.demo.integration.space.SpaceTestUtility;
 import arguewise.demo.model.Space;
 import arguewise.demo.repository.SpaceRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -34,7 +35,7 @@ public class SpaceControllerIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private SpaceRepository spaceRepository;
+    private SpaceTestUtility spaceTestUtility;
 
     @Autowired
     private AuthTestUtil authTestUtil;
@@ -53,11 +54,6 @@ public class SpaceControllerIntegrationTest {
         headers = authTestUtil.createAuthorizationHeader(jwtToken);
     }
 
-    // @AfterEach
-    // public void tearDown() {
-    //     spaceRepository.deleteAll();
-    // }
-
     @Test
     public void testCreateSpace() {
 
@@ -74,15 +70,14 @@ public class SpaceControllerIntegrationTest {
 
     @Test
     public void testUpdateSpace() {
-        Space space = new Space("Technology", "A space for discussing technology-related topics.");
-        space = spaceRepository.save(space);
+        Space space = spaceTestUtility.createSpace("Technology", "A space for discussing technology-related topics.");
 
         Space updatedSpace = new Space("Science", "A space for discussing science-related topics and discoveries.");
         HttpEntity<Space> request = new HttpEntity<>(updatedSpace, headers);
 
         restTemplate.put(getSpacesURL() + "/" + space.getId(), request);
 
-        Space retrievedSpace = spaceRepository.findById(space.getId()).orElse(null);
+        Space retrievedSpace = spaceTestUtility.findById(space.getId());
 
         assertThat(retrievedSpace).isNotNull();
         assertThat(retrievedSpace.getName()).isEqualTo(updatedSpace.getName());
@@ -91,10 +86,8 @@ public class SpaceControllerIntegrationTest {
 
     @Test
     public void testGetSpaces() {
-        Space space1 = new Space( "Technology", "A space for discussing technology-related topics.");
-        Space space2 = new Space("Science", "A space for discussing science-related topics and discoveries.");
-        spaceRepository.save(space1);
-        spaceRepository.save(space2);
+        Space space1 = spaceTestUtility.createSpace( "Technology", "A space for discussing technology-related topics.");
+        Space space2 = spaceTestUtility.createSpace("Science", "A space for discussing science-related topics and discoveries.");
 
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
@@ -106,8 +99,7 @@ public class SpaceControllerIntegrationTest {
 
     @Test
     public void testGetSpaceById() {
-        Space space = new Space("Technology", "A space for discussing technology-related topics.");
-        space = spaceRepository.save(space);
+        Space space = spaceTestUtility.createSpace("Technology", "A space for discussing technology-related topics.");
 
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
@@ -121,14 +113,13 @@ public class SpaceControllerIntegrationTest {
 
     @Test
     public void testDeleteSpace() {
-        Space space = new Space("Technology", "A space for discussing technology-related topics.");
-        space = spaceRepository.save(space);
+        Space space = spaceTestUtility.createSpace("Technology", "A space for discussing technology-related topics.");
 
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(getSpacesURL() + "/" + space.getId(), HttpMethod.DELETE, request, Void.class);
 
-        assertThat(spaceRepository.findById(space.getId())).isEmpty();
+        assertThat(spaceTestUtility.findById(space.getId())).isNull();
 
     }
 }

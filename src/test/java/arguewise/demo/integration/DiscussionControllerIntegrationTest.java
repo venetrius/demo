@@ -7,7 +7,6 @@ import arguewise.demo.integration.space.SpaceTestUtility;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
 import arguewise.demo.repository.DiscussionRepository;
-import arguewise.demo.repository.SpaceRepository;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,13 +37,10 @@ public class DiscussionControllerIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private DiscussionRepository discussionRepository;
-
-    @Autowired
     private AuthTestUtil authTestUtil;
 
     @Autowired
-    private SpaceRepository spaceRepository;
+    private SpaceTestUtility spaceTestUtility;
     private HttpHeaders headers;
 
     private Faker faker;
@@ -64,7 +60,7 @@ public class DiscussionControllerIntegrationTest {
     }
 
     private DiscussionResponseDTO createDiscussion() {
-        Space space = SpaceTestUtility.createSpace(spaceRepository);
+        Space space = spaceTestUtility.createSpace();
 
         CreateDiscussionDTO createDiscussionDTO = new CreateDiscussionDTO();
         createDiscussionDTO.setSpaceID(space.getId());
@@ -99,10 +95,8 @@ public class DiscussionControllerIntegrationTest {
 
     @Test
     public void testCreateDiscussion() {
-        Space space = new Space();
-        space.setDescription("This is a test");
-        space.setName("some name");
-        spaceRepository.save(space);
+        Space space = spaceTestUtility.createSpace("Some name", "This is a test");
+
         CreateDiscussionDTO createDiscussionDTO = new CreateDiscussionDTO();
         createDiscussionDTO.setSpaceID(space.getId());
         createDiscussionDTO.setTopic(faker.lorem().sentence(3));
@@ -134,7 +128,12 @@ public class DiscussionControllerIntegrationTest {
         HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
         ResponseEntity<Void> response = restTemplate.exchange(getDiscussionUrl() + "/" + discussion.getId(), HttpMethod.DELETE, requestEntity, Void.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        assertThat(discussionRepository.findById(discussion.getId())).isEmpty();
+
+        HttpEntity<String> getRequestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<Discussion> getResponse = restTemplate.exchange(getDiscussionUrl() + "/" + discussion.getId(), HttpMethod.GET, getRequestEntity, Discussion.class);
+
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
 }

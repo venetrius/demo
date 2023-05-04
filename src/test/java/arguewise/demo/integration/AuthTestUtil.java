@@ -1,6 +1,8 @@
 package arguewise.demo.integration;
 
 import arguewise.demo.dto.UserCredentialsDto;
+import arguewise.demo.model.User;
+import arguewise.demo.repository.UserRepository;
 import arguewise.demo.security.auth.AuthenticationRequest;
 import arguewise.demo.security.auth.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ public class AuthTestUtil {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public String registerAndLogin(String username, String password, String email, int port) {
         UserCredentialsDto userCredentialsDto = new UserCredentialsDto(username, password, email);
@@ -30,6 +35,10 @@ public class AuthTestUtil {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
         return headers;
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow();
     }
 }
 
