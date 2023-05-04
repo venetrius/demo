@@ -23,4 +23,11 @@ public class ExceptionsHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ConflictingRequestException.class)
+    public ResponseEntity<Object> handleBadRequestException(ConflictingRequestException e) {
+        ApiError apiError = new ApiError(e.getMessage(), 409);
+
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
 }
