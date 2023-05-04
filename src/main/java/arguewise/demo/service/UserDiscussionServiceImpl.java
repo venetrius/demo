@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDiscussionServiceImpl implements IUserDiscussionService {
@@ -54,13 +55,10 @@ public class UserDiscussionServiceImpl implements IUserDiscussionService {
     }
 
     @Override
-    public List<UsersDiscussion> findByUserId(Long userId) {
-        return userDiscussionRepository.findByUserId(userId);
-    }
-
-    @Override
-    public List<UsersDiscussion> findByDiscussionId(Long discussionId) {
-        return userDiscussionRepository.findByDiscussionId(discussionId);
+    public List<Discussion> findDiscussionsByUserId(Long userId) {
+        List<UsersDiscussion> usersDiscussions = userDiscussionRepository.findByUserId(userId);
+        return usersDiscussions.stream()
+                .map(UsersDiscussion::getDiscussion)
+                .collect(Collectors.toList());
     }
 }
-
