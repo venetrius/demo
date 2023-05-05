@@ -1,8 +1,7 @@
-package arguewise.demo.integration.space;
+package arguewise.demo.integration.util.space;
 
 import arguewise.demo.model.Space;
 import arguewise.demo.repository.SpaceRepository;
-import com.github.javafaker.Faker;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

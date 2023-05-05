@@ -1,9 +1,8 @@
 package arguewise.demo.integration;
 
-import arguewise.demo.integration.space.SpaceTestUtility;
+import arguewise.demo.integration.util.AuthTestUtil;
+import arguewise.demo.integration.util.space.SpaceTestUtility;
 import arguewise.demo.model.Space;
-import arguewise.demo.repository.SpaceRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

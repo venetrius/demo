@@ -1,7 +1,9 @@
 package arguewise.demo.integration;
 
 import arguewise.demo.dto.Discussion.DiscussionResponseDTO;
-import arguewise.demo.integration.space.SpaceTestUtility;
+import arguewise.demo.integration.util.AuthTestUtil;
+import arguewise.demo.integration.util.DiscussionTestUtility;
+import arguewise.demo.integration.util.space.SpaceTestUtility;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
 import arguewise.demo.model.User;

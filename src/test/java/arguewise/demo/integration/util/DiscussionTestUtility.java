@@ -1,4 +1,4 @@
-package arguewise.demo.integration;
+package arguewise.demo.integration.util;
 
 import arguewise.demo.dto.Discussion.CreateDiscussionDTO;
 import arguewise.demo.dto.Discussion.DiscussionResponseDTO;

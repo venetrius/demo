@@ -1,4 +1,4 @@
-package arguewise.demo.integration;
+package arguewise.demo.integration.util;
 
 import arguewise.demo.dto.UserCredentialsDto;
 import arguewise.demo.model.User;
