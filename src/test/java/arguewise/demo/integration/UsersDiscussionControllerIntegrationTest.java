@@ -9,12 +9,12 @@ import arguewise.demo.model.Space;
 import arguewise.demo.model.User;
 import arguewise.demo.model.UsersDiscussion;
 import com.github.javafaker.Faker;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,13 +28,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@AllArgsConstructor
 public class UsersDiscussionControllerIntegrationTest {
 
     @LocalServerPort
     private int port;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     @Autowired
     private DiscussionTestUtility discussionTestUtility;
@@ -45,7 +43,7 @@ public class UsersDiscussionControllerIntegrationTest {
     @Autowired
     private AuthTestUtil authTestUtil;
 
-    private Faker faker;
+    private Faker faker = new Faker();
 
     private String email;
 
@@ -59,7 +57,6 @@ public class UsersDiscussionControllerIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        faker = new Faker();
         email = faker.internet().emailAddress();
         String jwtToken = authTestUtil.registerAndLogin(email, "testPassword", email, port);
         headers = authTestUtil.createAuthorizationHeader(jwtToken);
@@ -72,7 +69,7 @@ public class UsersDiscussionControllerIntegrationTest {
         Discussion discussion = getDiscussion(space, user);
         UsersDiscussion.Side side = UsersDiscussion.Side.PRO;
 
-        ResponseEntity<Void> response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), side, headers);;
+        ResponseEntity<Void> response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), side, headers);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(discussionTestUtility.findUserDiscussionByUserIdAndDiscussionId(user.getId(), discussion.getId())).isNotEmpty();
@@ -91,11 +88,11 @@ public class UsersDiscussionControllerIntegrationTest {
         UsersDiscussion.Side side = UsersDiscussion.Side.PRO;
 
         // First join attempt
-        ResponseEntity<Void> response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), side, headers);;
+        ResponseEntity<Void> response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), side, headers);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         // Second join attempt with the same side
-        response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), side, headers);;
+        response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), side, headers);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
@@ -113,7 +110,7 @@ public class UsersDiscussionControllerIntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         // Second join attempt with a different side
-        response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), secondSide, headers);;
+        response = discussionTestUtility.joinDiscussion(getUserDiscussionUrl(), discussion.getId(), secondSide, headers);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
 

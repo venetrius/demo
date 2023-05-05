@@ -17,12 +17,6 @@ public class SpaceTestUtility {
     @Autowired
     private SpaceRepository spaceRepository;
 
-    public static Space createSpace(SpaceRepository spaceRepository) {
-        Space space = new Space("Technology", "A space for discussing technology-related topics.");
-        space = spaceRepository.save(space);
-        return space;
-    }
-
     public Space createSpace() {
         Space space = new Space("Technology", "A space for discussing technology-related topics.");
         spaceRepository.save(space);

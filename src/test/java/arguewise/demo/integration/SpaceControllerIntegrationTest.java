@@ -3,6 +3,7 @@ package arguewise.demo.integration;
 import arguewise.demo.integration.util.AuthTestUtil;
 import arguewise.demo.integration.util.space.SpaceTestUtility;
 import arguewise.demo.model.Space;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@AllArgsConstructor
 public class SpaceControllerIntegrationTest {
 
     private static final String BASE_URL = "http://localhost:";
@@ -85,8 +87,8 @@ public class SpaceControllerIntegrationTest {
 
     @Test
     public void testGetSpaces() {
-        Space space1 = spaceTestUtility.createSpace( "Technology", "A space for discussing technology-related topics.");
-        Space space2 = spaceTestUtility.createSpace("Science", "A space for discussing science-related topics and discoveries.");
+        spaceTestUtility.createSpace( "Technology", "A space for discussing technology-related topics.");
+        spaceTestUtility.createSpace("Science", "A space for discussing science-related topics and discoveries.");
 
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
@@ -118,6 +120,7 @@ public class SpaceControllerIntegrationTest {
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(getSpacesURL() + "/" + space.getId(), HttpMethod.DELETE, request, Void.class);
 
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         assertThat(spaceTestUtility.findById(space.getId())).isNull();
 
     }
