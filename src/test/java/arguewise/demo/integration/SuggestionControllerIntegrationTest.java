@@ -16,6 +16,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -81,4 +82,19 @@ public class SuggestionControllerIntegrationTest {
         assertThat(suggestion).isNotNull();
         assertThat(suggestion.getArgumentId()).isEqualTo(argument.getId());
     }
+
+    @Test
+    public void testGetSuggestionById() {
+        ArgumentResponseDTO argumentResponseDTO = argumentTestUtil.createArgument(email, headers, port);
+        Argument argument = argumentTestUtil.findById(argumentResponseDTO.getId()).get();
+
+        SuggestionResponseDTO createdSuggestion = createSuggestion(argument);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<Suggestion> response = restTemplate.exchange(getSuggestionsUrl() + "/" + createdSuggestion.getId(), HttpMethod.GET, requestEntity, Suggestion.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getId()).isEqualTo(createdSuggestion.getId());
+}
+
 }

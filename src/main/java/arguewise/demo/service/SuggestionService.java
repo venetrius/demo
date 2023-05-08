@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class SuggestionService {
+public class SuggestionService implements ISuggestionService {
 
     private final SuggestionRepository suggestionRepository;
     private final ArgumentRepository argumentRepository;
@@ -34,5 +34,10 @@ public class SuggestionService {
         suggestion.setArgumentVersion(dto.getArgumentVersion());
 
         return suggestionRepository.save(suggestion);
+    }
+
+    public Suggestion getSuggestion(Long id) {
+        return suggestionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Suggestion not found"));
     }
 }
