@@ -18,6 +18,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -45,6 +47,15 @@ public class ArgumentTestUtil {
         return BASE_URL + port + "/api/discussions/" + discussionId + "/arguments";
     }
 
+    public List<String> createArgumentDetailsList() {
+        int numberOfParagraphs = 3;
+        List<String> paragraphs = new ArrayList<>();
+        for (int i = 0; i < numberOfParagraphs; i++) {
+            paragraphs.add(faker.lorem().paragraph());
+        }
+        return paragraphs;
+    }
+
     public Optional<Argument> findById(Long argumentId) {
         Optional<Argument> argumentOptional = argumentRepository.findById(argumentId);
         return argumentOptional;
@@ -59,7 +70,7 @@ public class ArgumentTestUtil {
         Space space = spaceTestUtility.createSpace();
         Discussion discussion = discussionTestUtility.createDiscussion(space, authTestUtil.getUserByEmail(email));
         CreateArgumentDTO createArgumentDTO = new CreateArgumentDTO();
-        createArgumentDTO.setArgumentDetails(faker.lorem().paragraph());
+        createArgumentDTO.setDetails(createArgumentDetailsList());
         createArgumentDTO.setTitle("This is the title");
         HttpEntity<CreateArgumentDTO> requestEntity = new HttpEntity<>(createArgumentDTO, headers);
         ResponseEntity<ArgumentResponseDTO> response = restTemplate.exchange(getDiscussionsArgumentsUrl(port, discussion.getId()), HttpMethod.POST, requestEntity, ArgumentResponseDTO.class);
@@ -68,7 +79,7 @@ public class ArgumentTestUtil {
 
     public ArgumentResponseDTO createArgument(String email, HttpHeaders headers, int port, Long discussionId) {
         CreateArgumentDTO createArgumentDTO = new CreateArgumentDTO();
-        createArgumentDTO.setArgumentDetails(faker.lorem().paragraph());
+        createArgumentDTO.setDetails(createArgumentDetailsList());
         createArgumentDTO.setTitle("This is the title");
         HttpEntity<CreateArgumentDTO> requestEntity = new HttpEntity<>(createArgumentDTO, headers);
         ResponseEntity<ArgumentResponseDTO> response = restTemplate.exchange(getDiscussionsArgumentsUrl(port, discussionId), HttpMethod.POST, requestEntity, ArgumentResponseDTO.class);

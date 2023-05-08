@@ -4,6 +4,7 @@ import arguewise.demo.dto.argument.CreateArgumentDTO;
 import arguewise.demo.dto.argument.UpdateArgumentDTO;
 import arguewise.demo.exception.NotFoundException;
 import arguewise.demo.model.Argument;
+import arguewise.demo.model.ArgumentDetail;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.model.User;
 import arguewise.demo.repository.ArgumentRepository;
@@ -13,7 +14,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,7 +43,7 @@ public class ArgumentServiceImpl implements IArgumentService {
         return argumentRepository.save(argument);
     }
 
-    @Override
+    @Transactional
     public Argument update(Long id, UpdateArgumentDTO updatedArgument) {
         Optional<Argument> existingArgument = argumentRepository.findById(id);
         if (existingArgument.isEmpty()) {
@@ -53,7 +56,15 @@ public class ArgumentServiceImpl implements IArgumentService {
             argument.setTitle(updatedArgument.getTitle());
         }
         if (updatedArgument.getArgumentDetails() != null) {
-            argument.setArgumentDetails(updatedArgument.getArgumentDetails());
+            argument.removeAllArgumentDetails();
+
+            for (int i = 0; i < updatedArgument.getArgumentDetails().size(); i++) {
+                ArgumentDetail detail = new ArgumentDetail();
+                detail.setPosition(i + 1);
+                detail.setText(updatedArgument.getArgumentDetails().get(i));
+                detail.setArgument(argument);
+                argument.addArgumentDetail(detail);
+            }
         }
         return argumentRepository.save(argument);
     }

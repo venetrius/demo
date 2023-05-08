@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +20,5 @@ public class CreateArgumentDTO {
     @Size(max = 100, message = "Title should be no longer than 100 characters")
     private String title;
 
-    @NotBlank(message = "Argument details are required")
-    private String argumentDetails;
+    private List<String> details;
 }

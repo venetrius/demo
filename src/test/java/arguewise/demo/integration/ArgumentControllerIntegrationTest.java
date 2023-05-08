@@ -86,13 +86,13 @@ public class ArgumentControllerIntegrationTest {
         Space space = spaceTestUtility.createSpace();
         Discussion discussion = discussionTestUtility.createDiscussion(space, authTestUtil.getUserByEmail(email));
         CreateArgumentDTO createArgumentDTO = new CreateArgumentDTO();
-        createArgumentDTO.setArgumentDetails(faker.lorem().paragraph());
+        createArgumentDTO.setDetails(argumentTestUtil.createArgumentDetailsList());
         createArgumentDTO.setTitle("This is the title");
 
         HttpEntity<CreateArgumentDTO> requestEntity = new HttpEntity<>(createArgumentDTO, headers);
         ResponseEntity<ArgumentResponseDTO> response = restTemplate.exchange(getDiscussionsArgumentsUrl(discussion.getId()), HttpMethod.POST, requestEntity, ArgumentResponseDTO.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody().getArgumentDetails()).isEqualTo(createArgumentDTO.getArgumentDetails());
+        assertThat(response.getBody().getArgumentDetails()).isEqualTo(createArgumentDTO.getDetails());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class ArgumentControllerIntegrationTest {
         ArgumentResponseDTO argument2 = createArgument(argument1.getDiscussionID());
 
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<Argument[]> response = restTemplate.exchange(getDiscussionsArgumentsUrl(argument1.getDiscussionID()), HttpMethod.GET, requestEntity, Argument[].class);
+        ResponseEntity<ArgumentResponseDTO[]> response = restTemplate.exchange(getDiscussionsArgumentsUrl(argument1.getDiscussionID()), HttpMethod.GET, requestEntity, ArgumentResponseDTO[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().length).isGreaterThanOrEqualTo(2);
     }
@@ -120,7 +120,7 @@ public class ArgumentControllerIntegrationTest {
         ArgumentResponseDTO argumentResponseDTO = createArgument();
 
         UpdateArgumentDTO updatedArgument = new UpdateArgumentDTO();
-        updatedArgument.setArgumentDetails(faker.lorem().paragraph());
+        updatedArgument.setArgumentDetails(argumentTestUtil.createArgumentDetailsList());
         updatedArgument.setTitle(faker.lorem().characters(20));
 
         HttpEntity<UpdateArgumentDTO> requestEntity = new HttpEntity<>(updatedArgument, headers);

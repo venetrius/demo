@@ -2,6 +2,7 @@ package arguewise.demo.model;
 
 import arguewise.demo.dto.argument.CreateArgumentDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -17,6 +19,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -41,8 +45,8 @@ public class Argument {
     @Size(max = 100, message = "Title should be no longer than 100 characters")
     private String title;
 
-    @NotBlank(message = "Argument details are required")
-    private String argumentDetails;
+    @OneToMany(mappedBy = "argument", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ArgumentDetail> argumentDetails;
 
     @CreationTimestamp
     private LocalDateTime creationTimestamp;
@@ -51,7 +55,37 @@ public class Argument {
         this.discussion = discussion;
         this.author = author;
         this.title = dto.getTitle();
-        this.argumentDetails = dto.getArgumentDetails();
+        this.argumentDetails = processArgumentDetails(dto.getDetails());
+        this.argumentDetails.forEach(detail -> detail.setArgument(this));
     }
+
+    public static List<ArgumentDetail> processArgumentDetails(List<String> argumentDetails) {
+        List<ArgumentDetail> details = new ArrayList<>();
+
+        for (int i = 0; i < argumentDetails.size(); i++) {
+            ArgumentDetail detail = new ArgumentDetail();
+            detail.setPosition(i + 1);
+            detail.setText(argumentDetails.get(i));
+            details.add(detail);
+        }
+
+        return details;
+    }
+
+    public void removeArgumentDetail(ArgumentDetail detail) {
+        this.argumentDetails.remove(detail);
+        detail.setArgument(null);
+    }
+
+    public void addArgumentDetail(ArgumentDetail detail) {
+        this.argumentDetails.add(detail);
+        detail.setArgument(this);
+    }
+
+    public void removeAllArgumentDetails() {
+        this.argumentDetails.forEach(detail -> detail.setArgument(null));
+        this.argumentDetails.clear();
+    }
+
 }
 
