@@ -5,6 +5,8 @@ const SpaceContext = createContext();
 
 const SpaceProvider = ({ children }) => {
   const [spaces, setSpaces] = useState([]);
+  const [discussions, setDiscussions] = useState([]);
+
   const { token } = useAuth();
 
   useEffect(() => {
@@ -24,6 +26,25 @@ const SpaceProvider = ({ children }) => {
     if (response.ok) {
       const data = await response.json();
       addSpace(data);
+      return data;
+    } else {
+      return false;
+    }
+  };
+
+  const createDiscussion = async (NewDiscsussion) => {
+    const response = await fetch('http://localhost:8080/api/discussions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(NewDiscsussion),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      addDiscussion(data);
       return data;
     } else {
       return false;
@@ -53,8 +74,12 @@ const SpaceProvider = ({ children }) => {
     setSpaces((prevSpaces) => [newSpace, ...prevSpaces]);
   };
 
+  const addDiscussion = (NewDiscsussion) => {
+    setDiscussions((prevDiscussions) => [NewDiscsussion, ...[prevDiscussions]]);
+  };
+
   return (
-    <SpaceContext.Provider value={{ spaces, fetchSpaces, addSpace, createSpace }}>
+    <SpaceContext.Provider value={{ spaces, fetchSpaces, addSpace, createSpace, createDiscussion }}>
       {children}
     </SpaceContext.Provider>
   );

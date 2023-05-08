@@ -6,7 +6,6 @@ import { useAuth } from '../../contexts/AuthContext';
 const { Title } = Typography;
 
 const SpaceDetailsPage = () => {
-  console.log({params: useParams()})
   const { spaceId } = useParams();
   const { token } = useAuth();
   let navigate = useNavigate();
@@ -69,7 +68,7 @@ const SpaceDetailsPage = () => {
       <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
         {discussions.map((discussion) => (
           <Col key={discussion.id}>
-            discussion
+            {JSON.stringify(discussion)}
             {/* <DiscussionItem discussion={discussion} /> */}
           </Col>
         ))}

@@ -5,6 +5,7 @@ import HeaderComponent from './components/Header/Header.jsx';
 import FooterComponent from './components/Footer/Footer.js';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
+import NewDiscussion from './Pages/Discsussion/NewDiscussion.js'
 import NewSpace from './Pages/Space/NewSpace';
 import SpaceList from './Pages/Space/SpaceList';
 import SpaceDetailsPage from './Pages/Space/SpaceDetailsPage.js'
@@ -26,6 +27,7 @@ const App = () => {
                   <Route path="/" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/spaces/:spaceId" element={<SpaceDetailsPage />} />
+                  <Route path="spaces/:spaceId/new-discussion" element={<NewDiscussion />} />
                   <Route path="/spaces" element={<SpaceList />} />
                   <Route path="/new-space" element={<NewSpace />} />
                 </Routes>
