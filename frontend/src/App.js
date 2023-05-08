@@ -7,6 +7,7 @@ import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import NewSpace from './Pages/Space/NewSpace';
 import SpaceList from './Pages/Space/SpaceList';
+import SpaceDetailsPage from './Pages/Space/SpaceDetailsPage.js'
 
 import { AuthProvider } from './contexts/AuthContext';
 import { SpaceProvider } from './contexts/SpaceContext';
@@ -24,6 +25,7 @@ const App = () => {
                 <Routes>
                   <Route path="/" element={<Login />} />
                   <Route path="/register" element={<Register />} />
+                  <Route path="/spaces/:spaceId" element={<SpaceDetailsPage />} />
                   <Route path="/spaces" element={<SpaceList />} />
                   <Route path="/new-space" element={<NewSpace />} />
                 </Routes>
