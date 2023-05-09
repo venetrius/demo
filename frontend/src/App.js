@@ -9,6 +9,7 @@ import HomePage from './Pages/Home/HomePage.js'
 import Register from './components/Auth/Register';
 import NewDiscussion from './Pages/Discsussion/NewDiscussion.js'
 import NewSpace from './Pages/Space/NewSpace';
+import UserProfilePage from './Pages/Profile/UserProfilePage.js'
 import SpaceList from './Pages/Space/SpaceList';
 import SpaceDetailsPage from './Pages/Space/SpaceDetailsPage.js'
 
@@ -33,6 +34,7 @@ const App = () => {
                   <Route path="spaces/:spaceId/new-discussion" element={<NewDiscussion />} />
                   <Route path="/spaces" element={<SpaceList />} />
                   <Route path="/new-space" element={<NewSpace />} />
+                  <Route path='/profile' element={<UserProfilePage/>} />
                 </Routes>
               </Content>
               <FooterComponent />
