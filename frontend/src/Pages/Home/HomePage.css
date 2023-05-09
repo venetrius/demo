@@ -1,0 +1,17 @@
+.home-background {
+  background-image: url('../../../public/background.png');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-content {
+  text-align: center;
+  color: #ffffff;
+  background-color: rgba(128, 99, 99, 0.568);
+  padding: 20px;
+  border-radius: 5px;
+}

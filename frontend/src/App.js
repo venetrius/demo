@@ -4,6 +4,8 @@ import { Layout } from 'antd';
 import HeaderComponent from './components/Header/Header.jsx';
 import FooterComponent from './components/Footer/Footer.js';
 import Login from './components/Auth/Login';
+import HomePage from './Pages/Home/HomePage.js'
+
 import Register from './components/Auth/Register';
 import NewDiscussion from './Pages/Discsussion/NewDiscussion.js'
 import NewSpace from './Pages/Space/NewSpace';
@@ -24,6 +26,7 @@ const App = () => {
               <HeaderComponent />
               <Content style={{ padding: '0 50px', marginTop: 64 }}>
                 <Routes>
+                  <Route path="/" element={<HomePage />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/spaces/:spaceId" element={<SpaceDetailsPage />} />
