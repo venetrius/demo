@@ -24,7 +24,7 @@ const App = () => {
               <HeaderComponent />
               <Content style={{ padding: '0 50px', marginTop: 64 }}>
                 <Routes>
-                  <Route path="/" element={<Login />} />
+                  <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/spaces/:spaceId" element={<SpaceDetailsPage />} />
                   <Route path="spaces/:spaceId/new-discussion" element={<NewDiscussion />} />
