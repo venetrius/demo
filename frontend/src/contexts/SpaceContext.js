@@ -5,8 +5,6 @@ const SpaceContext = createContext();
 
 const SpaceProvider = ({ children }) => {
   const [spaces, setSpaces] = useState([]);
-  const [discussions, setDiscussions] = useState([]);
-
   const { token } = useAuth();
 
   useEffect(() => {
@@ -26,25 +24,6 @@ const SpaceProvider = ({ children }) => {
     if (response.ok) {
       const data = await response.json();
       addSpace(data);
-      return data;
-    } else {
-      return false;
-    }
-  };
-
-  const createDiscussion = async (NewDiscsussion) => {
-    const response = await fetch('http://localhost:8080/api/discussions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(NewDiscsussion),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      addDiscussion(data);
       return data;
     } else {
       return false;
@@ -74,12 +53,24 @@ const SpaceProvider = ({ children }) => {
     setSpaces((prevSpaces) => [newSpace, ...prevSpaces]);
   };
 
-  const addDiscussion = (NewDiscsussion) => {
-    setDiscussions((prevDiscussions) => [NewDiscsussion, ...[prevDiscussions]]);
+  const fetchSpace = async (spaceId) => {
+    const response = await fetch(`http://localhost:8080/api/spaces/${spaceId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return(data);
+    } else {
+      console.log('Failed to fetch space details.');
+    }
   };
 
   return (
-    <SpaceContext.Provider value={{ spaces, fetchSpaces, addSpace, createSpace, createDiscussion }}>
+    <SpaceContext.Provider value={{ spaces, fetchSpace, fetchSpaces, addSpace, createSpace }}>
       {children}
     </SpaceContext.Provider>
   );

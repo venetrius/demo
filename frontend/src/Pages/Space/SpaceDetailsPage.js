@@ -1,53 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Row, Col, Typography } from 'antd';
-import { useAuth } from '../../contexts/AuthContext';
+import { useSpaces } from '../../contexts/SpaceContext'
+import { useDiscussions } from '../../contexts/DiscussionContext'
 
 const { Title } = Typography;
 
 const SpaceDetailsPage = () => {
   const { spaceId } = useParams();
-  const { token } = useAuth();
+  const { fetchSpace } = useSpaces();
+  const { discussions, fetchDiscussions } = useDiscussions();
+
   let navigate = useNavigate();
 
   const [space, setSpace] = useState(null);
-  const [discussions, setDiscussions] = useState([]);
 
   useEffect(() => {
-    fetchSpace();
-    fetchDiscussions();
+    loadSpace();
+    fetchDiscussions(spaceId);
   }, []);
 
-  const fetchSpace = async () => {
-    const response = await fetch(`http://localhost:8080/api/spaces/${spaceId}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setSpace(data);
-    } else {
-      console.log('Failed to fetch space details.');
-    }
-  };
-
-  const fetchDiscussions = async () => {
-    const response = await fetch(`http://localhost:8080/api/spaces/${spaceId}/discussions`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setDiscussions(data);
-    } else {
-      console.log('Failed to fetch discussions.');
-    }
+  const loadSpace = async () => {
+    console.log('loadSpace', spaceId)
+    const space = await fetchSpace(spaceId)
+    setSpace(space)
   };
 
   const handleCreateDiscussion = () => {
