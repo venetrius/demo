@@ -1,13 +1,14 @@
 import React from 'react';
+import { Layout } from 'antd';
 
-const Footer = () => {
+const { Footer } = Layout;
+
+const FooterComponent = () => {
   return (
-    <footer>
-      <div className="footer-container">
-        <p>&copy; {new Date().getFullYear()} ArgueWise. All rights reserved.</p>
-      </div>
-    </footer>
+    <Footer style={{ textAlign: 'center', padding: '12px 50px' }}>
+      &copy; {new Date().getFullYear()} ArgueWise. All rights reserved.
+    </Footer>
   );
 };
 
-export default Footer;
+export default FooterComponent;
