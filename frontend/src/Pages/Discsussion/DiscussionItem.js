@@ -1,5 +1,6 @@
 import React from 'react';
 import { List, Tag, Typography, Button, Space } from 'antd';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 const { Text } = Typography;
@@ -38,7 +39,11 @@ const DiscussionItem = ({ discussion }) => {
       style={{ borderBottom: '1px solid var(--border-color)', marginBottom: 20 }}
     >
       <List.Item.Meta
-        title={<Text style={{ color: 'var(--primary-color)' }}>{discussion.topic}</Text>}
+        title={
+          <Link to={`/spaces/${discussion.spaceID}/discussions/${discussion.id}`}>
+            <Text style={{ color: 'var(--primary-color)' }}>{discussion.topic}</Text>
+          </Link>
+        }
         description={
           <>
             <Tag color={discussion.status === 'active' ? 'green' : 'red'}>

@@ -8,6 +8,7 @@ import Login from './components/Auth/Login';
 import HomePage from './Pages/Home/HomePage.js'
 
 import Register from './components/Auth/Register';
+import DiscussionDetails from './Pages/Discsussion/DiscussionDetails.js';
 import NewDiscussion from './Pages/Discsussion/NewDiscussion.js'
 import NewSpace from './Pages/Space/NewSpace';
 import UserProfilePage from './Pages/Profile/UserProfilePage.js'
@@ -37,6 +38,7 @@ const App = () => {
                   <Route path="/register" element={<Register />} />
                   <Route path="/spaces/:spaceId" element={<SpaceDetailsPage />} />
                   <Route path="spaces/:spaceId/new-discussion" element={<NewDiscussion />} />
+                  <Route path="spaces/:spaceId/discussions/:discussionId" element={<DiscussionDetails />} />
                   <Route path="/spaces" element={<SpaceList />} />
                   <Route path="/new-space" element={<NewSpace />} />
                   <Route path="/profile" element={<UserProfilePage />} />

@@ -27,6 +27,22 @@ const DiscussionProvider = ({ children }) => {
     }
   };
 
+  const fetchDiscussion = async (spaceId, discussionId) => {
+    const response = await fetch(`http://localhost:8080/api/discussions/${discussionId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data
+    } else {
+      console.log(`Failed to fetch discussionId with id: ${discussionId}.`);
+    }
+  };
+
   const fetchDiscussions = async (spaceId) => {
     const response = await fetch(`http://localhost:8080/api/spaces/${spaceId}/discussions`, {
       headers: {
@@ -44,7 +60,7 @@ const DiscussionProvider = ({ children }) => {
   };
 
   return (
-    <DiscussionContext.Provider value={{ discussions, createDiscussion, fetchDiscussions }}>
+    <DiscussionContext.Provider value={{ discussions, createDiscussion, fetchDiscussion, fetchDiscussions }}>
       {children}
     </DiscussionContext.Provider>
   );
