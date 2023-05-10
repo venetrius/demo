@@ -21,6 +21,8 @@ public class DiscussionResponseDTO {
 
     private String status;
 
+    private boolean userIsPartOfDiscussion;
+
     public DiscussionResponseDTO(Discussion discussion) {
         this.id = discussion.getId();
         this.spaceID = discussion.getSpace().getId();
@@ -29,6 +31,18 @@ public class DiscussionResponseDTO {
         this.creationTimestamp = discussion.getCreationTimestamp().toString();
         this.timeLimit = discussion.getTimeLimit().toString();
         this.status = discussion.getStatus().toString();
+    }
+
+    public DiscussionResponseDTO(DiscussionWithUserParticipation discussionWithUserParticipation) {
+        Discussion discussion = discussionWithUserParticipation.getDiscussion();
+        this.id = discussion.getId();
+        this.spaceID = discussion.getSpace().getId();
+        this.creatorId = discussion.getCreator().getId();
+        this.topic = discussion.getTopic();
+        this.creationTimestamp = discussion.getCreationTimestamp().toString();
+        this.timeLimit = discussion.getTimeLimit().toString();
+        this.status = discussion.getStatus().toString();
+        this.userIsPartOfDiscussion = discussionWithUserParticipation.isUserIsPartOfDiscussion();
     }
 
 }

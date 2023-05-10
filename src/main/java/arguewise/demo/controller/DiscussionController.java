@@ -2,6 +2,7 @@ package arguewise.demo.controller;
 
 import arguewise.demo.dto.Discussion.CreateDiscussionDTO;
 import arguewise.demo.dto.Discussion.DiscussionResponseDTO;
+import arguewise.demo.dto.Discussion.DiscussionWithUserParticipation;
 import arguewise.demo.dto.Discussion.UpdateDiscussionDTO;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.service.IDiscussionService;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -41,12 +41,8 @@ public class DiscussionController {
     @GetMapping("/{id}")
     public ResponseEntity<DiscussionResponseDTO> getDiscussionById(@PathVariable Long id) {
         logger.info("Received request to get discussion by id: {}", id);
-        Optional<Discussion> discussion = discussionService.findById(id);
-        if (discussion.isPresent()) {
-            return ResponseEntity.ok(new DiscussionResponseDTO(discussion.get()));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        DiscussionWithUserParticipation discussionWithUserParticipation = discussionService.findById(id);
+        return ResponseEntity.ok(new DiscussionResponseDTO(discussionWithUserParticipation));
     }
 
     @PostMapping
@@ -59,7 +55,7 @@ public class DiscussionController {
     @PutMapping("/{id}")
     public ResponseEntity<DiscussionResponseDTO> updateDiscussion(@PathVariable Long id, @Valid @RequestBody UpdateDiscussionDTO updatedDiscussion) {
         logger.info("Received request to update discussion with id: {}", id);
-        if (discussionService.findById(id).isPresent()) {
+        if (discussionService.existsById(id)) {
             discussionService.update(id, updatedDiscussion);
             return ResponseEntity.ok(new DiscussionResponseDTO(discussionService.update(id, updatedDiscussion)));
         } else {
@@ -70,7 +66,7 @@ public class DiscussionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDiscussion(@PathVariable Long id) {
         logger.info("Received request to delete discussion with id: {}", id);
-        if (discussionService.findById(id).isPresent()) {
+        if (discussionService.existsById(id)) {
             discussionService.deleteById(id);
             return ResponseEntity.noContent().build();
         } else {

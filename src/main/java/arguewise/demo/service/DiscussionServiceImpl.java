@@ -1,6 +1,7 @@
 package arguewise.demo.service;
 
 import arguewise.demo.dto.Discussion.CreateDiscussionDTO;
+import arguewise.demo.dto.Discussion.DiscussionWithUserParticipation;
 import arguewise.demo.dto.Discussion.UpdateDiscussionDTO;
 import arguewise.demo.exception.NotFoundException;
 import arguewise.demo.model.Discussion;
@@ -8,6 +9,7 @@ import arguewise.demo.model.Space;
 import arguewise.demo.model.User;
 import arguewise.demo.repository.DiscussionRepository;
 import arguewise.demo.repository.SpaceRepository;
+import arguewise.demo.repository.UsersDiscussionRepository;
 import arguewise.demo.security.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +27,19 @@ public class DiscussionServiceImpl implements IDiscussionService {
     @Autowired
     private SpaceRepository spaceRepository;
 
+    @Autowired
+    private UsersDiscussionRepository usersDiscussionRepository;
+
     @Override
     public List<Discussion> findAll() {
         return discussionRepository.findAll();
     }
 
     @Override
-    public Optional<Discussion> findById(Long id) {
-        return discussionRepository.findById(id);
+    public DiscussionWithUserParticipation findById(Long id) {
+        Discussion discussion = discussionRepository.findById(id).orElseThrow(() -> new NotFoundException("Discussion is not found"));
+
+        return new DiscussionWithUserParticipation(discussion, isUserParticipatingInDiscussion(discussion));
     }
 
     @Override
@@ -50,7 +57,7 @@ public class DiscussionServiceImpl implements IDiscussionService {
     @Override
     public Discussion update(Long id, UpdateDiscussionDTO updatedDiscussion) {
         Optional<Discussion> existingDiscussion = discussionRepository.findById(id);
-        if (!existingDiscussion.isPresent()) {
+        if (existingDiscussion.isEmpty()) {
             throw new NotFoundException("Discussion is not found");
         }
         Discussion discussion = existingDiscussion.get();
@@ -81,5 +88,18 @@ public class DiscussionServiceImpl implements IDiscussionService {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return discussionRepository.existsById(id);
+    }
+
+    private boolean isUserParticipatingInDiscussion(Discussion discussion) {
+        User user = SecurityUtils.getCurrentUser();
+        if(user == null) {
+            return false;
+        }
+        return usersDiscussionRepository.findByUserAndDiscussion(user, discussion).isPresent();
     }
 }
