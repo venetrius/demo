@@ -1,20 +1,32 @@
 import React from 'react';
 import { Descriptions, Avatar, Typography } from 'antd';
 import './UserProfile.css';
+import { useAuth } from '../../contexts/AuthContext.js';
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
 const UserProfilePage = () => {
-    const user = {
-        userName: "venetrius",
-        email: "venetrius@venetrius.com",
-        joinDate: "2023/03/14",
-        biography: "",
-        interests: "cheese",
-        argumentsCount: 0,
-        spacesCount: 0,
-        discussionsCount: 0
-    }
+  const { userProfile, isLoggedIn } = useAuth();
+  let navigate = useNavigate();
+
+  if(!isLoggedIn) {
+    navigate('/')
+  }
+
+  if(!userProfile) return "loading"
+
+  const user = {
+      userName: userProfile.userName,
+      email: userProfile.email,
+      joinDate: "2023/03/14",
+      biography: "",
+      interests: "cheese",
+      argumentsCount: 0,
+      spacesCount: 0,
+      discussionsCount: 0
+  }
+
   return (
     <div className="user-profile">
       <Avatar size={100} src={user.profilePicture} />
