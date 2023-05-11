@@ -2,10 +2,11 @@ import React from 'react';
 import { Form, Input, Button, Checkbox, Card } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext.js';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const { login } = useAuth();
+  let navigate = useNavigate();
 
   const onFinish = async (values) => {
     console.log('Authenticating user: ', values.email);
@@ -20,6 +21,7 @@ const Login = () => {
     if (response.ok) {
       const data = await response.json();
       login(data.token);
+      navigate('/')
     } else {
       // TODO Handle error
     }
