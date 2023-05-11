@@ -1,16 +1,20 @@
 import React from 'react';
 import { Layout, Menu } from 'antd';
 import { NavLink, useLocation } from 'react-router-dom';
+import { LogoutOutlined } from '@ant-design/icons';
 
 import { useAuth } from '../../contexts/AuthContext';
-
 
 const { Header } = Layout;
 
 const HeaderComponent = () => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
   const location = useLocation();
   const activeKey = location.pathname === '/' ? '1' : location.pathname.slice(1);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <Header style={{ display: 'flex', alignItems: 'center' }}>
@@ -41,11 +45,16 @@ const HeaderComponent = () => {
           </NavLink>
         </Menu.Item>
         {isLoggedIn ? (
-          <Menu.Item key="profile" style={{ marginLeft: 'auto' }}>
-            <NavLink to="/profile">
-              Profile
-            </NavLink>
-          </Menu.Item>
+          <>
+            <Menu.Item key="profile" style={{ marginLeft: 'auto' }}>
+              <NavLink to="/profile">
+                Profile
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key="logout" onClick={handleLogout}>
+              <LogoutOutlined />
+            </Menu.Item>
+          </>
         ) : (
           <Menu.Item key="login" style={{ marginLeft: 'auto' }}>
             <NavLink to="/login">
