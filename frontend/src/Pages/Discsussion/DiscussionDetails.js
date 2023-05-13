@@ -11,8 +11,7 @@ const DiscussionDetails = () => {
   const [discussion, setDiscussion] = useState(null);
   const [side, setSide] = useState(null);
   const [argumentsList, setArgumentsList] = useState([]); // TODO fetch this data
-
-  const { fetchDiscussion } = useDiscussions();
+  const { joinDiscussion, fetchDiscussion } = useDiscussions();
 
   useEffect(() => {
     loadDiscussion();
@@ -20,19 +19,23 @@ const DiscussionDetails = () => {
 
   const loadDiscussion = async () => {
     const discussionRes = await fetchDiscussion(spaceId, discussionId);
-    console.log({
-      retreivedDiscussion: discussionRes,
-    });
     setDiscussion(discussionRes);
   };
 
-  const handleJoin = (e) => {
-    setSide(e.target.value);
-    // TODO Add logic to join the discussion as PRO or CONTRA
+  const handleJoin = async (e) => {
+    const res = await joinDiscussion(discussionId, {side: e.target.value})
+    if(res){
+      discussion.currentUsersSide = e.target.value
+      setDiscussion(structuredClone(discussion))
+    }
   };
 
   if (!discussion) {
     return <div>Loading...</div>;
+  }
+
+  if(discussion && discussion.currentUsersSide && discussion.currentUsersSide != side) {
+    setSide(discussion.currentUsersSide)
   }
 
   return (
@@ -64,6 +67,7 @@ const DiscussionDetails = () => {
             <Radio.Button value="CONTRA">Join as CONTRA</Radio.Button>
           </Radio.Group>
         )}
+        {side && <Title level={4}>Your Side: {discussion.currentUsersSide}</Title>}
         {(side || discussion.status === 'COMPLETED') && (
           <>
             <Title level={3}>Arguments</Title>

@@ -59,8 +59,24 @@ const DiscussionProvider = ({ children }) => {
     }
   };
 
+  const joinDiscussion = async (discussionId, body) => {
+    const response = await fetch(`http://localhost:8080/api/me/discussions/${discussionId}/join`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(body)
+    });
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
-    <DiscussionContext.Provider value={{ discussions, createDiscussion, fetchDiscussion, fetchDiscussions }}>
+    <DiscussionContext.Provider value={{ discussions, createDiscussion, fetchDiscussion, fetchDiscussions, joinDiscussion }}>
       {children}
     </DiscussionContext.Provider>
   );

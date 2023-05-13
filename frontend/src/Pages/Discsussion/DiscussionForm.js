@@ -3,11 +3,12 @@ import { Form, Input, Button, DatePicker } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { useSpaces } from '../../contexts/SpaceContext';
+import { useDiscussions } from '../../contexts/DiscussionContext';
 
 const DiscussionForm = () => {
   const { spaceId } = useParams();
   let navigate = useNavigate();
-  const { createDiscussion } = useSpaces();
+  const { createDiscussion } = useDiscussions();
           
 
   const handleSubmit = async (values) => {
