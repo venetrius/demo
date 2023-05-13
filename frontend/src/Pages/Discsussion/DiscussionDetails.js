@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { Card, Radio, List, Typography, Space, Statistic, Row, Col } from 'antd';
 
 import { useDiscussions } from '../../contexts/DiscussionContext';
+import ArgumentForm from '../Argument/ArgumentForm'
+
 
 const { Title, Text } = Typography;
 
@@ -84,6 +86,7 @@ const DiscussionDetails = () => {
           </>
         )}
       </Space>
+      <ArgumentForm addArgument={(argument) => setArgumentsList([...argumentsList, argument])} /> {/*TODO handle create*/}
     </div>
   );
 };
