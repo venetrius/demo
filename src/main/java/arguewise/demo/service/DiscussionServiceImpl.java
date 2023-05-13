@@ -7,6 +7,7 @@ import arguewise.demo.exception.NotFoundException;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
 import arguewise.demo.model.User;
+import arguewise.demo.model.UsersDiscussion;
 import arguewise.demo.repository.DiscussionRepository;
 import arguewise.demo.repository.SpaceRepository;
 import arguewise.demo.repository.UsersDiscussionRepository;
@@ -39,7 +40,7 @@ public class DiscussionServiceImpl implements IDiscussionService {
     public DiscussionWithUserParticipation findById(Long id) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(() -> new NotFoundException("Discussion is not found"));
 
-        return new DiscussionWithUserParticipation(discussion, isUserParticipatingInDiscussion(discussion));
+        return new DiscussionWithUserParticipation(discussion, getCurrentUsersSide(discussion));
     }
 
     @Override
@@ -95,11 +96,15 @@ public class DiscussionServiceImpl implements IDiscussionService {
         return discussionRepository.existsById(id);
     }
 
-    private boolean isUserParticipatingInDiscussion(Discussion discussion) {
+    private UsersDiscussion.Side getCurrentUsersSide(Discussion discussion) {
         User user = SecurityUtils.getCurrentUser();
         if(user == null) {
-            return false;
+            return null;
         }
-        return usersDiscussionRepository.findByUserAndDiscussion(user, discussion).isPresent();
+        UsersDiscussion usersDiscussion = usersDiscussionRepository.findByUserAndDiscussion(user, discussion).orElse(null);
+        if(usersDiscussion == null) {
+            return null;
+        }
+        return usersDiscussion.getSide();
     }
 }

@@ -1,6 +1,7 @@
 package arguewise.demo.dto.Discussion;
 
 import arguewise.demo.model.Discussion;
+import arguewise.demo.model.UsersDiscussion;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +22,7 @@ public class DiscussionResponseDTO {
 
     private String status;
 
-    private boolean userIsPartOfDiscussion;
+    private UsersDiscussion.Side currentUsersSide;
 
     public DiscussionResponseDTO(Discussion discussion) {
         this.id = discussion.getId();
@@ -42,7 +43,7 @@ public class DiscussionResponseDTO {
         this.creationTimestamp = discussion.getCreationTimestamp().toString();
         this.timeLimit = discussion.getTimeLimit().toString();
         this.status = discussion.getStatus().toString();
-        this.userIsPartOfDiscussion = discussionWithUserParticipation.isUserIsPartOfDiscussion();
+        this.currentUsersSide = discussionWithUserParticipation.getCurrentUsersSide();
     }
 
 }
