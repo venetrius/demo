@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Card, Radio, List, Typography, Space, Statistic, Row, Col } from 'antd';
 
 import { useDiscussions } from '../../contexts/DiscussionContext';
+import { useArguments } from '../../contexts/ArgumentContext';
 import ArgumentForm from '../Argument/ArgumentForm'
 
 
@@ -12,11 +13,12 @@ const DiscussionDetails = () => {
   const { spaceId, discussionId } = useParams();
   const [discussion, setDiscussion] = useState(null);
   const [side, setSide] = useState(null);
-  const [argumentsList, setArgumentsList] = useState([]); // TODO fetch this data
   const { joinDiscussion, fetchDiscussion } = useDiscussions();
+  const { argumentlist, createArgument, fetchArguments } = useArguments();
 
   useEffect(() => {
     loadDiscussion();
+    fetchArguments();
   }, [discussionId]);
 
   const loadDiscussion = async () => {
@@ -74,11 +76,11 @@ const DiscussionDetails = () => {
           <>
             <Title level={3}>Arguments</Title>
             <List
-              dataSource={argumentsList}
+              dataSource={argumentlist}
               renderItem={(item) => (
                 <List.Item>
                   <Space>
-                    <Text mark>{item.side}</Text> {item.argument}
+                    <Text mark>{item.title}</Text> {item.argument}
                   </Space>
                 </List.Item>
               )}
@@ -86,7 +88,7 @@ const DiscussionDetails = () => {
           </>
         )}
       </Space>
-      <ArgumentForm addArgument={(argument) => setArgumentsList([...argumentsList, argument])} /> {/*TODO handle create*/}
+      <ArgumentForm addArgument={(newArgument) => createArgument(discussionId, newArgument)} /> {/*TODO handle create*/}
     </div>
   );
 };
