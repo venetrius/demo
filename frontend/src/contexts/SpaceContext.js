@@ -5,6 +5,7 @@ const SpaceContext = createContext();
 
 const SpaceProvider = ({ children }) => {
   const [spaces, setSpaces] = useState([]);
+  const [userSpaces, setUserSpaces] = useState([]);
   const { token } = useAuth();
 
   useEffect(() => {
@@ -49,9 +50,45 @@ const SpaceProvider = ({ children }) => {
     }
   };
 
+  const fetchUserSpaces = async () => {
+    const response = await fetch('http://localhost:8080/api/me/spaces', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setUserSpaces(data);
+    }
+  };
+
   const addSpace = (newSpace) => {
     setSpaces((prevSpaces) => [newSpace, ...prevSpaces]);
   };
+
+  const followSpace = async (spaceId) => {
+    const response = await fetch(`http://localhost:8080/api/me/spaces/${spaceId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    if (response.ok) {
+        const allSpaces = spaces.map(space => {
+          if(space.id == spaceId){
+            space.isJoined = true
+          }
+          return space
+        })
+        setSpaces(allSpaces)
+        fetchUserSpaces();
+    } else {
+        console.log('Failed to follow space.');
+    }
+  }
 
   const fetchSpace = async (spaceId) => {
     const response = await fetch(`http://localhost:8080/api/spaces/${spaceId}`, {
@@ -70,7 +107,16 @@ const SpaceProvider = ({ children }) => {
   };
 
   return (
-    <SpaceContext.Provider value={{ spaces, fetchSpace, fetchSpaces, addSpace, createSpace }}>
+    <SpaceContext.Provider value={{
+        spaces,
+        fetchSpace,
+        fetchSpaces,
+        followSpace,
+        addSpace,
+        userSpaces,
+        fetchUserSpaces,
+        createSpace
+    }}>
       {children}
     </SpaceContext.Provider>
   );
