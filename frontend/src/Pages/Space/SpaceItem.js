@@ -2,14 +2,17 @@ import React from 'react';
 import { Card, Statistic, Row, Col, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { LikeOutlined, PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { useSpaces } from '../../contexts/SpaceContext';
 
 const SpaceItem = ({ space }) => {
-  const onLike = () => {
+  const { followSpace } = useSpaces();
+
+  const onLike = async () => {
     // TODO Handle like action
   };
 
-  const onJoin = () => {
-    // TODO Handle join action
+  const onJoin = async () => {
+    const operation = await followSpace(space.id);
   };
 
   const onLeave = () => {
@@ -39,16 +42,19 @@ const SpaceItem = ({ space }) => {
             Like
           </Button>
         </Col>
-        <Col>
-          <Button icon={<PlusCircleOutlined />} onClick={onJoin}>
-            Join
-          </Button>
-        </Col>
-        <Col>
-          <Button icon={<MinusCircleOutlined />} onClick={onLeave}>
-            Leave
-          </Button>
-        </Col>
+        {space.isJoined ?
+          <Col>
+            <Button icon={<MinusCircleOutlined />} onClick={onLeave}>
+              Leave
+            </Button>
+          </Col>
+          :
+          <Col>
+            <Button icon={<PlusCircleOutlined />} onClick={onJoin}>
+              Join
+            </Button>
+          </Col>
+        }
       </Row>
     </Card>
   );
