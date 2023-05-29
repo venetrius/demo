@@ -1,6 +1,6 @@
 package arguewise.demo.service;
 
-import arguewise.demo.model.Space;
+import arguewise.demo.model.UserSpace;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,6 +8,6 @@ import java.util.List;
 @Service
 public interface IUserSpaceService {
 
-    public void followSpace(Long discussionId);
-    public List<Space> findSpacesForCurrentUser();
+    void followSpace(Long discussionId);
+    List<UserSpace> findSpacesForCurrentUser();
 }

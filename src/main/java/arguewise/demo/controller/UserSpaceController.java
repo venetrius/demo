@@ -1,6 +1,6 @@
 package arguewise.demo.controller;
 
-import arguewise.demo.model.Space;
+import arguewise.demo.dto.space.SpaceResponseDTO;
 import arguewise.demo.service.IUserSpaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/me/spaces")
@@ -27,8 +28,10 @@ public class UserSpaceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Space>> getUserSpaces() {
-        List<Space> spaces = userSpaceService.findSpacesForCurrentUser();
+    public ResponseEntity<List<SpaceResponseDTO>> getUserSpaces() {
+        List<SpaceResponseDTO> spaces = userSpaceService.findSpacesForCurrentUser().stream()
+                .map(SpaceResponseDTO::new)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(spaces, HttpStatus.OK);
     }
 }

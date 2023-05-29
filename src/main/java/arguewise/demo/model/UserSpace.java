@@ -38,7 +38,7 @@ public class UserSpace {
     private Space space;
 
     @Column(name = "time_joined", insertable = false, updatable = false)
-    private Timestamp timeJoined;
+    private Timestamp joinedAt;
 
     public UserSpace(User user, Space space) {
         this.user = user;

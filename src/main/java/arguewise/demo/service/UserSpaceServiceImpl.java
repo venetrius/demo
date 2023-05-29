@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -43,12 +42,8 @@ public class UserSpaceServiceImpl implements IUserSpaceService {
     }
 
     @Override
-    public List<Space> findSpacesForCurrentUser() {
+    public List<UserSpace> findSpacesForCurrentUser() {
         User user = SecurityUtils.getCurrentUser();
-
-        return userSpaceRepository.findByUserId((long) user.getId())
-                .stream()
-                .map(UserSpace::getSpace)
-                .collect(Collectors.toList());
+        return userSpaceRepository.findByUserId(user.getId());
     }
 }
