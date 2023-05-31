@@ -4,7 +4,9 @@ import arguewise.demo.dto.userDiscussion.JoinDiscussionDTO;
 import arguewise.demo.exception.ConflictingRequestException;
 import arguewise.demo.exception.NotFoundException;
 import arguewise.demo.model.Discussion;
+import arguewise.demo.model.Space;
 import arguewise.demo.model.User;
+import arguewise.demo.model.UserSpace;
 import arguewise.demo.model.UsersDiscussion;
 import arguewise.demo.repository.DiscussionRepository;
 import arguewise.demo.repository.UserDiscussionRepository;
@@ -28,6 +30,9 @@ public class UserDiscussionServiceImpl implements IUserDiscussionService {
 
     @Autowired
     private DiscussionRepository discussionRepository;
+
+    @Autowired
+    private IUserSpaceService userSpaceService;
 
     @Override
     public void joinDiscussion(Long discussionId, JoinDiscussionDTO joinDiscussionDTO) {
@@ -60,5 +65,19 @@ public class UserDiscussionServiceImpl implements IUserDiscussionService {
         return usersDiscussions.stream()
                 .map(UsersDiscussion::getDiscussion)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Discussion> getRecommendedUserDiscussions() {
+        // Fetch all spaces the user is subscribed to
+        List<UserSpace> spacesSubscribedByUser =  userSpaceService.findSpacesForCurrentUser();
+
+        // Fetch all discussions from these spaces
+        return discussionRepository
+                .findBySpaceIdIn(spacesSubscribedByUser
+                        .stream()
+                        .map(UserSpace::getSpace)
+                        .map(Space::getId)
+                        .collect(Collectors.toList()));
     }
 }
