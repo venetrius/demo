@@ -36,4 +36,10 @@ public class SpaceResponseDTO {
         this.isJoined = true;
         this.joinedAt = userSpace.getJoinedAt();
     }
+
+    public SpaceResponseDTO(Space space) {
+        this.id = space.getId();
+        this.name = space.getName();
+        this.description = space.getDescription();
+    }
 }

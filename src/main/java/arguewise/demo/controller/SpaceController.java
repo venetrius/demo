@@ -1,6 +1,7 @@
 package arguewise.demo.controller;
 
 import arguewise.demo.dto.Discussion.DiscussionResponseDTO;
+import arguewise.demo.dto.space.SpaceResponseDTO;
 import arguewise.demo.model.Space;
 import arguewise.demo.service.SpaceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ public class SpaceController {
     private SpaceService spaceService;
 
     @GetMapping
-    public ResponseEntity<List<Space>> getAllSpaces() {
-        return ResponseEntity.ok(spaceService.getAllSpaces());
+    public ResponseEntity<List<SpaceResponseDTO>> getAllSpaces() {
+        return ResponseEntity.ok(spaceService.getAllSpacesWithUserJoinInfo());
     }
 
     @GetMapping("/{id}")

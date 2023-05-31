@@ -1,18 +1,24 @@
 package arguewise.demo.service;
 
+import arguewise.demo.dto.space.SpaceResponseDTO;
 import arguewise.demo.exception.NotFoundException;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
+import arguewise.demo.model.User;
+import arguewise.demo.model.UserSpace;
 import arguewise.demo.repository.SpaceRepository;
+import arguewise.demo.repository.UserSpaceRepository;
+import arguewise.demo.security.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.SortedMap;
 
 @Service
 public class SpaceService implements ISpaceService {
@@ -20,6 +26,30 @@ public class SpaceService implements ISpaceService {
     @Autowired
     private SpaceRepository spaceRepository;
 
+    @Autowired
+    private UserSpaceRepository userSpaceRepository;
+
+    public List<SpaceResponseDTO> getAllSpacesWithUserJoinInfo() {
+        User user = SecurityUtils.getCurrentUser();
+
+        List<SpaceResponseDTO> response = new ArrayList<>();
+        Map<Long, UserSpace> userSpacesMap = new HashMap<>();
+
+        List<UserSpace> userSpaces = userSpaceRepository.findByUserId(user.getId());
+        userSpaces.forEach(userSpace -> userSpacesMap.put(userSpace.getSpace().getId(), userSpace));
+        System.out.println(userSpacesMap);
+
+        List<Space> allSpaces = spaceRepository.findAll();
+        for(Space space : allSpaces) {
+            SpaceResponseDTO dto = new SpaceResponseDTO(space);
+            if(userSpacesMap.containsKey(space.getId())) {
+                dto = new SpaceResponseDTO(userSpacesMap.get(space.getId()));
+            }
+            response.add(dto);
+        }
+
+        return response;
+    }
     @Override
     public List<Space> getAllSpaces() {
         return spaceRepository.findAll();
