@@ -3,7 +3,7 @@ import { Form, Input, Button, DatePicker } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { useSpaces } from '../../contexts/SpaceContext';
-import { useDiscussions } from '../../contexts/DiscussionContext';
+import { useDiscussions } from '../../contexts/SpaceDiscussionContext';
 
 const DiscussionForm = () => {
   const { spaceId } = useParams();

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Radio, List, Typography, Space, Statistic, Row, Col } from 'antd';
 
-import { useDiscussions } from '../../contexts/DiscussionContext';
+import { useDiscussions } from '../../contexts/SpaceDiscussionContext';
 import { useArguments } from '../../contexts/ArgumentContext';
 import ArgumentForm from '../Argument/ArgumentForm'
 

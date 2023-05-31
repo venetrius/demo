@@ -17,7 +17,7 @@ import SpaceDetailsPage from './Pages/Space/SpaceDetailsPage.js'
 
 import { AuthProvider } from './contexts/AuthContext';
 import { SpaceProvider } from './contexts/SpaceContext';
-import { DiscussionProvider } from './contexts/DiscussionContext';
+import { DiscussionProvider } from './contexts/SpaceDiscussionContext';
 import { ArgumentProvider } from './contexts/ArgumentContext';
 
 import './App.css';

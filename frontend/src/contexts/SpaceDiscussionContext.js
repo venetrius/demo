@@ -1,21 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 
-const DiscussionContext = createContext();
+const SpaceDiscussionContext = createContext();
 
 const DiscussionProvider = ({ children }) => {
   const [discussions, setDiscussions] = useState([]);
 
   const { token } = useAuth();
 
-  const createDiscussion = async (NewDiscsussion) => {
+  const createDiscussion = async (NewDiscussion) => {
     const response = await fetch('http://localhost:8080/api/discussions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify(NewDiscsussion),
+      body: JSON.stringify(NewDiscussion),
     });
 
     if (response.ok) {
@@ -76,12 +76,12 @@ const DiscussionProvider = ({ children }) => {
   };
 
   return (
-    <DiscussionContext.Provider value={{ discussions, createDiscussion, fetchDiscussion, fetchDiscussions, joinDiscussion }}>
+    <SpaceDiscussionContext.Provider value={{ discussions, createDiscussion, fetchDiscussion, fetchDiscussions, joinDiscussion }}>
       {children}
-    </DiscussionContext.Provider>
+    </SpaceDiscussionContext.Provider>
   );
 };
 
-const useDiscussions = () => useContext(DiscussionContext);
+const useDiscussions = () => useContext(SpaceDiscussionContext);
 
 export { DiscussionProvider, useDiscussions };

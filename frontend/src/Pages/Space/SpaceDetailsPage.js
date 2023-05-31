@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Row, Col, Typography, Card, Statistic } from 'antd';
 import { useSpaces } from '../../contexts/SpaceContext';
-import { useDiscussions } from '../../contexts/DiscussionContext';
+import { useDiscussions } from '../../contexts/SpaceDiscussionContext';
 
 import DiscussionItem from '../Discsussion/DiscussionItem';
 
