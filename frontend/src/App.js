@@ -9,6 +9,7 @@ import HomePage from './Pages/Home/HomePage.js'
 
 import Register from './components/Auth/Register';
 import DiscussionDetails from './Pages/Discsussion/DiscussionDetails.js';
+import DiscussionsPage from './Pages/Discsussion/DiscussionsPage.js'
 import NewDiscussion from './Pages/Discsussion/NewDiscussion.js'
 import NewSpace from './Pages/Space/NewSpace';
 import UserProfilePage from './Pages/Profile/UserProfilePage.js'
@@ -38,6 +39,7 @@ const App = () => {
                   <Content style={{ padding: '50px', minHeight: 'calc(100vh - 114px)' }}>
                     <Routes>
                       <Route path="/" element={<HomePage />} />
+                      <Route path='/discussions' element={<DiscussionsPage/>} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
                       <Route path="/spaces/:spaceId" element={<SpaceDetailsPage />} />

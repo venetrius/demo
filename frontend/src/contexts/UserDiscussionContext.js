@@ -4,15 +4,15 @@ import { useAuth } from './AuthContext';
 const UserDiscussionContext = createContext();
 
 const UserDiscussionProvider = ({ children }) => {
-  const [subscirbedDiscussions, setSubscirbedDiscussions] = useState([]);
-  const [discussionsFromSubscirbedSpaces, setdiscussionsFromSubscirbedSpaces] = useState([]);
+  const [subscribedDiscussions, setSubscirbedDiscussions] = useState([]);
+  const [recommendedDiscussions, setRecommendedDiscussions] = useState([]);
 
 
   const { token } = useAuth();
 
 
   const fetchSubscribedDiscussions = async () => {
-    const response = await fetch(`http://localhost:8080/api/me/discussions/`, {
+    const response = await fetch(`http://localhost:8080/api/me/discussions`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -38,14 +38,14 @@ const UserDiscussionProvider = ({ children }) => {
 
     if (response.ok) {
       const data = await response.json();
-      setdiscussionsFromSubscirbedSpaces(data)
+      setRecommendedDiscussions(data)
     } else {
       console.log('Failed to fetch discussions.');
     }
   };
 
   return (
-    <UserDiscussionContext.Provider value={{ subscirbedDiscussions, discussionsFromSubscirbedSpaces, fetchSubscribedDiscussions, fetchRecommendedDiscussions }}>
+    <UserDiscussionContext.Provider value={{ subscribedDiscussions, recommendedDiscussions, fetchSubscribedDiscussions, fetchRecommendedDiscussions }}>
       {children}
     </UserDiscussionContext.Provider>
   );
