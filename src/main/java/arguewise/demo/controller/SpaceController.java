@@ -58,4 +58,22 @@ public class SpaceController {
                 .map(discussion -> new DiscussionResponseDTO(discussion))
                 .collect(Collectors.toList());
     }
+
+    @PutMapping("/{id}/like")
+    public ResponseEntity<Void> likeSpace(@PathVariable Long id) {
+        spaceService.likeSpace(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/unlike")
+    public ResponseEntity<Void> unlikeSpace(@PathVariable Long id) {
+        spaceService.unlikeSpace(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/likes")
+    public ResponseEntity<Integer> getTotalLikes(@PathVariable Long id) {
+        int totalLikes = spaceService.getTotalLikes(id);
+        return ResponseEntity.ok(totalLikes);
+    }
 }

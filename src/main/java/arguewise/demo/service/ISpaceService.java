@@ -18,4 +18,10 @@ public interface ISpaceService {
     Optional<Space> updateSpace(Long id, Space updatedSpace);
 
     boolean deleteSpace(Long id);
+
+    void likeSpace(Long id);
+
+    void unlikeSpace(Long id);
+
+    int getTotalLikes(Long id);
 }

@@ -28,7 +28,6 @@ public class SpaceService implements ISpaceService {
 
     @Autowired
     private UserSpaceRepository userSpaceRepository;
-
     public List<SpaceResponseDTO> getAllSpacesWithUserJoinInfo() {
         User user = SecurityUtils.getCurrentUser();
 
@@ -92,5 +91,38 @@ public class SpaceService implements ISpaceService {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void likeSpace(Long id) {
+        Optional<Space> space = spaceRepository.findById(id);
+        if(space.isEmpty()) {
+            throw new NotFoundException("Space is not found");
+        }
+
+        User user = SecurityUtils.getCurrentUser();
+        space.get().like(user);
+        spaceRepository.save(space.get());
+    }
+
+    @Override
+    public void unlikeSpace(Long id) {
+        Optional<Space> space = spaceRepository.findById(id);
+        if(space.isEmpty()) {
+            throw new NotFoundException("Space is not found");
+        }
+
+        User user = SecurityUtils.getCurrentUser();
+        space.get().unlike(user);
+        spaceRepository.save(space.get());
+    }
+
+    @Override
+    public int getTotalLikes(Long id) {
+        Optional<Space> space = spaceRepository.findById(id);
+        if(space.isEmpty()) {
+            throw new NotFoundException("Space is not found");
+        }
+        return space.get().getTotalLikes();
     }
 }
