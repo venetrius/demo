@@ -5,10 +5,10 @@ import { LikeOutlined, PlusCircleOutlined, MinusCircleOutlined } from '@ant-desi
 import { useSpaces } from '../../contexts/SpaceContext';
 
 const SpaceItem = ({ space }) => {
-  const { followSpace } = useSpaces();
+  const { followSpace, likeSpace } = useSpaces();
 
   const onLike = async () => {
-    // TODO Handle like action
+    await likeSpace(space.id);
   };
 
   const onJoin = async () => {

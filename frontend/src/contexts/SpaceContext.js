@@ -106,6 +106,20 @@ const SpaceProvider = ({ children }) => {
     }
   };
 
+  const likeSpace = async (spaceId) => {
+      const response = await fetch(`http://localhost:8080/api/spaces/${spaceId}/like`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+          }
+      });
+      if (response.ok) {
+      } else {
+          console.log('Failed to like space.');
+      }
+    }
+
   return (
     <SpaceContext.Provider value={{
         spaces,
@@ -115,7 +129,8 @@ const SpaceProvider = ({ children }) => {
         addSpace,
         userSpaces,
         fetchUserSpaces,
-        createSpace
+        createSpace,
+        likeSpace
     }}>
       {children}
     </SpaceContext.Provider>
