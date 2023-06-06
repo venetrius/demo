@@ -48,11 +48,8 @@ public class DiscussionArgumentController {
     public ResponseEntity<ArgumentResponseDTO> createArgument(@PathVariable Long discussionId,
                                                               @Valid @RequestBody CreateArgumentDTO createArgumentDTO) {
         logger.info("Received request to create an argument for discussion with id: {}", discussionId);
-        if (discussionService.existsById(discussionId)) {
-            Argument argument = argumentService.save(discussionId, createArgumentDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ArgumentResponseDTO(argument));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Argument argument = argumentService.createArgument(discussionId, createArgumentDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ArgumentResponseDTO(argument));
     }
 }

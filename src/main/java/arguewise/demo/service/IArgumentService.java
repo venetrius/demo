@@ -11,10 +11,9 @@ import java.util.Optional;
 @Service
 public interface IArgumentService {
     Optional<Argument> findById(Long id);
-    Argument save(Long discussionId, CreateArgumentDTO createArgumentDTO);
     Argument update(Long id, UpdateArgumentDTO updatedArgument);
     boolean deleteById(Long id);
-
     Collection<Argument> findAllByDiscussionId(Long discussionId);
+    Argument createArgument(Long discussionId, CreateArgumentDTO createArgumentDTO);
 }
 

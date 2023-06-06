@@ -3,12 +3,10 @@ package arguewise.demo.service;
 import arguewise.demo.dto.argument.CreateArgumentDTO;
 import arguewise.demo.dto.argument.UpdateArgumentDTO;
 import arguewise.demo.exception.NotFoundException;
-import arguewise.demo.model.Argument;
-import arguewise.demo.model.ArgumentDetail;
-import arguewise.demo.model.Discussion;
-import arguewise.demo.model.User;
+import arguewise.demo.model.*;
 import arguewise.demo.repository.ArgumentRepository;
 import arguewise.demo.repository.DiscussionRepository;
+import arguewise.demo.repository.UserDiscussionRepository;
 import arguewise.demo.security.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +25,12 @@ public class ArgumentServiceImpl implements IArgumentService {
     @Autowired
     private DiscussionRepository discussionRepository;
 
+    @Autowired
+    private UserDiscussionRepository userDiscussionRepository;
+
     @Override
     public Optional<Argument> findById(Long id) {
         return argumentRepository.findById(id);
-    }
-
-    @Override
-    public Argument save(Long discussionId, CreateArgumentDTO createArgumentDTO) {
-        Optional<Discussion> discussion = discussionRepository.findById(discussionId);
-        if (discussion.isEmpty()) {
-            throw new NotFoundException("The provided discussion id does not reference a discussion");
-        }
-        User creator = SecurityUtils.getCurrentUser();
-        Argument argument = new Argument(createArgumentDTO, creator, discussion.get());
-        return argumentRepository.save(argument);
     }
 
     @Transactional
@@ -82,6 +72,18 @@ public class ArgumentServiceImpl implements IArgumentService {
     @Override
     public Collection<Argument> findAllByDiscussionId(Long discussionId) {
         return argumentRepository.findAllByDiscussionId(discussionId);
+    }
+
+    @Override
+    public Argument createArgument(Long discussionId, CreateArgumentDTO createArgumentDTO) {
+        User creator = SecurityUtils.getCurrentUser();
+        Optional<UsersDiscussion> usersDiscussion =
+                userDiscussionRepository.findByUserIdAndDiscussionId(creator.getId(), discussionId);
+        if(usersDiscussion.isEmpty()) {
+            throw new IllegalArgumentException("Can only create an Argument for a Discussion if joined");
+        }
+        Argument newArgument = new Argument(createArgumentDTO, creator, usersDiscussion.get().getDiscussion());
+        return argumentRepository.save(newArgument);
     }
 
 }
