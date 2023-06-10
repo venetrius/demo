@@ -15,4 +15,6 @@ public interface IDiscussionService {
     boolean deleteById(Long id);
 
     boolean existsById(Long id);
+
+    void isActiveOrThrow(Discussion discussion);
 }

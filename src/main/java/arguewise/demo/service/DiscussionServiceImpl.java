@@ -96,6 +96,13 @@ public class DiscussionServiceImpl implements IDiscussionService {
         return discussionRepository.existsById(id);
     }
 
+    @Override
+    public void isActiveOrThrow(Discussion discussion) {
+        if(discussion.getStatus() != Discussion.DiscussionStatus.ACTIVE) {
+            throw new IllegalArgumentException("Invalid action on Discussion with status " + discussion.getStatus());
+        }
+    }
+
     private UsersDiscussion.Side getCurrentUsersSide(Discussion discussion) {
         User user = SecurityUtils.getCurrentUser();
         if(user == null) {

@@ -12,9 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +22,9 @@ public class ArgumentServiceImpl implements IArgumentService {
 
     @Autowired
     private DiscussionRepository discussionRepository;
+
+    @Autowired
+    private IDiscussionService discussionService;
 
     @Autowired
     private UserDiscussionRepository userDiscussionRepository;
@@ -39,8 +40,10 @@ public class ArgumentServiceImpl implements IArgumentService {
         if (existingArgument.isEmpty()) {
             throw new NotFoundException("Argument is not found");
         }
-
         Argument argument = existingArgument.get();
+
+        isUserRecordOrThrow(argument);
+        discussionService.isActiveOrThrow(argument.getDiscussion());
 
         if (updatedArgument.getTitle() != null) {
             argument.setTitle(updatedArgument.getTitle());
@@ -62,6 +65,14 @@ public class ArgumentServiceImpl implements IArgumentService {
     @Transactional
     @Override
     public boolean deleteById(Long id) {
+        Optional<Argument> argument = argumentRepository.findById(id);
+        if(argument.isEmpty()) {
+            return false;
+        }
+
+        isUserRecordOrThrow(argument.get());
+        discussionService.isActiveOrThrow(argument.get().getDiscussion());
+
         if (argumentRepository.existsById(id)) {
             argumentRepository.deleteById(id);
             return true;
@@ -82,8 +93,19 @@ public class ArgumentServiceImpl implements IArgumentService {
         if(usersDiscussion.isEmpty()) {
             throw new IllegalArgumentException("Can only create an Argument for a Discussion if joined");
         }
+
+        discussionService.isActiveOrThrow(usersDiscussion.get().getDiscussion());
+
         Argument newArgument = new Argument(createArgumentDTO, creator, usersDiscussion.get().getDiscussion());
         return argumentRepository.save(newArgument);
+    }
+
+    private void isUserRecordOrThrow(Argument argument) {
+        User user = SecurityUtils.getCurrentUser();
+
+        if(argument.getAuthor() != user) {
+            throw new IllegalArgumentException("You can only delete Arguments you created");
+        }
     }
 
 }
