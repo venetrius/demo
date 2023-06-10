@@ -20,7 +20,7 @@ const DiscussionProvider = ({ children }) => {
 
     if (response.ok) {
       const data = await response.json();
-      setDiscussions(data);
+      setDiscussions([...discussions, data]);
       return data;
     } else {
       return false;
