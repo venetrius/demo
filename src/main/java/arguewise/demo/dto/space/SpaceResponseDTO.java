@@ -23,10 +23,22 @@ public class SpaceResponseDTO {
 
     private String description;
 
+    private SpaceStatisticsDTO spaceStatistics;
+
     @JsonProperty("isJoined")
     private boolean isJoined;
 
     private Timestamp joinedAt;
+
+    public SpaceResponseDTO(UserSpace userSpace, SpaceStatisticsDTO spaceStatisticsDTO) {
+        Space space = userSpace.getSpace();
+        this.id = space.getId();
+        this.name = space.getName();
+        this.description = space.getDescription();
+        this.isJoined = true;
+        this.joinedAt = userSpace.getJoinedAt();
+        this.spaceStatistics = spaceStatisticsDTO;
+    }
 
     public SpaceResponseDTO(UserSpace userSpace) {
         Space space = userSpace.getSpace();
@@ -37,9 +49,10 @@ public class SpaceResponseDTO {
         this.joinedAt = userSpace.getJoinedAt();
     }
 
-    public SpaceResponseDTO(Space space) {
+    public SpaceResponseDTO(Space space, SpaceStatisticsDTO spaceStatisticsDTO) {
         this.id = space.getId();
         this.name = space.getName();
         this.description = space.getDescription();
+        this.spaceStatistics = spaceStatisticsDTO;
     }
 }

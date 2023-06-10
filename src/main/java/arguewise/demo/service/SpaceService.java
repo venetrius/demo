@@ -1,6 +1,7 @@
 package arguewise.demo.service;
 
 import arguewise.demo.dto.space.SpaceResponseDTO;
+import arguewise.demo.dto.space.SpaceStatisticsDTO;
 import arguewise.demo.exception.NotFoundException;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
@@ -28,6 +29,7 @@ public class SpaceService implements ISpaceService {
 
     @Autowired
     private UserSpaceRepository userSpaceRepository;
+
     public List<SpaceResponseDTO> getAllSpacesWithUserJoinInfo() {
         User user = SecurityUtils.getCurrentUser();
 
@@ -36,19 +38,24 @@ public class SpaceService implements ISpaceService {
 
         List<UserSpace> userSpaces = userSpaceRepository.findByUserId(user.getId());
         userSpaces.forEach(userSpace -> userSpacesMap.put(userSpace.getSpace().getId(), userSpace));
-        System.out.println(userSpacesMap);
 
         List<Space> allSpaces = spaceRepository.findAll();
         for(Space space : allSpaces) {
-            SpaceResponseDTO dto = new SpaceResponseDTO(space);
+            SpaceStatisticsDTO spaceStatisticsDTO = getSpaceStatisticDTO(space);
+            SpaceResponseDTO dto = new SpaceResponseDTO(space, spaceStatisticsDTO);
             if(userSpacesMap.containsKey(space.getId())) {
-                dto = new SpaceResponseDTO(userSpacesMap.get(space.getId()));
+                dto = new SpaceResponseDTO(userSpacesMap.get(space.getId()), spaceStatisticsDTO);
             }
             response.add(dto);
         }
 
         return response;
     }
+
+    private SpaceStatisticsDTO getSpaceStatisticDTO(Space space) {
+        return new SpaceStatisticsDTO(space.getTotalLikes(), 0L, 0L);
+    }
+
     @Override
     public List<Space> getAllSpaces() {
         return spaceRepository.findAll();
