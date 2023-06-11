@@ -103,7 +103,7 @@ public class ArgumentServiceImpl implements IArgumentService {
     private void isUserRecordOrThrow(Argument argument) {
         User user = SecurityUtils.getCurrentUser();
 
-        if(argument.getAuthor() != user) {
+        if(! (user.getId() == argument.getAuthor().getId())) {
             throw new IllegalArgumentException("You can only delete Arguments you created");
         }
     }
