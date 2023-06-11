@@ -9,6 +9,7 @@ import arguewise.demo.integration.util.space.SpaceTestUtility;
 import arguewise.demo.model.Argument;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
+import arguewise.demo.model.UsersDiscussion;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,6 +89,9 @@ public class ArgumentControllerIntegrationTest {
         CreateArgumentDTO createArgumentDTO = new CreateArgumentDTO();
         createArgumentDTO.setDetails(argumentTestUtil.createArgumentDetailsList());
         createArgumentDTO.setTitle("This is the title");
+
+        UsersDiscussion.Side side = UsersDiscussion.Side.PRO;
+        discussionTestUtility.joinDiscussion(discussion.getId(), side, headers, port);
 
         HttpEntity<CreateArgumentDTO> requestEntity = new HttpEntity<>(createArgumentDTO, headers);
         ResponseEntity<ArgumentResponseDTO> response = restTemplate.exchange(getDiscussionsArgumentsUrl(discussion.getId()), HttpMethod.POST, requestEntity, ArgumentResponseDTO.class);

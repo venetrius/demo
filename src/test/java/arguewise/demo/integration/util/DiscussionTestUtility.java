@@ -44,6 +44,12 @@ public class DiscussionTestUtility {
 
     private Faker faker = new Faker();
 
+    private static final String BASE_URL = "http://localhost:";
+
+    private String getUserDiscussionUrl(int port) {
+        return BASE_URL + port + "/api/me/discussions";
+    }
+
     public Discussion createDiscussion(Space space, User user) {
         CreateDiscussionDTO createDiscussionDTO = new CreateDiscussionDTO();
         createDiscussionDTO.setSpaceID(space.getId());
@@ -55,12 +61,25 @@ public class DiscussionTestUtility {
         return discussion;
     }
 
-        public ResponseEntity<Void> joinDiscussion(String userDiscussionUrl, Long discussionId, UsersDiscussion.Side side, HttpHeaders headers) {
+    public ResponseEntity<Void> joinDiscussion(String userDiscussionUrl, Long discussionId, UsersDiscussion.Side side, HttpHeaders headers) {
         JoinDiscussionDTO joinDiscussionDTO = new JoinDiscussionDTO();
         joinDiscussionDTO.setSide(side);
 
         HttpEntity<JoinDiscussionDTO> requestEntity = new HttpEntity<>(joinDiscussionDTO, headers);
         return restTemplate.exchange(userDiscussionUrl + "/" + discussionId + "/join", HttpMethod.POST, requestEntity, Void.class);
+    }
+
+    public ResponseEntity<Void> joinDiscussion(Long discussionId, UsersDiscussion.Side side, HttpHeaders headers, int port) {
+        JoinDiscussionDTO joinDiscussionDTO = new JoinDiscussionDTO();
+        joinDiscussionDTO.setSide(side);
+
+        HttpEntity<JoinDiscussionDTO> requestEntity = new HttpEntity<>(joinDiscussionDTO, headers);
+        return restTemplate.exchange(getUserDiscussionUrl(port) + "/" + discussionId + "/join", HttpMethod.POST, requestEntity, Void.class);
+    }
+
+    public ResponseEntity<List<DiscussionResponseDTO>> getUserDiscussions(HttpHeaders headers, int port) {
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+        return restTemplate.exchange(getUserDiscussionUrl(port), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<DiscussionResponseDTO>>() {});
     }
 
     public ResponseEntity<List<DiscussionResponseDTO>> getUserDiscussions(String userDiscussionUrl, HttpHeaders headers) {

@@ -8,6 +8,7 @@ import arguewise.demo.integration.util.space.SpaceTestUtility;
 import arguewise.demo.model.Argument;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
+import arguewise.demo.model.UsersDiscussion;
 import arguewise.demo.repository.ArgumentRepository;
 import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,10 @@ public class ArgumentTestUtil {
     public ArgumentResponseDTO createArgument(String email, HttpHeaders headers, int port) {
         Space space = spaceTestUtility.createSpace();
         Discussion discussion = discussionTestUtility.createDiscussion(space, authTestUtil.getUserByEmail(email));
+        UsersDiscussion.Side side = UsersDiscussion.Side.PRO;
+
+        discussionTestUtility.joinDiscussion(discussion.getId(), side, headers, port);
+
         CreateArgumentDTO createArgumentDTO = new CreateArgumentDTO();
         createArgumentDTO.setDetails(createArgumentDetailsList());
         createArgumentDTO.setTitle("This is the title");
