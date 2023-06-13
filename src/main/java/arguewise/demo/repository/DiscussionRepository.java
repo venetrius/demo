@@ -4,6 +4,7 @@ import arguewise.demo.model.Discussion;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +17,7 @@ public interface DiscussionRepository extends JpaRepository< Discussion, Long> {
 
 
     List<Discussion> findBySpaceIdIn(List<Long> spaceIds);
+
+    List<Discussion> findByStatusAndTimeLimitBefore(Discussion.DiscussionStatus status, LocalDateTime timeLimit);
 
 }
