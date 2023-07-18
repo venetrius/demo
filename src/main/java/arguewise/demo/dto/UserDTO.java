@@ -11,10 +11,18 @@ public class UserDTO {
 
     private String userName;
     private String email;
+    private String biography;
+    private String interests;
+    private String profilePicture;
+    private boolean receiveNotifications;
 
     public UserDTO(User user) {
         this.id = user.getId();
         this.userName = user.getUsername();
         this.email = user.getEmail();
+        this.biography = user.getBiography();
+        this.interests = user.getInterests();
+        this.profilePicture = user.getProfilePicture();
+        this.receiveNotifications = user.getReceiveNotifications();
     }
 }

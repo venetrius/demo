@@ -29,6 +29,12 @@ public class User implements UserDetails  {
     private String email;
     private String password;
 
+    private String biography;
+    private String interests;
+    private String profilePicture;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean receiveNotifications;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
