@@ -1,5 +1,5 @@
 import React from 'react';
-import { Descriptions, Avatar, Typography } from 'antd';
+import { Descriptions, Avatar, Typography, Switch } from 'antd';
 import './UserProfile.css';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { useNavigate } from 'react-router-dom';
@@ -17,11 +17,8 @@ const UserProfilePage = () => {
   if(!userProfile) return "loading"
 
   const user = {
-      userName: userProfile.userName,
-      email: userProfile.email,
+      ...userProfile,
       joinDate: "2023/03/14",
-      biography: "",
-      interests: "cheese",
       argumentsCount: 0,
       spacesCount: 0,
       discussionsCount: 0
@@ -42,6 +39,9 @@ const UserProfilePage = () => {
           {`Spaces: ${user.spacesCount}, Discussions: ${user.discussionsCount}, Arguments: ${user.argumentsCount}`}
         </Descriptions.Item>
         <Descriptions.Item label="Social Media">{user.socialMediaLinks}</Descriptions.Item>
+        <Descriptions.Item label="Receive Notifications">
+            <Switch checked={user.receiveNotifications} onChange={() => alert("work in progress")} />
+        </Descriptions.Item>
       </Descriptions>
     </div>
   );
