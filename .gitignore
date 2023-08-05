@@ -1,10 +1,13 @@
 HELP.md
-application.yml
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+### Credentials ###
+application.yml
+jaas.conf
 
 ### STS ###
 .apt_generated

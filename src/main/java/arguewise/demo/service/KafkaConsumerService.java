@@ -12,9 +12,10 @@ public class KafkaConsumerService implements IEmailConfirmationListener {
     @Autowired
     private EmailService emailService;
 
-    @KafkaListener(topics = "email-confirmation", groupId = "email-group")
+    @KafkaListener(topics = "email-group", groupId = "email-group")
     @Override
     public void onEmailConfirmation(String userEmail, String userName) {
+        System.out.println("received message to create email confirmation: " + userEmail + " " + userName);
         sendConfirmationEmail(userEmail, userName);
     }
 
