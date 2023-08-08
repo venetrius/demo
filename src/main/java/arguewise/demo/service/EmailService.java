@@ -15,18 +15,21 @@ public class EmailService {
     private String emailPassword;
     private static final OkHttpClient httpClient = new OkHttpClient();
 
+    @Value("${spring.mail.sender}")
+    private String senderEmailAddress;
+
 
     public Response sendSimpleMessage(String email, String userName) throws IOException {
         String url = "https://api.mailgun.net/v3/" + emailUsername + "/messages";
         String credentials = Credentials.basic("api", emailPassword);
 
         RequestBody formBody = new FormBody.Builder()
-                .add("from", "someone@gmail.com")
+                .add("from", senderEmailAddress)
                 .add("to", email)
                 .add("subject", "welcome on board!")
                 .add("text", "Hi " + userName + ", welcome on board at ArgueWise!")
                 .build();
-
+        System.out.println("Sending email to: " + email);
         Request request = new Request.Builder()
                 .url(url)
                 .header("Authorization", credentials)

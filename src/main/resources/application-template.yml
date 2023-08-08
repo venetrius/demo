@@ -18,6 +18,7 @@ spring:
     host: smtp.mailgun.org
     port: 587
     username: postmaster@YOUR_DOMAIN_NAME
+    sender: mailgun@YOUR_DOMAIN_NAME
     password: YOUR_API_KEY
     properties:
       mail:

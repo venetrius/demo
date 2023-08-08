@@ -15,6 +15,7 @@ spring:
     host: smtp.mailgun.org
     port: 587
     username: username
+    sender: sender
     password: password
     properties:
       mail:
