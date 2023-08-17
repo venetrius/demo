@@ -88,7 +88,9 @@ const DiscussionDetails = () => {
           </>
         )}
       </Space>
-      <ArgumentForm addArgument={(newArgument) => createArgument(discussionId, newArgument)} /> {/*TODO handle create*/}
+      {side &&
+        <ArgumentForm addArgument={(newArgument) => createArgument(discussionId, newArgument)} />
+      }
     </div>
   );
 };
