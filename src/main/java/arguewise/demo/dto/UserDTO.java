@@ -23,6 +23,6 @@ public class UserDTO {
         this.biography = user.getBiography();
         this.interests = user.getInterests();
         this.profilePicture = user.getProfilePicture();
-        this.receiveNotifications = user.getReceiveNotifications();
+        this.receiveNotifications = false;
     }
 }
