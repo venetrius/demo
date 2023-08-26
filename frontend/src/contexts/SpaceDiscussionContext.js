@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { API_URL } from './settings'
+
 
 const SpaceDiscussionContext = createContext();
 
@@ -9,7 +11,7 @@ const DiscussionProvider = ({ children }) => {
   const { token } = useAuth();
 
   const createDiscussion = async (NewDiscussion) => {
-    const response = await fetch('http://localhost:8080/api/discussions', {
+    const response = await fetch(`${API_URL}/api/discussions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +30,7 @@ const DiscussionProvider = ({ children }) => {
   };
 
   const fetchDiscussion = async (spaceId, discussionId) => {
-    const response = await fetch(`http://localhost:8080/api/discussions/${discussionId}`, {
+    const response = await fetch(`${API_URL}/api/discussions/${discussionId}`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -44,7 +46,7 @@ const DiscussionProvider = ({ children }) => {
   };
 
   const fetchDiscussions = async (spaceId) => {
-    const response = await fetch(`http://localhost:8080/api/spaces/${spaceId}/discussions`, {
+    const response = await fetch(`${API_URL}/api/spaces/${spaceId}/discussions`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -60,7 +62,7 @@ const DiscussionProvider = ({ children }) => {
   };
 
   const joinDiscussion = async (discussionId, body) => {
-    const response = await fetch(`http://localhost:8080/api/me/discussions/${discussionId}/join`, {
+    const response = await fetch(`${API_URL}/api/me/discussions/${discussionId}/join`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

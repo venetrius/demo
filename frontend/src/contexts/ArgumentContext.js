@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useAuth } from './AuthContext';
+import { API_URL } from './settings'
 
 const ArgumentContext = createContext();
 
@@ -9,8 +10,8 @@ const ArgumentProvider = ({ children }) => {
   const { token } = useAuth();
 
   const createArgument = async (discussionId, newArgument) => {
-    console.log({discussionId, url: `http://localhost:8080/api/discussions/${discussionId}/arguments`})
-    const response = await fetch(`http://localhost:8080/api/discussions/${discussionId}/arguments`, {
+    // console.log({discussionId, url: `${API_URL}/api/discussions/${discussionId}/arguments`})
+    const response = await fetch( `${API_URL}/api/discussions/${discussionId}/arguments`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -29,7 +30,7 @@ const ArgumentProvider = ({ children }) => {
   };
 
   const fetchArgument = async (discussionId, argumentId) => {
-    const response = await fetch(`http://localhost:8080/api/arguments/${argumentId}`, {
+    const response = await fetch(`${API_URL}/api/arguments/${argumentId}`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -45,7 +46,7 @@ const ArgumentProvider = ({ children }) => {
   };
 
   const fetchArguments = async (discussionId) => {
-    const response = await fetch(`http://localhost:8080/api/discussions/${discussionId}/arguments`, {
+    const response = await fetch(`${API_URL}/api/discussions/${discussionId}/arguments`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
