@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { API_URL } from './settings'
+
 
 const SpaceContext = createContext();
 
@@ -13,7 +15,7 @@ const SpaceProvider = ({ children }) => {
   }, [token]);
 
   const createSpace = async (newSpaceData) => {
-    const response = await fetch('http://localhost:8080/api/spaces', {
+    const response = await fetch(`${API_URL}/api/spaces`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -37,7 +39,7 @@ const SpaceProvider = ({ children }) => {
       return;
     }
 
-    const response = await fetch('http://localhost:8080/api/spaces', {
+    const response = await fetch(`${API_URL}/api/spaces`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -51,7 +53,7 @@ const SpaceProvider = ({ children }) => {
   };
 
   const fetchUserSpaces = async () => {
-    const response = await fetch('http://localhost:8080/api/me/spaces', {
+    const response = await fetch(`${API_URL}/api/me/spaces`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -69,7 +71,7 @@ const SpaceProvider = ({ children }) => {
   };
 
   const followSpace = async (spaceId) => {
-    const response = await fetch(`http://localhost:8080/api/me/spaces/${spaceId}`, {
+    const response = await fetch(`${API_URL}/api/me/spaces/${spaceId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -91,7 +93,7 @@ const SpaceProvider = ({ children }) => {
   }
 
   const fetchSpace = async (spaceId) => {
-    const response = await fetch(`http://localhost:8080/api/spaces/${spaceId}`, {
+    const response = await fetch(`${API_URL}/api/spaces/${spaceId}`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -107,7 +109,7 @@ const SpaceProvider = ({ children }) => {
   };
 
   const likeSpace = async (spaceId) => {
-      const response = await fetch(`http://localhost:8080/api/spaces/${spaceId}/like`, {
+      const response = await fetch(`${API_URL}/api/spaces/${spaceId}/like`, {
           method: 'PUT',
           headers: {
               'Content-Type': 'application/json',

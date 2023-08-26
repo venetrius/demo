@@ -3,6 +3,7 @@ import { Form, Input, Button, Checkbox, Card } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { Link, useNavigate } from 'react-router-dom';
+import { API_URL } from '../../contexts/settings'
 
 const Login = () => {
   const { login } = useAuth();
@@ -10,7 +11,7 @@ const Login = () => {
 
   const onFinish = async (values) => {
     console.log('Authenticating user: ', values.email);
-    const response = await fetch('http://localhost:8080/api/auth/authenticate', {
+    const response = await fetch(`${API_URL}/api/auth/authenticate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
