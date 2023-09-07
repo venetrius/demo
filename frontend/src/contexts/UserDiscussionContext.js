@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { API_URL } from './settings'
+import { getApiUrl } from './settings'
 
 
 const UserDiscussionContext = createContext();
@@ -14,7 +14,7 @@ const UserDiscussionProvider = ({ children }) => {
 
 
   const fetchSubscribedDiscussions = async () => {
-    const response = await fetch(`${API_URL}/api/me/discussions`, {
+    const response = await fetch(`${getApiUrl()}/api/me/discussions`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -31,7 +31,7 @@ const UserDiscussionProvider = ({ children }) => {
   };
 
   const fetchRecommendedDiscussions = async () => {
-    const response = await fetch(`${API_URL}/api/me/discussions/recommendations`, {
+    const response = await fetch(`${getApiUrl()}/api/me/discussions/recommendations`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,

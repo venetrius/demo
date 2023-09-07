@@ -3,7 +3,7 @@ import { Form, Input, Button, Card } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import { API_URL } from '../../contexts/settings'
+import { getApiUrl } from '../../contexts/settings'
 
 
 
@@ -11,7 +11,7 @@ const Register = () => {
   const { login } = useAuth();
 
   const onFinish = async (values) => {
-    const response = await fetch(`${API_URL}/api/auth/register`, {
+    const response = await fetch(`${getApiUrl()}/api/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

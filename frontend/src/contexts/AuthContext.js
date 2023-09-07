@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { API_URL } from './settings'
+import { getApiUrl } from './settings'
 
 
 const AuthContext = createContext();
@@ -39,7 +39,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const fetchUserProfile = async (token) => {
-    const response = await fetch(`${API_URL}/api/profile`, {
+    const response = await fetch(`${getApiUrl()}/api/profile`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
