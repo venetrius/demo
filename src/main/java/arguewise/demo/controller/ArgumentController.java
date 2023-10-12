@@ -3,6 +3,7 @@ package arguewise.demo.controller;
 import arguewise.demo.dto.argument.ArgumentResponseDTO;
 import arguewise.demo.dto.argument.UpdateArgumentDTO;
 import arguewise.demo.model.Argument;
+import arguewise.demo.model.Discussion;
 import arguewise.demo.service.IArgumentService;
 import arguewise.demo.service.IDiscussionService;
 import jakarta.validation.Valid;
@@ -41,12 +42,18 @@ public class ArgumentController {
     @PutMapping("/{id}")
     public ResponseEntity<ArgumentResponseDTO> updateArgument(@PathVariable Long id, @Valid @RequestBody UpdateArgumentDTO updatedArgument) {
         logger.info("Received request to update argument with id: {}", id);
-        if (argumentService.findById(id).isPresent()) {
-            argumentService.update(id, updatedArgument);
-            return ResponseEntity.ok(new ArgumentResponseDTO(argumentService.update(id, updatedArgument)));
-        } else {
+        Argument argument = argumentService.findById(id).orElse(null);
+        if(argument == null) {
             return ResponseEntity.notFound().build();
         }
+
+        if(argument.getDiscussion().getStatus() != Discussion.DiscussionStatus.ACTIVE) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        argumentService.update(id, updatedArgument);
+        return ResponseEntity.ok(new ArgumentResponseDTO(argumentService.update(id, updatedArgument)));
+
     }
 
     @DeleteMapping("/{id}")

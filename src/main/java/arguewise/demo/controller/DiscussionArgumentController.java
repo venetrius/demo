@@ -1,8 +1,10 @@
 package arguewise.demo.controller;
 
+import arguewise.demo.dto.Discussion.DiscussionWithUserParticipation;
 import arguewise.demo.dto.argument.ArgumentResponseDTO;
 import arguewise.demo.dto.argument.CreateArgumentDTO;
 import arguewise.demo.model.Argument;
+import arguewise.demo.model.Discussion;
 import arguewise.demo.service.IArgumentService;
 import arguewise.demo.service.IDiscussionService;
 import jakarta.validation.Valid;
@@ -48,6 +50,15 @@ public class DiscussionArgumentController {
     public ResponseEntity<ArgumentResponseDTO> createArgument(@PathVariable Long discussionId,
                                                               @Valid @RequestBody CreateArgumentDTO createArgumentDTO) {
         logger.info("Received request to create an argument for discussion with id: {}", discussionId);
+        //  TODO: should only query discussion without user participation
+        DiscussionWithUserParticipation discussion = discussionService.findById(discussionId);
+        if(discussion == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if(discussion.getDiscussion().getStatus() != Discussion.DiscussionStatus.ACTIVE) {
+            return ResponseEntity.badRequest().build();
+        }
+
         Argument argument = argumentService.createArgument(discussionId, createArgumentDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ArgumentResponseDTO(argument));
