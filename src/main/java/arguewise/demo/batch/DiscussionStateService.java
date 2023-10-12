@@ -20,9 +20,14 @@ public class DiscussionStateService {
     @Autowired
     private DiscussionRepository discussionRepository;
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void checkForWork() {
         System.out.println("Running DiscussionStateService at: " + LocalDateTime.now());
         List<Discussion> list = discussionRepository.findByStatusAndTimeLimitBefore(Discussion.DiscussionStatus.ACTIVE, LocalDateTime.now());
+        for (Discussion discussion : list) {
+            discussion.setStatus(Discussion.DiscussionStatus.COMPLETED);
+            discussionRepository.save(discussion);
+        }
+        System.out.println("DiscussionStateService finished at: " + LocalDateTime.now());
     }
 }
