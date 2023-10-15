@@ -25,10 +25,12 @@ const DiscussionDetails = () => {
     const discussionRes = await fetchDiscussion(spaceId, discussionId);
     setDiscussion(discussionRes);
   };
+  console.log({discussion})
+  console.log({argumentlist})
 
   const handleJoin = async (e) => {
-    const res = await joinDiscussion(discussionId, {side: e.target.value})
-    if(res){
+    const res = await joinDiscussion(discussionId, { side: e.target.value })
+    if (res) {
       discussion.currentUsersSide = e.target.value
       setDiscussion(structuredClone(discussion))
     }
@@ -38,13 +40,13 @@ const DiscussionDetails = () => {
     return <div>Loading...</div>;
   }
 
-  if(discussion && discussion.currentUsersSide && discussion.currentUsersSide != side) {
+  if (discussion && discussion.currentUsersSide && discussion.currentUsersSide != side) {
     setSide(discussion.currentUsersSide)
   }
 
   return (
     <div>
-      <Title level={2}>{discussion.topic}</Title>
+      <Title level={1}>{discussion.topic}</Title>
       <Title level={4}>Status: {discussion.status}</Title>
       <Row gutter={16}>
         <Col>
@@ -59,7 +61,7 @@ const DiscussionDetails = () => {
       </Row>
       <Space direction="vertical" size="large">
         <Card>
-          <Text strong>Creator ID:</Text> {discussion.creatorId}
+          <Text strong>Creator:</Text> {discussion.creatorName}
           <br />
           <Text strong>Created at:</Text> {discussion.creationTimestamp}
           <br />
@@ -74,7 +76,7 @@ const DiscussionDetails = () => {
         {side && <Title level={4}>Your Side: {discussion.currentUsersSide}</Title>}
         {(side || discussion.status === 'COMPLETED') && (
           <>
-            <Title level={3}>Arguments</Title>
+            <Title level={2}>Arguments</Title>
             <List
               dataSource={argumentlist}
               renderItem={(item) => (
@@ -89,7 +91,10 @@ const DiscussionDetails = () => {
         )}
       </Space>
       {side &&
-        <ArgumentForm addArgument={(newArgument) => createArgument(discussionId, newArgument)} />
+        <>
+          <Title level={4}> Add a new Argument</Title>
+          <ArgumentForm addArgument={(newArgument) => createArgument(discussionId, newArgument)} />
+        </>
       }
     </div>
   );
