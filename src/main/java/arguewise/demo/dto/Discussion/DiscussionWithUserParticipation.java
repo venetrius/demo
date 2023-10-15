@@ -10,4 +10,5 @@ import lombok.Data;
 public class DiscussionWithUserParticipation {
     private Discussion discussion;
     private UsersDiscussion.Side currentUsersSide;
+    private String creatorName;
 }

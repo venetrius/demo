@@ -39,8 +39,8 @@ public class DiscussionServiceImpl implements IDiscussionService {
     @Override
     public DiscussionWithUserParticipation findById(Long id) {
         Discussion discussion = discussionRepository.findById(id).orElseThrow(() -> new NotFoundException("Discussion is not found"));
-
-        return new DiscussionWithUserParticipation(discussion, getCurrentUsersSide(discussion));
+        String creatorName = discussion.getCreator().getUsername();
+        return new DiscussionWithUserParticipation(discussion, getCurrentUsersSide(discussion), creatorName);
     }
 
     @Override
@@ -53,7 +53,6 @@ public class DiscussionServiceImpl implements IDiscussionService {
         Discussion discussion = new Discussion(createDiscussionDTO, creator, space.get());
         return discussionRepository.save(discussion);
     }
-
 
     @Override
     public Discussion update(Long id, UpdateDiscussionDTO updatedDiscussion) {

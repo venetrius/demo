@@ -15,7 +15,6 @@ public interface DiscussionRepository extends JpaRepository< Discussion, Long> {
 
     void deleteById(long id);
 
-
     List<Discussion> findBySpaceIdIn(List<Long> spaceIds);
 
     List<Discussion> findByStatusAndTimeLimitBefore(Discussion.DiscussionStatus status, LocalDateTime timeLimit);

@@ -14,6 +14,8 @@ public class DiscussionResponseDTO {
 
     private long creatorId;
 
+    private String creatorName;
+    
     private String topic;
 
     private String creationTimestamp;
@@ -39,11 +41,11 @@ public class DiscussionResponseDTO {
         this.id = discussion.getId();
         this.spaceID = discussion.getSpace().getId();
         this.creatorId = discussion.getCreator().getId();
+        this.creatorName = discussionWithUserParticipation.getCreatorName();
         this.topic = discussion.getTopic();
         this.creationTimestamp = discussion.getCreationTimestamp().toString();
         this.timeLimit = discussion.getTimeLimit().toString();
         this.status = discussion.getStatus().toString();
         this.currentUsersSide = discussionWithUserParticipation.getCurrentUsersSide();
     }
-
 }
