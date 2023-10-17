@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Card, Radio, List, Typography, Space, Statistic, Row, Col } from 'antd';
-
 import { useDiscussions } from '../../contexts/SpaceDiscussionContext';
 import { useArguments } from '../../contexts/ArgumentContext';
 import ArgumentForm from '../Argument/ArgumentForm'
-
 
 const { Title, Text } = Typography;
 
@@ -18,15 +16,13 @@ const DiscussionDetails = () => {
 
   useEffect(() => {
     loadDiscussion();
-    fetchArguments();
+    fetchArguments(discussionId);
   }, [discussionId]);
 
   const loadDiscussion = async () => {
     const discussionRes = await fetchDiscussion(spaceId, discussionId);
     setDiscussion(discussionRes);
   };
-  console.log({discussion})
-  console.log({argumentlist})
 
   const handleJoin = async (e) => {
     const res = await joinDiscussion(discussionId, { side: e.target.value })
@@ -59,6 +55,10 @@ const DiscussionDetails = () => {
           <Statistic title="Likes" value={discussion.likesCount} />
         </Col>
       </Row>
+      <h3>Summary</h3>
+      <Row direction="vertical" size="large">
+        {discussion.description}
+      </Row>
       <Space direction="vertical" size="large">
         <Card>
           <Text strong>Creator:</Text> {discussion.creatorName}
@@ -79,10 +79,12 @@ const DiscussionDetails = () => {
             <Title level={2}>Arguments</Title>
             <List
               dataSource={argumentlist}
-              renderItem={(item) => (
+              renderItem={(argument) => (
                 <List.Item>
                   <Space>
-                    <Text mark>{item.title}</Text> {item.argument}
+                    <Link to={`/discussions/${discussion.id}/arguments/${argument.id}`}>
+                      <Text style={{ color: 'var(--primary-color)' }}>{discussion.topic}</Text>
+                    </Link>
                   </Space>
                 </List.Item>
               )}
