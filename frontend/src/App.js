@@ -15,6 +15,7 @@ import NewSpace from './Pages/Space/NewSpace';
 import UserProfilePage from './Pages/Profile/UserProfilePage.js'
 import SpaceList from './Pages/Space/SpaceList';
 import SpaceDetailsPage from './Pages/Space/SpaceDetailsPage.js'
+import ArgumentDetails from './Pages/Argument/ArgumentDetails.jsx'
 
 import { AuthProvider } from './contexts/AuthContext';
 import { SpaceProvider } from './contexts/SpaceContext';
@@ -39,6 +40,7 @@ const App = () => {
                   <Content style={{ padding: '50px', minHeight: 'calc(100vh - 114px)' }}>
                     <Routes>
                       <Route path="/" element={<HomePage />} />
+                      <Route path='/discussions/:discussionId/arguments/:argumentId' element={<ArgumentDetails/>}/>
                       <Route path='/discussions' element={<DiscussionsPage/>} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />

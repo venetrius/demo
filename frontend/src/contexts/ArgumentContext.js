@@ -6,6 +6,7 @@ const ArgumentContext = createContext();
 
 const ArgumentProvider = ({ children }) => {
   const [argumentlist, setArgumentlist] = useState([]);
+  const [argument, setArgument] = useState(null)
 
   const { token } = useAuth();
 
@@ -29,7 +30,7 @@ const ArgumentProvider = ({ children }) => {
     }
   };
 
-  const fetchArgument = async (discussionId, argumentId) => {
+  const fetchArgument = async (argumentId) => {
     const response = await fetch(`${getApiUrl()}/api/arguments/${argumentId}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -39,6 +40,7 @@ const ArgumentProvider = ({ children }) => {
 
     if (response.ok) {
       const data = await response.json();
+      setArgument(data)
       return data
     } else {
       console.log(`Failed to fetch argumentId with id: ${argumentId}.`);
@@ -63,7 +65,7 @@ const ArgumentProvider = ({ children }) => {
 
 
   return (
-    <ArgumentContext.Provider value={{ argumentlist, createArgument, fetchArgument, fetchArguments }}>
+    <ArgumentContext.Provider value={{ argument, argumentlist, createArgument, fetchArgument, fetchArguments }}>
       {children}
     </ArgumentContext.Provider>
   );
