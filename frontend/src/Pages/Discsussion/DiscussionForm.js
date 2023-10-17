@@ -1,15 +1,14 @@
 import React from 'react';
 import { Form, Input, Button, DatePicker } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
-
-import { useSpaces } from '../../contexts/SpaceContext';
 import { useDiscussions } from '../../contexts/SpaceDiscussionContext';
+
+const { TextArea } = Input;
 
 const DiscussionForm = () => {
   const { spaceId } = useParams();
   let navigate = useNavigate();
   const { createDiscussion } = useDiscussions();
-          
 
   const handleSubmit = async (values) => {
     values.spaceID = spaceId;
@@ -36,7 +35,19 @@ const DiscussionForm = () => {
       >
         <Input />
       </Form.Item>
-
+      <Form.Item
+        label="Description"
+        name="description"
+        rules={[
+          {
+            required: true,
+            max: 1000,
+            message: 'Description should be no longer than 100 characters',
+          },
+        ]}
+      >
+        <TextArea />
+      </Form.Item>
       <Form.Item
         label="Time Limit"
         name="timeLimit"
