@@ -45,6 +45,10 @@ public class Discussion {
     @Size(max = 100, message = "Topic should be no longer than 100 characters")
     private String topic;
 
+    @NotBlank(message = "Description is required")
+    @Size(max = 1000, message = "Description should be no longer than 500 characters")
+    private String description;
+
     @CreationTimestamp
     private LocalDateTime creationTimestamp;
 
@@ -68,6 +72,7 @@ public class Discussion {
             this.timeLimit = LocalDateTime.now();
         } else {
             this.topic = dto.getTopic();
+            this.description = dto.getDescription();
             this.timeLimit = dto.getTimeLimit();
         }
 
