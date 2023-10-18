@@ -3,11 +3,13 @@ import { Link, useParams } from 'react-router-dom';
 import { Card, Radio, List, Typography, Space, Statistic, Row, Col } from 'antd';
 import { useDiscussions } from '../../contexts/SpaceDiscussionContext';
 import { useArguments } from '../../contexts/ArgumentContext';
+import { useAuth } from '../../contexts/AuthContext';
 import ArgumentForm from '../Argument/ArgumentForm'
 
 const { Title, Text } = Typography;
 
 const DiscussionDetails = () => {
+  const { authInitialized } = useAuth();
   const { spaceId, discussionId } = useParams();
   const [discussion, setDiscussion] = useState(null);
   const [side, setSide] = useState(null);
@@ -17,7 +19,7 @@ const DiscussionDetails = () => {
   useEffect(() => {
     loadDiscussion();
     fetchArguments(discussionId);
-  }, [discussionId]);
+  }, [authInitialized, discussionId]);
 
   const loadDiscussion = async () => {
     const discussionRes = await fetchDiscussion(spaceId, discussionId);

@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useArguments } from '../../contexts/ArgumentContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const ArgumentDetails = () => {
+    const { authInitialized } = useAuth();
     const { argumentId } = useParams();
     const { argument, fetchArgument } = useArguments();
 
     useEffect(() => {
         fetchArgument(argumentId);
-    }, [argumentId]);
+    }, [authInitialized, argumentId]);
 
     if (!argument) {
         return "loading"

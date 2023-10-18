@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Switch } from 'antd';
 import DiscussionItem from './DiscussionItem';
 import { useUserDiscussions } from '../../contexts/UserDiscussionContext'
+import { useAuth } from '../../contexts/AuthContext';
 
 const DiscussionsPage = () => {
+  const { authInitialized } = useAuth();
   const { subscribedDiscussions, recommendedDiscussions, fetchSubscribedDiscussions, fetchRecommendedDiscussions } = useUserDiscussions();
   const [showSubscribedDescriptions, setShowSubscribedDescriptions] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
-      fetchSubscribedDiscussions();
-      fetchRecommendedDiscussions();
-    }, 100);
-  }, []);
+    fetchSubscribedDiscussions();
+    fetchRecommendedDiscussions();
+  }, [authInitialized]);
 
   const handleShowUserDiscussionsChange = (checked) => {
     setShowSubscribedDescriptions(checked);

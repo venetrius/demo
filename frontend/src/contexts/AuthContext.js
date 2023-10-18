@@ -7,6 +7,7 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState(null);
+  const [authInitialized , setAuthInitialized ] = useState(false)
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
@@ -16,6 +17,7 @@ const AuthProvider = ({ children }) => {
       setIsLoggedIn(true);
       fetchUserProfile(savedToken);
     }
+    setAuthInitialized(true)
   }, []);
 
   useEffect(() => {
@@ -57,6 +59,7 @@ const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
+        authInitialized,
         isLoggedIn,
         token,
         userProfile,
