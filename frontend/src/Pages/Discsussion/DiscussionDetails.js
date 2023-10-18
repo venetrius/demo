@@ -83,7 +83,7 @@ const DiscussionDetails = () => {
                 <List.Item>
                   <Space>
                     <Link to={`/discussions/${discussion.id}/arguments/${argument.id}`}>
-                      <Text style={{ color: 'var(--primary-color)' }}>{discussion.topic}</Text>
+                      <Text style={{ color: 'var(--primary-color)' }}>{argument.title}</Text>
                     </Link>
                   </Space>
                 </List.Item>
