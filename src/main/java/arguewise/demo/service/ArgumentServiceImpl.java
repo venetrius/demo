@@ -8,6 +8,7 @@ import arguewise.demo.repository.ArgumentRepository;
 import arguewise.demo.repository.DiscussionRepository;
 import arguewise.demo.repository.UserDiscussionRepository;
 import arguewise.demo.security.utils.SecurityUtils;
+import arguewise.demo.validator.UserActionValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class ArgumentServiceImpl implements IArgumentService {
 
     @Autowired
     private UserDiscussionRepository userDiscussionRepository;
+
+    @Autowired
+    private UserActionValidator userActionValidator;
 
     @Override
     public Optional<Argument> findById(Long id) {
@@ -88,15 +92,13 @@ public class ArgumentServiceImpl implements IArgumentService {
     @Override
     public Argument createArgument(Long discussionId, CreateArgumentDTO createArgumentDTO) {
         User creator = SecurityUtils.getCurrentUser();
-        Optional<UsersDiscussion> usersDiscussion =
-                userDiscussionRepository.findByUserIdAndDiscussionId(creator.getId(), discussionId);
-        if(usersDiscussion.isEmpty()) {
+        Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(() -> new NotFoundException("Discussion not found"));
+
+        if(!userActionValidator.canCreateArgument(creator.getId(), discussionId)) {
             throw new IllegalArgumentException("Can only create an Argument for a Discussion if joined");
         }
 
-        discussionService.isActiveOrThrow(usersDiscussion.get().getDiscussion());
-
-        Argument newArgument = new Argument(createArgumentDTO, creator, usersDiscussion.get().getDiscussion());
+        Argument newArgument = new Argument(createArgumentDTO, creator, discussion);
         return argumentRepository.save(newArgument);
     }
 
