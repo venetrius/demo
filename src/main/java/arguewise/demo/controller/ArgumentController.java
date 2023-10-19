@@ -1,11 +1,13 @@
 package arguewise.demo.controller;
 
 import arguewise.demo.dto.argument.ArgumentResponseDTO;
+import arguewise.demo.dto.argument.PutArgumentVoteDTO;
 import arguewise.demo.dto.argument.UpdateArgumentDTO;
 import arguewise.demo.model.Argument;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.service.IArgumentService;
 import arguewise.demo.service.IDiscussionService;
+import arguewise.demo.types.VoteType;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,5 +67,21 @@ public class ArgumentController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PutMapping("/{id}/vote")
+    public ResponseEntity<Boolean> castVote(@PathVariable Long id, @RequestBody PutArgumentVoteDTO inputData) {
+        logger.info("Received request to cast vote on argument with id: {}", id);
+        Argument argument = argumentService.findById(id).orElse(null);
+        if(argument == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if(argument.getDiscussion().getStatus() != Discussion.DiscussionStatus.ACTIVE) {
+            return ResponseEntity.badRequest().build();
+        }
+        VoteType validated = VoteType.valueOf(inputData.getVoteType().toUpperCase());
+        argumentService.voteOnArgument(id, validated);
+        return ResponseEntity.ok(true);
     }
 }

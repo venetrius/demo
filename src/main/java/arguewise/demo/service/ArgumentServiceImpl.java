@@ -8,6 +8,8 @@ import arguewise.demo.repository.ArgumentRepository;
 import arguewise.demo.repository.DiscussionRepository;
 import arguewise.demo.repository.UserDiscussionRepository;
 import arguewise.demo.security.utils.SecurityUtils;
+import arguewise.demo.types.EntityType;
+import arguewise.demo.types.VoteType;
 import arguewise.demo.validator.UserActionValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class ArgumentServiceImpl implements IArgumentService {
 
     @Autowired
     private UserActionValidator userActionValidator;
+
+    @Autowired
+    private VoteService voteService;
 
     @Override
     public Optional<Argument> findById(Long id) {
@@ -100,6 +105,12 @@ public class ArgumentServiceImpl implements IArgumentService {
 
         Argument newArgument = new Argument(createArgumentDTO, creator, discussion);
         return argumentRepository.save(newArgument);
+    }
+
+    @Override
+    public void voteOnArgument(Long argumentId, VoteType voteType) {
+        // TODO test if user is allowed to vote on this argument
+        voteService.castVote(argumentId, EntityType.ARGUMENT, voteType);
     }
 
     private void isUserRecordOrThrow(Argument argument) {
