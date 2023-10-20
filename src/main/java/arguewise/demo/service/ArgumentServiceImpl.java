@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -91,7 +92,18 @@ public class ArgumentServiceImpl implements IArgumentService {
 
     @Override
     public Collection<Argument> findAllByDiscussionId(Long discussionId) {
-        return argumentRepository.findAllByDiscussionId(discussionId);
+        Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(() -> new NotFoundException("Discussion not found"));
+
+        if(discussion.getStatus() == Discussion.DiscussionStatus.COMPLETED) {
+            return argumentRepository.findAllByDiscussionId(discussionId);
+        }
+
+        User currentUser = SecurityUtils.getCurrentUser();
+        Optional<UsersDiscussion> usersDiscussion = userDiscussionRepository.findByUserIdAndDiscussionId(currentUser.getId(), discussionId);
+        if(usersDiscussion.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+        return argumentRepository.findAllByDiscussionIdAndSide(discussionId, usersDiscussion.get().getSide());
     }
 
     @Override
