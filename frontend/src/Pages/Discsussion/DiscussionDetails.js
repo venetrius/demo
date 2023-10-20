@@ -5,6 +5,7 @@ import { useDiscussions } from '../../contexts/SpaceDiscussionContext';
 import { useArguments } from '../../contexts/ArgumentContext';
 import { useAuth } from '../../contexts/AuthContext';
 import ArgumentForm from '../Argument/ArgumentForm'
+import LikeButton from '../../components/Button/LikeButton'
 
 const { Title, Text } = Typography;
 
@@ -88,16 +89,17 @@ const DiscussionDetails = () => {
                       <Text style={{ color: 'var(--primary-color)' }}>{argument.title}</Text>
                     </Link>
                   </Space>
-                  <Button onClick={() => upvoteArgument(argument.id)}>
-                    Like
-                  </Button>
+                  <LikeButton 
+                    onLike={() => upvoteArgument(argument.id)} 
+                    likes={3} 
+                  />
                 </List.Item>
               )}
             />
           </>
         )}
       </Space>
-      {
+      {(side && discussion.status === 'ACTIVE') &&
         <>
           <Title level={4}> Add a new Argument</Title>
           <ArgumentForm addArgument={(newArgument) => createArgument(discussionId, newArgument)} />
