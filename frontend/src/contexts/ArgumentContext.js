@@ -63,9 +63,27 @@ const ArgumentProvider = ({ children }) => {
     }
   };
 
+  const upvoteArgument = async (argumentId) => {
+    const response = await fetch(`${getApiUrl()}/api/arguments/${argumentId}/vote`, {
+      method: 'PUT',
+
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ voteType: "UPVOTE" }),
+    });
+    if (response.ok) {
+      console.log("upvoteArgument call is successful")
+      return true
+    } else {
+      console.log('Failed to fetch arguments.');
+    }
+  }
+
 
   return (
-    <ArgumentContext.Provider value={{ argument, argumentlist, createArgument, fetchArgument, fetchArguments }}>
+    <ArgumentContext.Provider value={{ argument, argumentlist, createArgument, fetchArgument, fetchArguments, upvoteArgument }}>
       {children}
     </ArgumentContext.Provider>
   );

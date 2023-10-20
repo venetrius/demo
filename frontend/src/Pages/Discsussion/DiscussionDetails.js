@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Card, Radio, List, Typography, Space, Statistic, Row, Col } from 'antd';
+import { Card, Radio, List, Typography, Space, Statistic, Row, Col, Button } from 'antd';
 import { useDiscussions } from '../../contexts/SpaceDiscussionContext';
 import { useArguments } from '../../contexts/ArgumentContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -14,7 +14,7 @@ const DiscussionDetails = () => {
   const [discussion, setDiscussion] = useState(null);
   const [side, setSide] = useState(null);
   const { joinDiscussion, fetchDiscussion } = useDiscussions();
-  const { argumentlist, createArgument, fetchArguments } = useArguments();
+  const { argumentlist, createArgument, fetchArguments, upvoteArgument } = useArguments();
 
   useEffect(() => {
     loadDiscussion();
@@ -88,13 +88,16 @@ const DiscussionDetails = () => {
                       <Text style={{ color: 'var(--primary-color)' }}>{argument.title}</Text>
                     </Link>
                   </Space>
+                  <Button onClick={() => upvoteArgument(argument.id)}>
+                    Like
+                  </Button>
                 </List.Item>
               )}
             />
           </>
         )}
       </Space>
-      {side &&
+      {
         <>
           <Title level={4}> Add a new Argument</Title>
           <ArgumentForm addArgument={(newArgument) => createArgument(discussionId, newArgument)} />
