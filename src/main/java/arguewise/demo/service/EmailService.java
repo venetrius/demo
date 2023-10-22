@@ -35,7 +35,9 @@ public class EmailService {
                 .header("Authorization", credentials)
                 .post(formBody)
                 .build();
-
-        return httpClient.newCall(request).execute();
+        try (Response response = httpClient.newCall(request).execute()) {
+            System.out.println("Response from email service: " + response.body().string());
+            return response;
+        }
     }
 }
