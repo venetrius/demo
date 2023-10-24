@@ -2,13 +2,14 @@ import React from 'react';
 import { Form, Input, Button, Card } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../../contexts/settings'
 
 
 
 const Register = () => {
   const { login } = useAuth();
+  let navigate = useNavigate();
 
   const onFinish = async (values) => {
     const response = await fetch(`${getApiUrl()}/api/auth/register`, {
@@ -22,6 +23,7 @@ const Register = () => {
     if (response.ok) {
       const data = await response.json();
       login(data.token);
+      navigate('/');
     } else {
     }
   };
