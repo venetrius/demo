@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from 'antd';
 
-const LikeButton = ({ onLike, likes }) => {
-  const [liked, setLiked] = React.useState(false);
+const LikeButton = ({ onLike, likes, likedByUser }) => {
+  const [liked, setLiked] = React.useState(likedByUser);
   
   const handleLike = () => {
     setLiked(!liked);

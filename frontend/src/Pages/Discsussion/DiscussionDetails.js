@@ -42,7 +42,7 @@ const DiscussionDetails = () => {
   if (discussion && discussion.currentUsersSide && discussion.currentUsersSide != side) {
     setSide(discussion.currentUsersSide)
   }
-
+  console.log({argumentlist})
   return (
     <div>
       <Title level={1}>{discussion.topic}</Title>
@@ -91,7 +91,8 @@ const DiscussionDetails = () => {
                   </Space>
                   <LikeButton 
                     onLike={() => upvoteArgument(argument.id)} 
-                    likes={3} 
+                    likes={argument.numberOfLikes}
+                    likedByUser={argument.likedByCurrentUser}
                   />
                 </List.Item>
               )}
