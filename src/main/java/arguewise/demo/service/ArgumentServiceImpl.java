@@ -1,5 +1,6 @@
 package arguewise.demo.service;
 
+import arguewise.demo.domain.ArgumentDetails;
 import arguewise.demo.dto.argument.CreateArgumentDTO;
 import arguewise.demo.dto.argument.UpdateArgumentDTO;
 import arguewise.demo.exception.NotFoundException;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ArgumentServiceImpl implements IArgumentService {
@@ -90,12 +93,22 @@ public class ArgumentServiceImpl implements IArgumentService {
         return false;
     }
 
+    private Collection<ArgumentDetails> decorateArguments(Collection<Argument> arguments) {
+        if(arguments.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+        return arguments
+                .stream()
+                .map(argument -> new ArgumentDetails(argument, 0l, false))
+                .collect(Collectors.toList());
+    }
+
     @Override
-    public Collection<Argument> findAllByDiscussionId(Long discussionId) {
+    public Collection<ArgumentDetails> findAllByDiscussionId(Long discussionId) {
         Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(() -> new NotFoundException("Discussion not found"));
 
         if(discussion.getStatus() == Discussion.DiscussionStatus.COMPLETED) {
-            return argumentRepository.findAllByDiscussionId(discussionId);
+            return decorateArguments(argumentRepository.findAllByDiscussionId(discussionId));
         }
 
         User currentUser = SecurityUtils.getCurrentUser();
@@ -103,7 +116,9 @@ public class ArgumentServiceImpl implements IArgumentService {
         if(usersDiscussion.isEmpty()) {
             return Collections.EMPTY_LIST;
         }
-        return argumentRepository.findAllByDiscussionIdAndSide(discussionId, usersDiscussion.get().getSide());
+        return  decorateArguments(
+                argumentRepository.findAllByDiscussionIdAndSide(discussionId, usersDiscussion.get().getSide())
+        );
     }
 
     @Override

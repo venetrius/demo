@@ -1,5 +1,6 @@
 package arguewise.demo.dto.argument;
 
+import arguewise.demo.domain.ArgumentDetails;
 import arguewise.demo.model.Argument;
 import arguewise.demo.model.ArgumentDetail;
 import lombok.Data;
@@ -17,6 +18,8 @@ public class ArgumentResponseDTO {
     private String title;
     private List<String> argumentDetails;
     private String creationTimestamp;
+    private long numberOfLikes;
+    private boolean isLikedByCurrentUser;
 
     public ArgumentResponseDTO(Argument argument) {
         this.id = argument.getId();
@@ -25,5 +28,19 @@ public class ArgumentResponseDTO {
         this.title = argument.getTitle();
         this.argumentDetails = argument.getArgumentDetails().stream().map(ArgumentDetail::getText).toList();
         this.creationTimestamp = argument.getCreationTimestamp().toString();
+        this.numberOfLikes = 0l;
+        this.isLikedByCurrentUser = false;
+    }
+
+    public ArgumentResponseDTO(ArgumentDetails argumentDetails) {
+        Argument argument = argumentDetails.getArgument();
+        this.id = argument.getId();
+        this.discussionID = argument.getDiscussion().getId();
+        this.authorId = argument.getAuthor().getId();
+        this.title = argument.getTitle();
+        this.argumentDetails = argument.getArgumentDetails().stream().map(ArgumentDetail::getText).toList();
+        this.creationTimestamp = argument.getCreationTimestamp().toString();
+        this.numberOfLikes = argumentDetails.getNumberOfLikes();
+        this.isLikedByCurrentUser = argumentDetails.isLikedByCurrentUser();
     }
 }
