@@ -18,8 +18,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -93,22 +96,40 @@ public class ArgumentServiceImpl implements IArgumentService {
         return false;
     }
 
-    private Collection<ArgumentDetails> decorateArguments(Collection<Argument> arguments) {
-        if(arguments.isEmpty()) {
-            return Collections.EMPTY_LIST;
+    private Collection<ArgumentDetails> decorateArguments(Collection<Argument> arguments, Long userId) {
+        if (arguments.isEmpty()) {
+            return Collections.emptyList();
         }
-        return arguments
-                .stream()
-                .map(argument -> new ArgumentDetails(argument, 0l, false))
+
+        Collection<Long> argumentIds = arguments.stream()
+                .map(Argument::getId)
+                .collect(Collectors.toList());
+
+        List<Object[]> res = discussionRepository.findVoteCountsForArguments(argumentIds, EntityType.ARGUMENT, VoteType.UPVOTE);
+        Map<Long, Long> likeCountsMap = res.stream()
+                .collect(Collectors.toMap(
+                        row -> (Long) row[0],  // entityId
+                        row -> (Long) row[1])  // count
+                );
+
+        Set<Long> likedArgumentIdsSet = new HashSet<>(discussionRepository.findArgumentsLikedByUser(userId, argumentIds, EntityType.ARGUMENT, VoteType.UPVOTE));
+
+        return arguments.stream()
+                .map(argument -> {
+                    Long likeCount = likeCountsMap.getOrDefault(argument.getId(), 0L);
+                    boolean isLikedByCurrentUser = likedArgumentIdsSet.contains(argument.getId());
+                    return new ArgumentDetails(argument, likeCount, isLikedByCurrentUser);
+                })
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public Collection<ArgumentDetails> findAllByDiscussionId(Long discussionId) {
         Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(() -> new NotFoundException("Discussion not found"));
 
         if(discussion.getStatus() == Discussion.DiscussionStatus.COMPLETED) {
-            return decorateArguments(argumentRepository.findAllByDiscussionId(discussionId));
+            return decorateArguments(argumentRepository.findAllByDiscussionId(discussionId), null);
         }
 
         User currentUser = SecurityUtils.getCurrentUser();
@@ -116,9 +137,10 @@ public class ArgumentServiceImpl implements IArgumentService {
         if(usersDiscussion.isEmpty()) {
             return Collections.EMPTY_LIST;
         }
+        long userId = currentUser.getId();
         return  decorateArguments(
                 argumentRepository.findAllByDiscussionIdAndSide(discussionId, usersDiscussion.get().getSide())
-        );
+        ,userId);
     }
 
     @Override
