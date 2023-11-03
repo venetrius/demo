@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Collapse } from 'antd';
 import { useArguments } from '../../contexts/ArgumentContext';
 import { useAuth } from '../../contexts/AuthContext';
+import SuggestionForm from '../Suggestion/SuggestionForm';
+
+const { Panel } = Collapse;
 
 const ArgumentDetails = () => {
     const { authInitialized } = useAuth();
