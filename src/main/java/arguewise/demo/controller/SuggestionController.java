@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.nio.file.attribute.UserPrincipal;
 
 @RestController
-@RequestMapping("/api/suggestions")
+@RequestMapping("api/arguments/{argumentId}/suggestions")
 public class SuggestionController {
 
     private final ISuggestionService suggestionService;
