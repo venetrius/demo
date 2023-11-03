@@ -7,6 +7,7 @@ const ArgumentDetails = () => {
     const { authInitialized } = useAuth();
     const { argumentId } = useParams();
     const { argument, fetchArgument } = useArguments();
+    const [activePanelKey, setActivePanelKey] = useState('1');
 
     useEffect(() => {
         fetchArgument(argumentId);
@@ -16,20 +17,34 @@ const ArgumentDetails = () => {
         return "loading"
     }
 
-    const renderPoint = (argumentPoint) => (
-        <div>
-            {argumentPoint}
+    const handleTogglePanel = (key) => {
+        setActivePanelKey(key);
+    }
+    const renderPoint = (argumentPoint, index) => (
+        <div key={index} style={{ marginBottom: '10px' }}>
+            • {argumentPoint}
         </div>
-    )
+    );
 
     return (
         <>
-            <h2> {argument.title} </h2>
-            <h6>{argument.creationTimestamp}</h6>
+            {/* <Link to={`/discussions/${argument.discussionID}`}>
+                <Button style={{ color: 'var(--primary-color)' }}>Back</Button>
+            </Link> */}
+            <h2 style={{ marginTop: '20px', marginBottom: '10px' }}>{argument.title}</h2>
+            <h6><i className="fa fa-clock-o" aria-hidden="true"></i> {argument.creationTimestamp}</h6>
             {argument.argumentDetails.map(renderPoint)}
-        </>
-    )
-}
 
+            <Collapse activeKey={activePanelKey} onChange={handleTogglePanel}>
+                <Panel header="Show Suggestions" key="1">
+                    Work in progress
+                </Panel>
+                <Panel header="Create New Suggestion" key="2">
+                    <SuggestionForm argument={argument}/>
+                </Panel>
+            </Collapse>
+        </>
+    );
+};
 
 export default ArgumentDetails;
