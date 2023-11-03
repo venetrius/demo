@@ -81,9 +81,25 @@ const ArgumentProvider = ({ children }) => {
     }
   }
 
+  const addSuggestion = async (argumentId, newSuggestion) => {
+    const response = await fetch(`${getApiUrl()}/api/arguments/${argumentId}/suggestions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(newSuggestion),
+    });
+    if (response.ok) {
+      console.log("addSuggestion call is successful")
+      return true
+    } else {
+      console.log('Failed to fetch arguments.');
+    }
+  }
 
   return (
-    <ArgumentContext.Provider value={{ argument, argumentlist, createArgument, fetchArgument, fetchArguments, upvoteArgument }}>
+    <ArgumentContext.Provider value={{ addSuggestion, argument, argumentlist, createArgument, fetchArgument, fetchArguments, upvoteArgument }}>
       {children}
     </ArgumentContext.Provider>
   );
