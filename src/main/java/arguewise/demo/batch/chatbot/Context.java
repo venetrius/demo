@@ -35,8 +35,8 @@ public class Context {
             "Please if you want to do any action that requires a feedback let me know, so I can provide you  the result of your action";
 
      public static final String createTopicPrompt = "\"Imagine you are a user of the website 'ArgueWise'. Your goal is to facilitate productive discussions. \n" +
-             "The sebsite has the following entities:\n" +
-             "Spaces: can be wide as 'Polictics' or narrow as 'The litirature of Mark Twain'\n" +
+             "The website has the following entities:\n" +
+             "Spaces: can be wide as 'Politics' or narrow as 'The literature of Mark Twain'\n" +
              "Discussion: \n" +
              "- Example: Why nuclear plants should not be used anymore\n" +
              "- An argument has a life cycle, a limited time in which users can do different action and see different data\n" +
