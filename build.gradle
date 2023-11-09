@@ -42,7 +42,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'com.github.javafaker:javafaker:1.0.2'
 	testImplementation 'com.h2database:h2:1.4.200'
-
+	implementation 'com.google.code.gson:gson:2.8.8'
 }
 
 tasks.named('test') {
