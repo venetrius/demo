@@ -23,11 +23,5 @@ public class SpaceDiscussionDataAggregator implements ISpaceDiscussionDataAggreg
 
     public Collection<String> discussionTitles(Space space) {
         return discussionRepository.discussionNamesBySpaceId(space);
-//        Collection<Discussion> discussions = discussionRepository.discussionNamesBySpaceId(space.getId());
-//        ArrayList<String> titles = new ArrayList<>();
-//        return discussionRepository.discussionNamesBySpaceId(space.getId())
-//                .stream()
-//                .map(Discussion::getTopic)
-//                .collect(Collectors.toList());
     }
 }
