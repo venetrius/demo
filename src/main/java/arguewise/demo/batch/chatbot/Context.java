@@ -2,6 +2,21 @@ package arguewise.demo.batch.chatbot;
 
 // TODO read from DB
 public class Context {
+     static final String neutralParticipant = "Imagine you are a user of the website 'ArgueWise'. Your goal is to facilitate productive discussions.";
+     static final String argueWiseSummary =
+            "ArgueWise is a platform designed to facilitate structured, respectful, and productive discussions between individuals or groups with different opinions. The main goal is to foster understanding and encourage critical thinking, while helping participants reach a common ground or develop new ideas." +
+             "The website has the following entities:\n" +
+             "Spaces: can be wide as 'Politics' or narrow as 'The literature of Mark Twain'\n" +
+             "Discussion: \n" +
+             "- Example: Why nuclear plants should not be used anymore\n" +
+             "- An argument has a life cycle, a limited time in which users can do different action and see different data\n" +
+             "- A user can join an argument either as pro / contra\n" +
+             "- A user can post an argument to support their opinion\n" +
+             "Argument:\n" +
+             "- Part of a discussion, the goal of an argument is to convey information why the pro / contra is the right side\n" +
+             "Suggestion:\n" +
+             "- A way to refine arguments. Suggest edits to an argument which is on the same side as you\n" +
+             "Currently existing spaces:\n";
      static final String argueWise = "\"Imagine you are a user of the website 'ArgueWise'. Your goal is to facilitate productive discussions. Follow these steps:\n" +
             "\n" +
             "Navigate to the 'Spaces' section and join or create a space that interests you. Note: Stick to factual  topics to avoid any negative engagement.\n" +
