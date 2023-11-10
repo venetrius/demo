@@ -33,8 +33,17 @@ public class AiClientWrapper implements IAiClientWrapper {
     }
 
     public String getResponse(List<ChatMessage> messageList) {
-        ChatCompletionRequest completionRequest = getChatWithDefaultOptions();
-        completionRequest.setMessages(messageList);
-        return service.createChatCompletion(completionRequest).getChoices().get(0).getMessage().getContent();
+        String mockResponse = "{\n" +
+                "  \"space_id\": \"1\",\n" +
+                "  \"name\": \"The Impact of Social Media on Society\",\n" +
+                "  \"description\": \"This discussion will explore the positive and negative impacts of social media on individuals and society as a whole. Participants will discuss the influence of social media on mental health, relationships, and societal behaviors.\",\n" +
+                "  \"timeLimit\": \"2023-12-31T23:59:59\"\n" +
+                "}";
+        return mockResponse;
+//        ChatCompletionRequest completionRequest = getChatWithDefaultOptions();
+//        completionRequest.setMessages(messageList);
+//        String result =  service.createChatCompletion(completionRequest).getChoices().get(0).getMessage().getContent();
+//        System.out.println("Result: " + result);
+//        return result;
     }
 }

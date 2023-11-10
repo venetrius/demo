@@ -29,7 +29,7 @@ public class ChatBotRunner {
 
     // TODO enable this after testing
 //    @Scheduled(cron = "0 */5 * * * *")
-    public Discussion run(String prompt) {
+    public Discussion run() {
         Space space = spaceRepository.findAll().get(0);
         User user = userRepository.findAll().get(0);
         CreateDiscussionDTO createDiscussionDTO = discussionCreator.createDiscussion(space);
