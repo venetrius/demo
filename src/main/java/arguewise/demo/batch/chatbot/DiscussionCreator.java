@@ -53,7 +53,7 @@ public class DiscussionCreator {
                 "user",
                 "existing discussions: \n" + String.join("||, ", existingDiscussions)
         ));
-        messages.add(new ChatMessage("user", Context.createTopicPrompt));
+        messages.add(new ChatMessage("user", Context.createDiscussionPrompt));
         return messages;
     }
 
