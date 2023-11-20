@@ -25,12 +25,12 @@ public class Context {
              "Please use this JSON format:\n" +
              "{\n" +
              "  \"space_id\": \"PLACEHOLDER_SPACE_ID\",\n" +
-             "  \"name\": \"PLACEHOLDER_TOPIC\",\n" +
+             "  \"topic\": \"PLACEHOLDER_TOPIC\",\n" +
              "  \"description\": \"PLACEHOLDER_DESCRIPTION\",\n" +
              "  \"timeLimit\": \"PLACEHOLDER_TIME_LIMIT\", // Format: \"YYYY-MM-DDTHH:MM:SS\"\n" +
              "}\n";
 
-        public static final String createArgumentPrompt = "Please suggest a new argument.\n" +
+        public static final String createArgumentPrompt = "Please suggest a new unique argument.\n" +
                 "Please use this JSON format:\n" +
                 "{\n" +
                 "  \"title\": \"A short summary\",\n" +
