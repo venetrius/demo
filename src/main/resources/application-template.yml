@@ -1,11 +1,22 @@
-
 spring:
+  server:
+    port: 8081
   datasource:
-    url: ""
+    url: "jdbc:postgresql://localhost/<DB-NAME>"
     username: ''
     password: ''
   kafka:
-    bootstrap-servers: localhost:9092
+  # To enable Kafka, you need to provide your Kafka cluster URL and credentials
+  # This can be ignore if you comment out the Kafka configuration in the code
+  # comment out in AuthenticationService: 
+    #   emailConfirmationSender.sendEmailConfirmation(user.getEmail(), user.getUsername());
+  # comment out in KafkaConsumerService:
+    #   KafkaConsumerService
+    bootstrap-servers: server-url
+    properties:
+      security.protocol: SASL_SSL
+      sasl.mechanism: PLAIN
+      sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="key" password="secret";
     consumer:
       group-id: email-group
       auto-offset-reset: earliest
@@ -17,9 +28,10 @@ spring:
   mail:
     host: smtp.mailgun.org
     port: 587
-    username: postmaster@YOUR_DOMAIN_NAME
-    sender: mailgun@YOUR_DOMAIN_NAME
-    password: YOUR_API_KEY
+    # if you are using a sandbox domain, you can only send emails to white listed recipients
+    username: <mailgun-username> 
+    sender: mailgun@mg.<mailgun-username> 
+    password: <API-KEY>
     properties:
       mail:
         smtp:
@@ -27,7 +39,16 @@ spring:
           starttls:
             enable: true
             required: true
+  mvc:
+    pathmatch:
+      matching-strategy: PATH_PATTERN_PARSER
 spring.jpa:
   generate-ddl: true
-SECRET_KEY: ""
-CLIENT_URL: ""
+SECRET_KEY: "JWT-SECRET-KEY"
+CLIENT_URL: "http://localhost:3000"
+logging:
+  level:
+    org:springframework:security: DEBUG
+openai:
+# To enable genration content via OpenAI API, you need to provide your API key
+  api-key: "OPENAI-API-KEY"
