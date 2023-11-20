@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Collapse } from 'antd';
+import { Collapse, Divider, List } from 'antd';
 import { useArguments } from '../../contexts/ArgumentContext';
 import { useAuth } from '../../contexts/AuthContext';
 import SuggestionForm from '../Suggestion/SuggestionForm';
@@ -25,9 +25,10 @@ const ArgumentDetails = () => {
         setActivePanelKey(key);
     }
     const renderPoint = (argumentPoint, index) => (
-        <div key={index} style={{ marginBottom: '10px' }}>
+
+        <li key={index} style={{ marginBottom: '10px' }}>
             • {argumentPoint}
-        </div>
+        </li>
     );
 
     return (
@@ -37,14 +38,22 @@ const ArgumentDetails = () => {
             </Link> */}
             <h2 style={{ marginTop: '20px', marginBottom: '10px' }}>{argument.title}</h2>
             <h6><i className="fa fa-clock-o" aria-hidden="true"></i> {argument.creationTimestamp}</h6>
-            {argument.argumentDetails.map(renderPoint)}
+
+            <List
+                size="small"
+                header={<b>Argument sections</b>}
+                bordered
+                dataSource={argument.argumentDetails}
+                renderItem={(item, index) => <List.Item>{`${index} - ${item}`}</List.Item>}
+            />
+            <Divider orientation="left" />
 
             <Collapse activeKey={activePanelKey} onChange={handleTogglePanel}>
                 <Panel header="Show Suggestions" key="1">
                     Work in progress
                 </Panel>
                 <Panel header="Create New Suggestion" key="2">
-                    <SuggestionForm argument={argument}/>
+                    <SuggestionForm argument={argument} />
                 </Panel>
             </Collapse>
         </>

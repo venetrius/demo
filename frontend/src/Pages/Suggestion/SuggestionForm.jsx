@@ -19,6 +19,19 @@ const SuggestionForm = (props) => {
             message.error('Error submitting suggestion');
         }
     };
+    if(! props.argument) return "Loading..."
+
+    const renderSelectSection = () => {
+        return (
+       <Select>
+            {props.argument.argumentDetails.map((detail, index) => (
+                <Select.Option key={index} value={index}>
+                    {`${index + 1} - ${detail.slice(0,30)}...`}
+                </Select.Option>
+            ))}
+        </Select>
+        )
+    }
 
     return (
         <Form form={form} layout="vertical" onFinish={handleSubmit}
@@ -55,20 +68,14 @@ const SuggestionForm = (props) => {
                 label="Section"
                 rules={[{ required: true, message: 'Please input the section!' }]}
             >
-                <Input />
+{/*                  can select one of the section from prop.argument.argumentDetails */}
+               {renderSelectSection()}
             </Form.Item>
 
-            <Form.Item
-                name="position"
-                label="Position"
-                rules={[{ required: true, message: 'Please input the position!' }]}
-            >
-                <InputNumber min={1} style={{ width: '100%' }} />
-            </Form.Item>
 
             <Form.Item
                 name="text"
-                label="Text"
+                label="New value"
                 rules={[{ required: true, message: 'Please input the text for your suggestion!' }]}
             >
                 <TextArea rows={4} />
