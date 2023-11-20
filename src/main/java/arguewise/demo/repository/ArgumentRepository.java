@@ -18,8 +18,8 @@ public interface ArgumentRepository extends JpaRepository<Argument, Long> {
     @Query("SELECT a FROM Argument a JOIN UsersDiscussion ud ON a.discussion.id = ud.discussion.id AND a.author.id = ud.user.id WHERE a.discussion.id = :discussionId AND ud.side = :side")
     Collection<Argument> findAllByDiscussionIdAndSide(@Param("discussionId") Long discussionId, @Param("side") UsersDiscussion.Side side);
 
-@Query(value = "SELECT a.title " +
-        "FROM Argument a INNER JOIN UsersDiscussion ud ON a.author.id = ud.userId " +
+@Query("SELECT a.title " +
+        "FROM Argument a INNER JOIN UsersDiscussion ud ON a.author.id = ud.user.id " +
         "WHERE ud.side = :side AND a.discussion.id = :discussionId")
 List<String> findTitlesByDiscussionIdAndProSide(@Param("discussionId") Long discussionId, @Param("side")UsersDiscussion.Side side);
 }
