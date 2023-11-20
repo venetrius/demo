@@ -24,6 +24,8 @@ public interface DiscussionRepository extends JpaRepository< Discussion, Long> {
 
     List<Discussion> findBySpaceIdIn(List<Long> spaceIds);
 
+    List<Discussion> findByStatus(Discussion.DiscussionStatus status);
+
     @Query("SELECT v.entityId, COUNT(v.id) FROM Vote v WHERE v.entityId IN :argumentIds AND v.entityType = :entityType AND v.voteType = :voteType GROUP BY v.entityId")
     List<Object[]> findVoteCountsForArguments(@Param("argumentIds") Collection<Long> argumentIds, @Param("entityType") EntityType entityType, @Param("voteType") VoteType voteType);
 
