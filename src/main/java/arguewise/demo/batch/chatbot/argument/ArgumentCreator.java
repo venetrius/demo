@@ -8,10 +8,12 @@ import arguewise.demo.model.UsersDiscussion;
 import arguewise.demo.repository.ArgumentRepository;
 import arguewise.demo.service.util.IJsonParser;
 import com.theokanning.openai.completion.chat.ChatMessage;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ArgumentCreator implements IArgumentCreator {
     private final IAiClientWrapper aiServiceProvider;
 
@@ -25,7 +27,7 @@ public class ArgumentCreator implements IArgumentCreator {
         this.argumentRepository = argumentRepository;
     }
     @Override
-    public CreateArgumentDTO createDiscussion(Discussion discussion, UsersDiscussion.Side side) {
+    public CreateArgumentDTO createArgument(Discussion discussion, UsersDiscussion.Side side) {
         List<ChatMessage> messages = createMessageList(discussion, side);
 
         String responseString = aiServiceProvider.getResponse(messages);
