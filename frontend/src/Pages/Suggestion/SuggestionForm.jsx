@@ -68,7 +68,6 @@ const SuggestionForm = (props) => {
                 label="Section"
                 rules={[{ required: true, message: 'Please input the section!' }]}
             >
-{/*                  can select one of the section from prop.argument.argumentDetails */}
                {renderSelectSection()}
             </Form.Item>
 
