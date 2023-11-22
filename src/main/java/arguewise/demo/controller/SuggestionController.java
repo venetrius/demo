@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.file.attribute.UserPrincipal;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/arguments/{argumentId}/suggestions")
@@ -38,5 +39,11 @@ public class SuggestionController {
     public ResponseEntity<SuggestionResponseDTO> getSuggestion(@PathVariable Long id) {
         Suggestion suggestion = suggestionService.getSuggestion(id);
         return ResponseEntity.ok(new SuggestionResponseDTO(suggestion));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<SuggestionResponseDTO>> getSuggestions(@PathVariable Long argumentId) {
+        List<Suggestion> suggestions = suggestionService.getSuggestionBy(argumentId);
+        return ResponseEntity.ok(suggestions.stream().map(SuggestionResponseDTO::new).toList());
     }
 }
