@@ -11,6 +11,8 @@ import arguewise.demo.security.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class SuggestionService implements ISuggestionService {
@@ -39,5 +41,9 @@ public class SuggestionService implements ISuggestionService {
     public Suggestion getSuggestion(Long id) {
         return suggestionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Suggestion not found"));
+    }
+
+    public List<Suggestion> getSuggestionBy(Long argumentId) {
+        return suggestionRepository.findByArgumentId(argumentId);
     }
 }
