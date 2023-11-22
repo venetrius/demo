@@ -7,6 +7,7 @@ const ArgumentContext = createContext();
 const ArgumentProvider = ({ children }) => {
   const [argumentlist, setArgumentlist] = useState([]);
   const [argument, setArgument] = useState(null)
+  const [suggestions, setSuggestions] = useState([]);
 
   const { token } = useAuth();
 
@@ -98,8 +99,25 @@ const ArgumentProvider = ({ children }) => {
     }
   }
 
+  const listSuggestions = async (argumentId) => {
+    const response = await fetch(`${getApiUrl()}/api/arguments/${argumentId}/suggestions`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+    if (response.ok) {
+      setSuggestions(await response.json())
+      console.log("listSuggestions call is successful")
+      return true
+    } else {
+      console.log('Failed to list suggestions.');
+    }
+  }
+
   return (
-    <ArgumentContext.Provider value={{ addSuggestion, argument, argumentlist, createArgument, fetchArgument, fetchArguments, upvoteArgument }}>
+    <ArgumentContext.Provider value={{ addSuggestion, listSuggestions, suggestions, argument, argumentlist, createArgument, fetchArgument, fetchArguments, upvoteArgument }}>
       {children}
     </ArgumentContext.Provider>
   );
