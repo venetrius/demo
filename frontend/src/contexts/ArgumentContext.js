@@ -116,8 +116,31 @@ const ArgumentProvider = ({ children }) => {
     }
   }
 
+  const upvoteSuggestion = async (argumentId, suggestionId) => {
+    const response = await fetch(`${getApiUrl()}/api/arguments/${argumentId}/suggestions/${suggestionId}/vote`, {
+      method: 'PUT',
+
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ voteType: "UPVOTE" }),
+    });
+    if (response.ok) {
+      console.log("upvoteSuggestion call is successful")
+      const suggestionsClone = [...suggestions]
+      const suggestionIndex = suggestionsClone.findIndex(suggestion => suggestion.id === suggestionId)
+      suggestionsClone[suggestionIndex].votes += 1
+      suggestionsClone[suggestionIndex].likedByCurrentUser = true
+      setSuggestions(suggestionsClone)
+      return true
+    } else {
+      console.log('Failed to send upvote to suggestion.');
+    }
+  }
+
   return (
-    <ArgumentContext.Provider value={{ addSuggestion, listSuggestions, suggestions, argument, argumentlist, createArgument, fetchArgument, fetchArguments, upvoteArgument }}>
+    <ArgumentContext.Provider value={{ addSuggestion, listSuggestions, suggestions, argument, argumentlist, createArgument, fetchArgument, fetchArguments, upvoteArgument, upvoteSuggestion }}>
       {children}
     </ArgumentContext.Provider>
   );
