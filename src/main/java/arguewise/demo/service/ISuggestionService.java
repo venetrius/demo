@@ -20,4 +20,6 @@ public interface ISuggestionService {
     void vote(Long suggestionId, VoteType vote);
 
     Optional<Suggestion> findById(Long id);
+
+    void deleteVote(Long suggestionId);
 }

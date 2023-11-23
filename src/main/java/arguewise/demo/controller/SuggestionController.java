@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,6 +72,23 @@ public class SuggestionController {
 
         VoteType validated = VoteType.valueOf(inputData.getVoteType().toUpperCase());
         suggestionService.vote(id, validated);
+        return ResponseEntity.ok(true);
+    }
+
+    @DeleteMapping("/{suggestionId}/vote")
+    public ResponseEntity<Boolean> deleteVote(@PathVariable Long suggestionId){
+        logger.info("Received request to delete vote on suggestion with id: {}", suggestionId);
+        Suggestion suggestion = suggestionService.findById(suggestionId).orElse(null);
+
+        if(suggestion == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if(!suggestion.isActive()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        suggestionService.deleteVote(suggestionId);
         return ResponseEntity.ok(true);
     }
 }

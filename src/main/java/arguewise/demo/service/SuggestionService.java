@@ -75,6 +75,11 @@ public class SuggestionService implements ISuggestionService {
         return suggestionRepository.findById(id);
     }
 
+    @Override
+    public void deleteVote(Long suggestionId) {
+        voteService.deleteVote(suggestionId, EntityType.SUGGESTION);
+    }
+
     private List<SuggestionDetails> decorateSuggestions(List<Suggestion> suggestions, long userId) {
         if(suggestions.isEmpty()) {
             return Collections.emptyList();

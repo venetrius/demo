@@ -40,5 +40,16 @@ public class VoteService {
     public List<Long> findLikedByUserForEntities(Long userId, List<Long> entityIds, EntityType entityType, VoteType voteType) {
         return voteRepository.findLikedByUserForEntities(userId, entityIds, entityType, voteType);
     }
+
+    public void deleteVote(Long entityID, EntityType entityType) {
+        User currentUser = SecurityUtils.getCurrentUser();
+        long userId = currentUser.getId();
+        Optional<Vote> existingVote = voteRepository.findByUserIdAndEntityIdAndEntityType(userId, entityID, entityType);
+
+        if (existingVote.isPresent()) {
+            Vote vote = existingVote.get();
+            voteRepository.delete(vote);
+        }
+    }
 }
 
