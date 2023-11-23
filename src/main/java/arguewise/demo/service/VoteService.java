@@ -8,6 +8,7 @@ import arguewise.demo.types.VoteType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,14 @@ public class VoteService {
             Vote vote = new Vote(currentUser, entityId, entityType, voteType);
             voteRepository.save(vote);
         }
+    }
+
+    public List<Object[]> getNumberOfVotesForEntities(EntityType entityType, List<Long> entityIds, VoteType voteType) {
+        return voteRepository.findVoteCountsForEntity(entityIds, entityType, voteType);
+    }
+
+    public List<Long> findLikedByUserForEntities(Long userId, List<Long> entityIds, EntityType entityType, VoteType voteType) {
+        return voteRepository.findLikedByUserForEntities(userId, entityIds, entityType, voteType);
     }
 }
 
