@@ -1,5 +1,6 @@
 package arguewise.demo.service;
 
+import arguewise.demo.domain.suggestion.SuggestionDetails;
 import arguewise.demo.dto.suggestion.CreateSuggestionDTO;
 import arguewise.demo.model.Suggestion;
 import arguewise.demo.types.VoteType;
@@ -12,7 +13,7 @@ public interface ISuggestionService {
 
     Suggestion getSuggestion(Long id);
 
-    List<Suggestion> getSuggestionBy(Long argumentId);
+    List<SuggestionDetails> getSuggestionBy(Long argumentId);
 
     boolean canVote(Long id, String email);
 

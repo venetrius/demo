@@ -1,5 +1,6 @@
 package arguewise.demo.dto.suggestion;
 
+import arguewise.demo.domain.suggestion.SuggestionDetails;
 import arguewise.demo.model.Suggestion;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,8 @@ public class SuggestionResponseDTO {
     private String comment;
     private Integer argumentVersion;
     private LocalDateTime createdTimestamp;
+    private Long numberOfLikes;
+    private boolean isLikedByCurrentUser;
 
     public SuggestionResponseDTO(Suggestion suggestion) {
         this.id = suggestion.getId();
@@ -34,5 +37,22 @@ public class SuggestionResponseDTO {
         this.comment = suggestion.getComment();
         this.argumentVersion = suggestion.getArgumentVersion();
         this.createdTimestamp = suggestion.getCreatedTimestamp();
+    }
+
+    public SuggestionResponseDTO(SuggestionDetails suggestionDetails) {
+        Suggestion suggestion = suggestionDetails.getSuggestion();
+        this.id = suggestion.getId();
+        this.argumentId = suggestion.getArgument().getId();
+        this.userId = suggestion.getUser().getId();
+        this.type = suggestion.getType();
+        this.section = suggestion.getSection();
+        this.position = suggestion.getPosition();
+        this.text = suggestion.getText();
+        this.comment = suggestion.getComment();
+        this.argumentVersion = suggestion.getArgumentVersion();
+        this.createdTimestamp = suggestion.getCreatedTimestamp();
+
+        this.numberOfLikes = suggestionDetails.getNumberOfLikes();
+        this.isLikedByCurrentUser = suggestionDetails.isLikedByCurrentUser();
     }
 }

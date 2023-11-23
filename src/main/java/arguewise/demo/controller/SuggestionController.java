@@ -1,5 +1,6 @@
 package arguewise.demo.controller;
 
+import arguewise.demo.domain.suggestion.SuggestionDetails;
 import arguewise.demo.dto.argument.PutArgumentVoteDTO;
 import arguewise.demo.dto.suggestion.CreateSuggestionDTO;
 import arguewise.demo.dto.suggestion.SuggestionResponseDTO;
@@ -51,13 +52,13 @@ public class SuggestionController {
 
     @GetMapping
     public ResponseEntity<List<SuggestionResponseDTO>> getSuggestions(@PathVariable Long argumentId) {
-        List<Suggestion> suggestions = suggestionService.getSuggestionBy(argumentId);
+        List<SuggestionDetails> suggestions = suggestionService.getSuggestionBy(argumentId);
         return ResponseEntity.ok(suggestions.stream().map(SuggestionResponseDTO::new).toList());
     }
 
     @PutMapping("/{id}/vote")
     public ResponseEntity<Boolean> castVote(@PathVariable Long id, @RequestBody PutArgumentVoteDTO inputData) {
-        logger.info("Received request to cast vote on argument with id: {}", id);
+        logger.info("Received request to cast vote on suggestion with id: {}", id);
         Suggestion suggestion = suggestionService.findById(id).orElse(null);
 
         if(suggestion == null) {
@@ -67,6 +68,7 @@ public class SuggestionController {
         if(!suggestion.isActive()) {
             return ResponseEntity.badRequest().build();
         }
+
         VoteType validated = VoteType.valueOf(inputData.getVoteType().toUpperCase());
         suggestionService.vote(id, validated);
         return ResponseEntity.ok(true);
