@@ -8,10 +8,13 @@ import arguewise.demo.model.User;
 import arguewise.demo.repository.ArgumentRepository;
 import arguewise.demo.repository.SuggestionRepository;
 import arguewise.demo.security.utils.SecurityUtils;
+import arguewise.demo.types.EntityType;
+import arguewise.demo.types.VoteType;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +22,7 @@ public class SuggestionService implements ISuggestionService {
 
     private final SuggestionRepository suggestionRepository;
     private final ArgumentRepository argumentRepository;
+    private final VoteService voteService;
 
     public Suggestion createSuggestion(CreateSuggestionDTO dto) {
         User user = SecurityUtils.getCurrentUser();
@@ -45,5 +49,23 @@ public class SuggestionService implements ISuggestionService {
 
     public List<Suggestion> getSuggestionBy(Long argumentId) {
         return suggestionRepository.findByArgumentId(argumentId);
+    }
+
+    @Override
+    public boolean canVote(Long argumentId, String email) {
+        Argument argument = argumentRepository.findById(argumentId)
+                .orElseThrow(() -> new NotFoundException("Argument not found"));
+        User user = SecurityUtils.getCurrentUser();
+        return false;
+    }
+
+    @Override
+    public void vote(Long suggestionId, VoteType vote) {
+        voteService.castVote(suggestionId, EntityType.SUGGESTION, vote);
+    }
+
+    @Override
+    public Optional<Suggestion> findById(Long id) {
+        return suggestionRepository.findById(id);
     }
 }

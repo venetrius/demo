@@ -59,6 +59,10 @@ public class Discussion {
     @Enumerated(EnumType.STRING)
     private DiscussionStatus status = DiscussionStatus.ACTIVE;
 
+    public boolean isActive() {
+        return this.status == DiscussionStatus.ACTIVE;
+    }
+
     public enum DiscussionStatus {
         ACTIVE,
         COMPLETED

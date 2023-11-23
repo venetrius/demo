@@ -48,6 +48,10 @@ public class Suggestion {
     @CreationTimestamp
     private LocalDateTime createdTimestamp;
 
+    public boolean isActive() {
+        return this.argument.isActive();
+    }
+
     // Getters, setters, and constructors
     public enum SuggestionType {
         ADDITION,

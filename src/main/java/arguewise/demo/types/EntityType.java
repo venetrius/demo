@@ -1,5 +1,6 @@
 package arguewise.demo.types;
 
 public enum EntityType {
-    ARGUMENT
+    ARGUMENT,
+    SUGGESTION
 }

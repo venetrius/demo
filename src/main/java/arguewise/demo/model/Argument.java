@@ -87,5 +87,9 @@ public class Argument {
         this.argumentDetails.clear();
     }
 
+    public boolean isActive() {
+        return this.discussion.isActive();
+    }
+
 }
 
