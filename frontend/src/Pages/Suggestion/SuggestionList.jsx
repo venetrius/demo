@@ -2,13 +2,13 @@
 import { useArguments } from '../../contexts/ArgumentContext';
 import React, { useEffect, useState } from 'react';
 import { Collapse } from 'antd';
-import LikeButton from '../../components/Button/LikeButton'
+import VoteButton from '../../components/Button/VoteButton'
 
 const { Panel } = Collapse;
 
 
 const SuggestionList = ({ argument }) => {
-    const { listSuggestions, suggestions, upvoteSuggestion } = useArguments();
+    const { listSuggestions, suggestions, upvoteSuggestion, deleteSuggestionVote } = useArguments();
     const [activePanelKey, setActivePanelKey] = useState('1');
 
 
@@ -36,10 +36,11 @@ const SuggestionList = ({ argument }) => {
                             <li key={index}>
                                 <h5>{suggestion.type}</h5>
                                 <p>{suggestion.text}</p>
-                                <LikeButton 
-                                    onLike={() => upvoteSuggestion(argument.id, suggestion.id)} 
-                                    likes={suggestion.numberOfLikes}
-                                    likedByUser={suggestion.likedByCurrentUser}
+                                <VoteButton 
+                                    onVote={() => upvoteSuggestion(argument.id, suggestion.id)}
+                                    onUnvote={() => deleteSuggestionVote(argument.id, suggestion.id)}
+                                    votes={suggestion.numberOfLikes}
+                                    userVote={suggestion.likedByCurrentUser ? 1 : 0}
                                 />
                             </li>
                         ))}

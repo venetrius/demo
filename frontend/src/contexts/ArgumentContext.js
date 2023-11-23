@@ -13,7 +13,7 @@ const ArgumentProvider = ({ children }) => {
 
   const createArgument = async (discussionId, newArgument) => {
     // console.log({discussionId, url: `${getApiUrl()}/api/discussions/${discussionId}/arguments`})
-    const response = await fetch( `${getApiUrl()}/api/discussions/${discussionId}/arguments`, {
+    const response = await fetch(`${getApiUrl()}/api/discussions/${discussionId}/arguments`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -139,8 +139,42 @@ const ArgumentProvider = ({ children }) => {
     }
   }
 
+  const deleteSuggestionVote = async (argumentId, suggestionId) => {
+    const response = await fetch(`${getApiUrl()}/api/arguments/${argumentId}/suggestions/${suggestionId}/vote`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      console.log("deleteSuggestionVote call is successful")
+      const suggestionsClone = [...suggestions]
+      const suggestionIndex = suggestionsClone.findIndex(suggestion => suggestion.id === suggestionId)
+      suggestionsClone[suggestionIndex].votes -= 1
+      suggestionsClone[suggestionIndex].likedByCurrentUser = false
+      setSuggestions(suggestionsClone)
+      return true
+    } else {
+      console.log('Failed to delete upvote from suggestion.');
+    }
+  }
+
   return (
-    <ArgumentContext.Provider value={{ addSuggestion, listSuggestions, suggestions, argument, argumentlist, createArgument, fetchArgument, fetchArguments, upvoteArgument, upvoteSuggestion }}>
+    <ArgumentContext.Provider 
+      value={{ 
+        addSuggestion,
+        deleteSuggestionVote,
+        listSuggestions,
+        suggestions, 
+        argument, 
+        argumentlist, 
+        createArgument, 
+        fetchArgument, 
+        fetchArguments, 
+        upvoteArgument, 
+        upvoteSuggestion 
+      }}>
       {children}
     </ArgumentContext.Provider>
   );
