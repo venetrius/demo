@@ -12,7 +12,8 @@ const VoteButton = ({ onVote, votes, userVote, onUnvote }) => {
 
     setVote(updatedVote);
     if (updatedVote !== 0) {
-        onVote(updatedVote);
+        const voteType = updatedVote === 1 ? 'UPVOTE' : 'DOWNVOTE';
+        onVote(voteType);
     } else {
         onUnvote();
     }

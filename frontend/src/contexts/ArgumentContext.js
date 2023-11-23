@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useAuth } from './AuthContext';
 import { getApiUrl } from './settings'
+import requestHandler from './request';
 
 const ArgumentContext = createContext();
 
@@ -10,6 +11,8 @@ const ArgumentProvider = ({ children }) => {
   const [suggestions, setSuggestions] = useState([]);
 
   const { token } = useAuth();
+
+  const { put } = requestHandler(token);
 
   const createArgument = async (discussionId, newArgument) => {
     // console.log({discussionId, url: `${getApiUrl()}/api/discussions/${discussionId}/arguments`})
@@ -116,21 +119,15 @@ const ArgumentProvider = ({ children }) => {
     }
   }
 
-  const upvoteSuggestion = async (argumentId, suggestionId) => {
-    const response = await fetch(`${getApiUrl()}/api/arguments/${argumentId}/suggestions/${suggestionId}/vote`, {
-      method: 'PUT',
-
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({ voteType: "UPVOTE" }),
-    });
+  const voteOnSuggestion = async (argumentId, suggestionId, voteType) => {
+    const body = JSON.stringify({ voteType })
+    const url = `${getApiUrl()}/api/arguments/${argumentId}/suggestions/${suggestionId}/vote`
+    const response = await put(url, body);
     if (response.ok) {
       console.log("upvoteSuggestion call is successful")
       const suggestionsClone = [...suggestions]
       const suggestionIndex = suggestionsClone.findIndex(suggestion => suggestion.id === suggestionId)
-      suggestionsClone[suggestionIndex].votes += 1
+      suggestionsClone[suggestionIndex].votes += voteType === "UPVOTE" ? 1 : -1
       suggestionsClone[suggestionIndex].likedByCurrentUser = true
       setSuggestions(suggestionsClone)
       return true
@@ -173,7 +170,7 @@ const ArgumentProvider = ({ children }) => {
         fetchArgument, 
         fetchArguments, 
         upvoteArgument, 
-        upvoteSuggestion 
+        voteOnSuggestion 
       }}>
       {children}
     </ArgumentContext.Provider>
