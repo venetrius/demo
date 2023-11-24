@@ -1,6 +1,6 @@
-package arguewise.demo.batch.chatbot;
+package arguewise.demo.batch.chatbot.content.management;
 
-enum Actions {
+public enum Actions {
     CREATE_NEW_SPACE,
     CREATE_NEW_DISCUSSION,
     CREATE_NEW_ARGUMENT,

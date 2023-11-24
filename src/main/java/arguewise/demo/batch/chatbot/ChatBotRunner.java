@@ -1,7 +1,10 @@
 package arguewise.demo.batch.chatbot;
 
 import arguewise.demo.batch.chatbot.argument.ArgumentCreator;
+import arguewise.demo.batch.chatbot.content.management.Actions;
+import arguewise.demo.batch.chatbot.content.management.ContentStrategyDecider;
 import arguewise.demo.dto.Discussion.CreateDiscussionDTO;
+import arguewise.demo.dto.Discussion.DiscussionResponseDTO;
 import arguewise.demo.dto.argument.ArgumentResponseDTO;
 import arguewise.demo.dto.argument.CreateArgumentDTO;
 import arguewise.demo.model.Argument;
@@ -17,7 +20,9 @@ import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +30,8 @@ import org.springframework.stereotype.Service;
 @Data
 @NoArgsConstructor
 public class ChatBotRunner {
+
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ChatBotRunner.class);
 
     @Autowired
     private DiscussionCreator discussionCreator;
@@ -47,36 +54,48 @@ public class ChatBotRunner {
     @Autowired
     private Gson gson;
 
-    // TODO enable this after testing
-//    @Scheduled(cron = "0 */5 * * * *")
+    @Autowired
+    private ContentStrategyDecider contentStrategyDecider;
+
+    @Scheduled(cron = "0 */30 * * * *")
     public String run() {
-        return createArgument();
-//        return createDiscussion();
+        logger.info("Running ChatBotRunner at: " + java.time.LocalDateTime.now());
+        User user = contentStrategyDecider.chooseUser();
+        Actions action = contentStrategyDecider.chooseAction();
+        try {
+            String result;
+            if(action == Actions.CREATE_NEW_ARGUMENT) {
+                result = createArgument(user);
+            } else if(action == Actions.CREATE_NEW_DISCUSSION) {
+                result = createDiscussion(user);
+            } else {
+                throw new RuntimeException("Not implemented yet");
+            }
+            logger.info("ChatBotRunner finished at: " + java.time.LocalDateTime.now());
+            return result;
+        } catch (Exception e) {
+            logger.error("Error while performing action: " + action + " for user: " + user.getEmail());
+            e.printStackTrace();
+            throw e;
+        }
+
     }
 
-    private String getArguments() {
-
-        return "";
-    }
-
-    private String createDiscussion() {
+    private String createDiscussion(User user) {
         Space space = spaceRepository.findAll().get(0);
-        User user = userRepository.findAll().get(0);
         CreateDiscussionDTO createDiscussionDTO = discussionCreator.createDiscussion(space);
         System.out.println(gson.toJson(createDiscussionDTO));
         Discussion discussion = discussionRepository.save(new Discussion(createDiscussionDTO, user, space));
-        return gson.toJson(discussion);
+        return gson.toJson(new DiscussionResponseDTO(discussion));
     }
 
-    private String createArgument() {
+    private String createArgument(User user) {
         Discussion discussion = discussionRepository.findByStatus(Discussion.DiscussionStatus.ACTIVE).get(0);
         UsersDiscussion.Side side = UsersDiscussion.Side.PRO;
-        User user = userRepository.findAll().get(0);
 
         CreateArgumentDTO createArgumentDTO = argumentCreator.createArgument(discussion, side);
         Argument argument = argumentRepository.save(new Argument(createArgumentDTO, user, discussion));
         System.out.println(gson.toJson(new ArgumentResponseDTO(argument)));
         return gson.toJson(new ArgumentResponseDTO(argument));
     }
-
 }
