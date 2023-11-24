@@ -32,6 +32,11 @@ public class User implements UserDetails  {
     private String biography;
     private String interests;
     private String profilePicture;
+
+    @Setter(AccessLevel.NONE)
+    @Column(columnDefinition = "boolean default false")
+    private boolean isBot;
+
     @Column(columnDefinition = "boolean default false")
     private Boolean receiveNotifications;
 
