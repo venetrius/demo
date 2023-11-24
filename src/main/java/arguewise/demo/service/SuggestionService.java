@@ -44,6 +44,7 @@ public class SuggestionService implements ISuggestionService {
         suggestion.setText(dto.getText());
         suggestion.setComment(dto.getComment());
         suggestion.setArgumentVersion(dto.getArgumentVersion());
+        suggestion.setStatus(Suggestion.SuggestionStatus.ACTIVE);
 
         return suggestionRepository.save(suggestion);
     }

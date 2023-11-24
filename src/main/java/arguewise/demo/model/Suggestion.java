@@ -1,5 +1,6 @@
 package arguewise.demo.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -7,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -18,7 +20,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "suggestions")
+@Table(name = "suggestions", indexes = @Index(columnList = "type, status"))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,6 +41,10 @@ public class Suggestion {
     @Enumerated(EnumType.STRING)
     private SuggestionType type;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, columnDefinition = "varchar(32) default 'ACTIVE'")
+    private SuggestionStatus status;
+
     private String section;
     private Integer position;
     private String text;
@@ -57,5 +63,11 @@ public class Suggestion {
         ADDITION,
         REVISION,
         REORGANIZATION
+    }
+
+    public enum SuggestionStatus {
+        ACTIVE,
+        ACCEPTED,
+        REJECTED
     }
 }
