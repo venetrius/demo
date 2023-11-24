@@ -22,4 +22,9 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     @Query("SELECT v.entityId, COUNT(v.id) FROM Vote v WHERE v.entityId IN :entityIds AND v.entityType = :entityType AND v.voteType = :voteType GROUP BY v.entityId")
     List<Object[]> findVoteCountsForEntity(@Param("entityIds") Collection<Long> entityIds, @Param("entityType") EntityType entityType, @Param("voteType") VoteType voteType);
+
+    @Query("SELECT v.entityId, v.voteType, COUNT(v.id) FROM Vote v WHERE v.entityId IN :entityIds AND v.entityType = :entityType GROUP BY v.entityId, v.voteType")
+    List<Object[]> findVoteCountsForEntity(@Param("entityIds") Collection<Long> entityIds, @Param("entityType") EntityType entityType);
+
+
 }
