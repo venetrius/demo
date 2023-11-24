@@ -71,5 +71,8 @@ ArgueWise is a platform designed to foster structured, respectful, and productiv
 3. Log in to the platform.
 4. Create a new space, start a discussion, and add arguments.
 
+## API Reference
+http://localhost:8080/swagger-ui/index.html#/ is the Swagger UI for the API.
+ 
 ## License
 The licensing for ArgueWise is currently under consideration and will be updated accordingly.
