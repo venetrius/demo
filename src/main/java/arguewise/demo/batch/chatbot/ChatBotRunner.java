@@ -90,7 +90,8 @@ public class ChatBotRunner {
     }
 
     private String createArgument(User user) {
-        Discussion discussion = discussionRepository.findByStatus(Discussion.DiscussionStatus.ACTIVE).get(0);
+
+        Discussion discussion = contentStrategyDecider.chooseDiscussion();
         UsersDiscussion.Side side = UsersDiscussion.Side.PRO;
 
         CreateArgumentDTO createArgumentDTO = argumentCreator.createArgument(discussion, side);

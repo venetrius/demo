@@ -5,10 +5,13 @@ import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
 import arguewise.demo.types.EntityType;
 import arguewise.demo.types.VoteType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,4 +39,7 @@ public interface DiscussionRepository extends JpaRepository< Discussion, Long> {
 
     @Query("SELECT d.topic  FROM Discussion d WHERE space = :space")
     List<String> discussionNamesBySpaceId(@Param("space") Space spaceId);
+
+    long countByStatus(Discussion.DiscussionStatus status);
+    Page<Discussion> findByStatus(Discussion.DiscussionStatus status, PageRequest pageable);
 }
