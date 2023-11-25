@@ -22,7 +22,7 @@ public class ContentStrategyDecider {
     private final DiscussionRepository discussionRepository;
 
     public Actions chooseAction() {
-        int randomNum = ThreadLocalRandom.current().nextInt(1, 2);
+        int randomNum = ThreadLocalRandom.current().nextInt(0, 2);
         return Actions.values()[randomNum];
     }
 
