@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Tag, Typography, Button, Space } from 'antd';
+import { Card, List, Tag, Typography, Button, Space } from 'antd';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
@@ -32,33 +32,44 @@ const DiscussionItem = ({ discussion }) => {
     );
   };
 
+  const renderTimeStamps = () => {
+    return (
+      <Text type="secondary" style={{ display: 'block', margin: '8px 0' }}>
+        Created by: {discussion.creatorId} |{' '}
+        {moment(discussion.creationTimestamp).format('MMM DD, YYYY')} | Time limit:{' '}
+        {moment(discussion.timeLimit).format('MMM DD, YYYY h[h] m[m]')}
+      </Text>
+    );
+  };
+
   return (
-    <List.Item
+    <Card
       key={discussion.id}
       actions={[renderActions()]}
-      style={{ borderBottom: '1px solid var(--border-color)', marginBottom: 20 }}
+      style={{ borderBottom: '1px solid var(--border-color)', marginBottom: 10 }}
     >
       <List.Item.Meta
         title={
+          <>
           <Link to={`/spaces/${discussion.spaceID}/discussions/${discussion.id}`}>
-            <Text style={{ color: 'var(--primary-color)' }}>{discussion.topic}</Text>
+            <Text style={{ color: 'var(--primary-color)', fontSize: '16px', fontWeight: 'bold' }}>{discussion.topic}</Text>
           </Link>
+          <Tag style={{marginLeft: '5px'}} color={discussion.status === 'active' ? 'green' : 'red'}>
+              {discussion.status}
+            </Tag>
+          </>
         }
         description={
           <>
-            <Tag color={discussion.status === 'active' ? 'green' : 'red'}>
-              {discussion.status}
-            </Tag>
-            <Text type="secondary">
-              Created by: {discussion.creatorId} |{' '}
-              {moment(discussion.creationTimestamp).format('MMM DD, YYYY')} | Time limit:{' '}
-              {moment(discussion.timeLimit).format('MMM DD, YYYY h[h] m[m]')}
-            </Text>
-            {renderStatistics()}
+           
+            <div>
+              {renderStatistics()}
+            </div>
+            {renderTimeStamps()}
           </>
         }
       />
-    </List.Item>
+    </Card>
   );
 };
 

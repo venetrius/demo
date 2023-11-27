@@ -9,6 +9,8 @@ const DiscussionsPage = () => {
   const { subscribedDiscussions, recommendedDiscussions, fetchSubscribedDiscussions, fetchRecommendedDiscussions } = useUserDiscussions();
   const [showSubscribedDescriptions, setShowSubscribedDescriptions] = useState(false);
 
+console.log({subscribedDiscussions, recommendedDiscussions});
+
   useEffect(() => {
     fetchSubscribedDiscussions();
     fetchRecommendedDiscussions();
@@ -27,9 +29,9 @@ const DiscussionsPage = () => {
         unCheckedChildren="Discussions from your spaces"
         onChange={handleShowUserDiscussionsChange}
         style={{ marginLeft: 20 }} />
-      <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+      <Row style={{ marginTop: 20 }}>
         {discussionsToDisplay.map((discussion) => (
-          <Col key={discussion.id}>
+          <Col span={22} key={discussion.id}>
             <DiscussionItem discussion={discussion} />
           </Col>
         ))}
