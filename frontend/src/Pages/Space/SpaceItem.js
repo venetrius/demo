@@ -21,8 +21,7 @@ const SpaceItem = ({ space }) => {
 
   return (
     <Card
-      title={space.name}
-      style={{ width: 300, marginBottom: 20 }}
+      title={<Link style={{color: 'white'}} to={`/spaces/${space.id}`}>{space.name}</Link>}
       headStyle={{ backgroundColor: '#1890ff', color: 'white' }}
     >
       <Link to={`/spaces/${space.id}`}>

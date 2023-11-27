@@ -40,7 +40,7 @@ const SpaceList = () => {
         style={{ marginLeft: 20 }} />
       <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
         {spacesToDisplay.map((space) => (
-          <Col key={space.id}>
+          <Col span={24} key={space.id}>
             <SpaceItem space={space} />
           </Col>
         ))}
