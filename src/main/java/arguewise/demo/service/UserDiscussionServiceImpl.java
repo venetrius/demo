@@ -13,6 +13,8 @@ import arguewise.demo.repository.UserDiscussionRepository;
 import arguewise.demo.repository.UserRepository;
 import arguewise.demo.security.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,8 +71,10 @@ public class UserDiscussionServiceImpl implements IUserDiscussionService {
 
     @Override
     public List<Discussion> getRecommendedUserDiscussions() {
+        // TOOD - implement this
+        Pageable pageable = PageRequest.of(0, 30);
         // Fetch all spaces the user is subscribed to
-        List<UserSpace> spacesSubscribedByUser =  userSpaceService.findSpacesForCurrentUser();
+        List<UserSpace> spacesSubscribedByUser =  userSpaceService.findSpacesForCurrentUser(pageable).getContent();
 
         // Fetch all discussions from these spaces
         return discussionRepository

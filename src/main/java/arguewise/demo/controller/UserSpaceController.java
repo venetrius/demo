@@ -3,6 +3,8 @@ package arguewise.demo.controller;
 import arguewise.demo.dto.space.SpaceResponseDTO;
 import arguewise.demo.service.IUserSpaceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,10 +30,8 @@ public class UserSpaceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SpaceResponseDTO>> getUserSpaces() {
-        List<SpaceResponseDTO> spaces = userSpaceService.findSpacesForCurrentUser().stream()
-                .map(SpaceResponseDTO::new)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<SpaceResponseDTO>> getUserSpaces(Pageable pageable) {
+        Page<SpaceResponseDTO> spaces = userSpaceService.findSpacesForCurrentUser(pageable).map(SpaceResponseDTO::new);
         return new ResponseEntity<>(spaces, HttpStatus.OK);
     }
 }

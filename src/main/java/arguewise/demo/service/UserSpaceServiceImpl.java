@@ -9,6 +9,8 @@ import arguewise.demo.repository.UserSpaceRepository;
 import arguewise.demo.security.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,8 +44,8 @@ public class UserSpaceServiceImpl implements IUserSpaceService {
     }
 
     @Override
-    public List<UserSpace> findSpacesForCurrentUser() {
+    public Page<UserSpace> findSpacesForCurrentUser(Pageable pageable) {
         User user = SecurityUtils.getCurrentUser();
-        return userSpaceRepository.findByUserId(user.getId());
+        return userSpaceRepository.findByUserId(user.getId(), pageable);
     }
 }

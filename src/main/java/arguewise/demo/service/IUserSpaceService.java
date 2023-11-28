@@ -1,6 +1,8 @@
 package arguewise.demo.service;
 
 import arguewise.demo.model.UserSpace;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,5 +11,5 @@ import java.util.List;
 public interface IUserSpaceService {
 
     void followSpace(Long discussionId);
-    List<UserSpace> findSpacesForCurrentUser();
+    Page<UserSpace> findSpacesForCurrentUser(Pageable pageable);
 }
