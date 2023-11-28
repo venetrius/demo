@@ -12,8 +12,9 @@ import arguewise.demo.repository.UserSpaceRepository;
 import arguewise.demo.security.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,26 +31,22 @@ public class SpaceService implements ISpaceService {
     @Autowired
     private UserSpaceRepository userSpaceRepository;
 
-    public List<SpaceResponseDTO> getAllSpacesWithUserJoinInfo() {
+    public Page<SpaceResponseDTO> getAllSpacesWithUserJoinInfo(Pageable pageable) {
         User user = SecurityUtils.getCurrentUser();
-
-        List<SpaceResponseDTO> response = new ArrayList<>();
         Map<Long, UserSpace> userSpacesMap = new HashMap<>();
 
+        assert user != null;
         List<UserSpace> userSpaces = userSpaceRepository.findByUserId(user.getId());
         userSpaces.forEach(userSpace -> userSpacesMap.put(userSpace.getSpace().getId(), userSpace));
 
-        List<Space> allSpaces = spaceRepository.findAll();
-        for(Space space : allSpaces) {
+        return spaceRepository.findAll(pageable).map(space -> {
             SpaceStatisticsDTO spaceStatisticsDTO = getSpaceStatisticDTO(space);
             SpaceResponseDTO dto = new SpaceResponseDTO(space, spaceStatisticsDTO);
-            if(userSpacesMap.containsKey(space.getId())) {
+            if (userSpacesMap.containsKey(space.getId())) {
                 dto = new SpaceResponseDTO(userSpacesMap.get(space.getId()), spaceStatisticsDTO);
             }
-            response.add(dto);
-        }
-
-        return response;
+            return dto;
+        });
     }
 
     private SpaceStatisticsDTO getSpaceStatisticDTO(Space space) {
@@ -64,7 +61,7 @@ public class SpaceService implements ISpaceService {
     @Override
     public List<Discussion> getDiscussionBySpaceId(Long id) {
         Optional<Space> space = spaceRepository.findById(id);
-        if(space.isEmpty()) {
+        if (space.isEmpty()) {
             throw new NotFoundException("Space with id " + id + " not found");
         }
         return space.get().getDiscussions();
@@ -103,7 +100,7 @@ public class SpaceService implements ISpaceService {
     @Override
     public void likeSpace(Long id) {
         Optional<Space> space = spaceRepository.findById(id);
-        if(space.isEmpty()) {
+        if (space.isEmpty()) {
             throw new NotFoundException("Space is not found");
         }
 
@@ -115,7 +112,7 @@ public class SpaceService implements ISpaceService {
     @Override
     public void unlikeSpace(Long id) {
         Optional<Space> space = spaceRepository.findById(id);
-        if(space.isEmpty()) {
+        if (space.isEmpty()) {
             throw new NotFoundException("Space is not found");
         }
 
@@ -127,7 +124,7 @@ public class SpaceService implements ISpaceService {
     @Override
     public int getTotalLikes(Long id) {
         Optional<Space> space = spaceRepository.findById(id);
-        if(space.isEmpty()) {
+        if (space.isEmpty()) {
             throw new NotFoundException("Space is not found");
         }
         return space.get().getTotalLikes();
