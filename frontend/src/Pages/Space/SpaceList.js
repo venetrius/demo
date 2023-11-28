@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Row, Col, Switch } from 'antd';
+import React, { useState } from 'react';
+import { Button, Col, Switch } from 'antd';
 import { useNavigate } from "react-router-dom";
 import SpaceItem from './SpaceItem';
 import { useSpaces } from '../../contexts/SpaceContext'
+import { useUserSpaces } from '../../contexts/UserSpaceContext';
+
+import InfiniteScroll from '../../components/InfiniteScroll/InfiniteScroll.jsx';
 
 const SpaceList = () => {
-  const { spaces, fetchSpaces, userSpaces, fetchUserSpaces } = useSpaces();
+
+  const useSpacesObj = useSpaces();
+  const useUserSpacesObj = useUserSpaces();
   const [showUserSpaces, setShowUserSpaces] = useState(false);
   let navigate = useNavigate();
-
-  useEffect(() => {
-    setTimeout(() => {
-      fetchSpaces();
-      fetchUserSpaces();
-    }, 100);
-  }, []);
 
   const handleCreateSpace = () => {
     navigate('/new-space');
@@ -24,9 +22,12 @@ const SpaceList = () => {
     setShowUserSpaces(checked);
   };
 
-  const spacesToDisplay = showUserSpaces ? userSpaces : spaces;
-
-  console.log({userSpaces, spaces, spacesToDisplay});
+  // TODO should refactor this to use 2 separate infinite scroll components
+  const spacesToDisplay = showUserSpaces ? useUserSpacesObj.userSpaces : useSpacesObj.spaces;
+  const fetch = showUserSpaces ? useUserSpacesObj.fetchUserSpaces : useSpacesObj.fetchSpaces;
+  const page = showUserSpaces ? useUserSpacesObj.page : useSpacesObj.page;
+  const hasMore = showUserSpaces ? useUserSpacesObj.hasMore : useSpacesObj.hasMore;
+  const obeservableList = showUserSpaces ? [useUserSpacesObj.fetchUserSpaces] : [useSpacesObj.fetchSpaces];
 
   return (
     <div>
@@ -38,13 +39,40 @@ const SpaceList = () => {
         unCheckedChildren="All Spaces"
         onChange={handleShowUserSpacesChange}
         style={{ marginLeft: 20 }} />
-      <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
-        {spacesToDisplay.map((space) => (
-          <Col span={24} key={space.id}>
-            <SpaceItem space={space} />
-          </Col>
-        ))}
-      </Row>
+      {showUserSpaces &&
+        <InfiniteScroll
+          children={spacesToDisplay.map((space) => (
+            <Col span={24} key={showUserSpaces + space.id}>
+              <SpaceItem space={space} />
+            </Col>
+          ))}
+          obeservableList={obeservableList}
+          hasMore={hasMore}
+          api={{
+            fetch: fetch,
+            page: page,
+          }}
+        >
+
+        </InfiniteScroll>
+      }
+      {!showUserSpaces &&
+        <InfiniteScroll
+          children={spacesToDisplay.map((space) => (
+            <Col span={24} key={showUserSpaces + space.id}>
+              <SpaceItem space={space} />
+            </Col>
+          ))}
+          obeservableList={obeservableList}
+          hasMore={hasMore}
+          api={{
+            fetch: fetch,
+            page: page,
+          }}
+        >
+
+        </InfiniteScroll>
+      }
     </div>
   );
 };
