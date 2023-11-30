@@ -1,17 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { useAuth } from './AuthContext';
 import { getApiUrl } from './settings'
-
 
 const UserDiscussionContext = createContext();
 
 const UserDiscussionProvider = ({ children }) => {
-  const [subscribedDiscussions, setSubscirbedDiscussions] = useState([]);
-  const [recommendedDiscussions, setRecommendedDiscussions] = useState([]);
-
+  const [subscribedDiscussions, setSubscribedDiscussions] = useState([]);
 
   const { token } = useAuth();
-
 
   const fetchSubscribedDiscussions = async () => {
     const response = await fetch(`${getApiUrl()}/api/me/discussions`, {
@@ -23,31 +19,15 @@ const UserDiscussionProvider = ({ children }) => {
 
     if (response.ok) {
       const data = await response.json();
-      setSubscirbedDiscussions(data)
+      setSubscribedDiscussions(data.content)
       return data
     } else {
       console.log(`Failed to fetch subscribed descriptions.`);
     }
   };
 
-  const fetchRecommendedDiscussions = async () => {
-    const response = await fetch(`${getApiUrl()}/api/me/discussions/recommendations`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setRecommendedDiscussions(data)
-    } else {
-      console.log('Failed to fetch discussions.');
-    }
-  };
-
   return (
-    <UserDiscussionContext.Provider value={{ subscribedDiscussions, recommendedDiscussions, fetchSubscribedDiscussions, fetchRecommendedDiscussions }}>
+    <UserDiscussionContext.Provider value={{ subscribedDiscussions, fetchSubscribedDiscussions }}>
       {children}
     </UserDiscussionContext.Provider>
   );

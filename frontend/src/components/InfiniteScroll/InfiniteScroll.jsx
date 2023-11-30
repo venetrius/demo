@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Row } from 'antd';
 
-const InfiniteScroll = ({ children, obeservableList, hasMore, api }) => {
+const InfiniteScroll = ({ children, observableList, hasMore, api }) => {
     const { fetch, page } = api;
     const loaderRef = useRef(null);
 
@@ -24,7 +24,7 @@ const InfiniteScroll = ({ children, obeservableList, hasMore, api }) => {
                 observer.unobserve(currentLoaderRef);
             }
         };
-    }, [...obeservableList, loaderRef]);
+    }, [...observableList, loaderRef]);
 
     return (
         <Row gutter={[16, 16]} style={{ marginTop: 20 }}>

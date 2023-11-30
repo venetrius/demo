@@ -6,6 +6,8 @@ import arguewise.demo.model.User;
 import arguewise.demo.security.utils.SecurityUtils;
 import arguewise.demo.service.IUserDiscussionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,21 +34,20 @@ public class UserDiscussionController {
     }
 
     @GetMapping("/discussions")
-    public ResponseEntity<List<DiscussionResponseDTO>> getUserDiscussions() {
+    public ResponseEntity<Page<DiscussionResponseDTO>> getUserDiscussions(Pageable pageable) {
         User user = SecurityUtils.getCurrentUser();
-        List<DiscussionResponseDTO> discussions = userDiscussionService.findDiscussionsByUserId((long) user.getId()).stream()
-                .map(discussion ->new DiscussionResponseDTO(discussion))
-                .collect(Collectors.toList()); //TODO user id to long
+        //TODO user id to long
+        Page<DiscussionResponseDTO> discussions = userDiscussionService
+                .findDiscussionsByUserId((long) user.getId(), pageable)
+                .map(DiscussionResponseDTO::new);
         return new ResponseEntity<>(discussions, HttpStatus.OK);
     }
 
     @GetMapping("/discussions/recommendations")
-    public ResponseEntity<List<DiscussionResponseDTO>> getRecommendedUserDiscussions() {
+    public ResponseEntity<Page<DiscussionResponseDTO>> getRecommendedUserDiscussions(Pageable pageable) {
         User user = SecurityUtils.getCurrentUser();
-        List<DiscussionResponseDTO> discussions = userDiscussionService.getRecommendedUserDiscussions()
-                .stream()
-                .map(DiscussionResponseDTO::new)
-                .collect(Collectors.toList());
+        Page<DiscussionResponseDTO> discussions = userDiscussionService.getRecommendedUserDiscussions(pageable)
+                .map(DiscussionResponseDTO::new);
         return new ResponseEntity<>(discussions, HttpStatus.OK);
     }
 

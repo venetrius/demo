@@ -27,7 +27,7 @@ const SpaceList = () => {
   const fetch = showUserSpaces ? useUserSpacesObj.fetchUserSpaces : useSpacesObj.fetchSpaces;
   const page = showUserSpaces ? useUserSpacesObj.page : useSpacesObj.page;
   const hasMore = showUserSpaces ? useUserSpacesObj.hasMore : useSpacesObj.hasMore;
-  const obeservableList = showUserSpaces ? [useUserSpacesObj.fetchUserSpaces] : [useSpacesObj.fetchSpaces];
+  const observableList = showUserSpaces ? [useUserSpacesObj.fetchUserSpaces] : [useSpacesObj.fetchSpaces];
 
   return (
     <div>
@@ -46,7 +46,7 @@ const SpaceList = () => {
               <SpaceItem space={space} />
             </Col>
           ))}
-          obeservableList={obeservableList}
+          observableList={observableList}
           hasMore={hasMore}
           api={{
             fetch: fetch,
@@ -63,7 +63,7 @@ const SpaceList = () => {
               <SpaceItem space={space} />
             </Col>
           ))}
-          obeservableList={obeservableList}
+          observableList={observableList}
           hasMore={hasMore}
           api={{
             fetch: fetch,
