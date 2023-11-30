@@ -17,7 +17,7 @@ const UserSpaceProvider = ({ children }) => {
 
   const fetchUserSpaces = async () => {
     if (!token || !hasMore) return;
-    const response = await fetch(`${getApiUrl()}/api/me/spaces`, {
+    const response = await fetch(`${getApiUrl()}/api/me/spaces?page=${page}&size=5`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
