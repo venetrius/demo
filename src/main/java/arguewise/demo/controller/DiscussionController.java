@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +29,13 @@ public class DiscussionController {
     private IDiscussionService  discussionService;
 
     @GetMapping
-    public ResponseEntity<List<DiscussionResponseDTO>> getAllDiscussions() {
+    public ResponseEntity<List<DiscussionResponseDTO>> getAllDiscussions(Pageable pageable) {
         logger.info("Received request to get all discussions");
         return ResponseEntity.ok(
                 discussionService
-                        .findAll()
+                        .findAll(pageable)
                         .stream()
-                        .map(discussion ->new DiscussionResponseDTO(discussion))
+                        .map(DiscussionResponseDTO::new)
                         .collect(Collectors.toList()));
     }
 

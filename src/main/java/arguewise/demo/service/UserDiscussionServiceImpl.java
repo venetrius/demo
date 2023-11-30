@@ -13,6 +13,7 @@ import arguewise.demo.repository.UserDiscussionRepository;
 import arguewise.demo.repository.UserRepository;
 import arguewise.demo.security.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -62,26 +63,25 @@ public class UserDiscussionServiceImpl implements IUserDiscussionService {
     }
 
     @Override
-    public List<Discussion> findDiscussionsByUserId(Long userId) {
-        List<UsersDiscussion> usersDiscussions = userDiscussionRepository.findByUserId(userId);
-        return usersDiscussions.stream()
-                .map(UsersDiscussion::getDiscussion)
-                .collect(Collectors.toList());
+    public Page<Discussion> findDiscussionsByUserId(Long userId, Pageable pageable) {
+        Page<UsersDiscussion> usersDiscussions = userDiscussionRepository.findByUserId(userId, pageable);
+        return usersDiscussions
+                .map(UsersDiscussion::getDiscussion);
     }
 
     @Override
-    public List<Discussion> getRecommendedUserDiscussions() {
+    public Page<Discussion> getRecommendedUserDiscussions(Pageable pageable) {
         // TOOD - implement this
-        Pageable pageable = PageRequest.of(0, 30);
+        Pageable spacePaging = PageRequest.of(0, 100);
         // Fetch all spaces the user is subscribed to
-        List<UserSpace> spacesSubscribedByUser =  userSpaceService.findSpacesForCurrentUser(pageable).getContent();
-
+        List<UserSpace> spacesSubscribedByUser =  userSpaceService.findSpacesForCurrentUser(spacePaging).getContent();
+        List<Long> spaceIds = spacesSubscribedByUser
+                .stream()
+                .map(UserSpace::getSpace)
+                .map(Space::getId)
+                .toList();
         // Fetch all discussions from these spaces
         return discussionRepository
-                .findBySpaceIdIn(spacesSubscribedByUser
-                        .stream()
-                        .map(UserSpace::getSpace)
-                        .map(Space::getId)
-                        .collect(Collectors.toList()));
+                .findBySpaceIdIn(spaceIds, pageable);
     }
 }
