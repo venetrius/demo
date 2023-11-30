@@ -4,10 +4,11 @@ import { Row, Col } from 'antd';
 import { useRecommendedDiscussions } from '../../../contexts/RecommendedDiscussionContext'
 import { useAuth } from '../../../contexts/AuthContext';
 import DiscussionItem from '../DiscussionItem';
+import InfiniteScroll from '../../../components/InfiniteScroll/InfiniteScroll';
 
 const RecommendedDiscussionList = () => {
     const { authInitialized } = useAuth();
-    const { recommendedDiscussions, fetchRecommendedDiscussions } = useRecommendedDiscussions();
+    const { recommendedDiscussions, fetchRecommendedDiscussions, hasMore, page } = useRecommendedDiscussions();
 
     useEffect(() => {
         fetchRecommendedDiscussions();
@@ -15,13 +16,17 @@ const RecommendedDiscussionList = () => {
 
     console.log({recommendedDiscussions})
     return (
-        <Row style={{ marginTop: 20 }}>
+        <InfiniteScroll
+            observableList={[recommendedDiscussions]}
+            hasMore={hasMore}
+            api={{ fetch: fetchRecommendedDiscussions, page }}
+        >
             {recommendedDiscussions.map((discussion) => (
                 <Col span={22} key={discussion.id}>
                     <DiscussionItem discussion={discussion} />
                 </Col>
             ))}
-        </Row>
+        </InfiniteScroll>
     )
 }
 

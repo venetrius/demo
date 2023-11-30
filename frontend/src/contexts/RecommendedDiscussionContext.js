@@ -6,12 +6,22 @@ const RecommendedDiscussionContext = createContext();
 
 const RecommendedDiscussionProvider = ({ children }) => {
   const [recommendedDiscussions, setRecommendedDiscussions] = useState([]);
+  const [ inProgress, setInProgress ] = useState(false);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   const { token } = useAuth();
 
 
   const fetchRecommendedDiscussions = async () => {
-    const response = await fetch(`${getApiUrl()}/api/me/discussions/recommendations`, {
+    if(!token || !hasMore || inProgress) return;
+
+    setInProgress(true);
+    // TODO add debounce
+    const prevPage = page;
+    const prevContent = recommendedDiscussions;
+
+    const response = await fetch(`${getApiUrl()}/api/me/discussions/recommendations?page=${page}&size=5`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -19,15 +29,19 @@ const RecommendedDiscussionProvider = ({ children }) => {
     });
 
     if (response.ok) {
-      const data = await response.json();
-      setRecommendedDiscussions(data.content)
+      const { content, totalPages } = await response.json();
+      setRecommendedDiscussions([...prevContent, ...content]);
+      setPage(prevPage + 1);
+      console.log('totalPages', totalPages, 'page', page, totalPages > page)
+      setHasMore(totalPages > page);
+      setInProgress(false);
     } else {
       console.log('Failed to fetch discussions.');
     }
   };
 
   return (
-    <RecommendedDiscussionContext.Provider value={{ recommendedDiscussions, fetchRecommendedDiscussions }}>
+    <RecommendedDiscussionContext.Provider value={{ recommendedDiscussions, fetchRecommendedDiscussions, page, hasMore }}>
       {children}
     </RecommendedDiscussionContext.Provider>
   );
