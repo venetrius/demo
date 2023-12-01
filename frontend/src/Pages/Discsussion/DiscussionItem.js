@@ -5,15 +5,20 @@ import moment from 'moment';
 
 const { Text } = Typography;
 
-const DiscussionItem = ({ discussion }) => {
+const DiscussionItem = ({ discussion, handleJoinDiscussion }) => {
+
+  const handleOnJoinClick = (side) => {
+    handleJoinDiscussion(discussion.id, { side: "PRO"})
+  };
+
   const renderActions = () => {
     return (
       <Space>
-        <Button size="small" type="primary">
-          Join
+        <Button size="small" type="primary" onClick={() => handleOnJoinClick("PRO")}>
+          Join as PRO
         </Button>
-        <Button size="small">
-          Leave
+        <Button size="small" type="primary" onClick={() => handleOnJoinClick("CONTRA")}>
+         Join as CONTRA
         </Button>
         <Button size="small" type="dashed">
           Like
@@ -61,7 +66,6 @@ const DiscussionItem = ({ discussion }) => {
         }
         description={
           <>
-           
             <div>
               {renderStatistics()}
             </div>

@@ -11,7 +11,7 @@ const { Title } = Typography;
 const SpaceDetailsPage = () => {
   const { spaceId } = useParams();
   const { fetchSpace } = useSpaces();
-  const { discussions, fetchDiscussions } = useDiscussions();
+  const { discussions, fetchDiscussions, joinDiscussion } = useDiscussions();
 
   let navigate = useNavigate();
 
@@ -67,8 +67,8 @@ const SpaceDetailsPage = () => {
       <Title level={4}>Discussions in this topic</Title>
       <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
         {discussions.map((discussion) => (
-          <Col key={discussion.id}>
-            <DiscussionItem discussion={discussion} />
+          <Col key={discussion.id} span={24}>
+            <DiscussionItem discussion={discussion} handleJoinDiscussion={joinDiscussion} />
           </Col>
         ))}
       </Row>
