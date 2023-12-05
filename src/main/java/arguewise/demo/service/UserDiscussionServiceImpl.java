@@ -70,22 +70,11 @@ public class UserDiscussionServiceImpl implements IUserDiscussionService {
         Page<Discussion> discussions = usersDiscussions
                 .map(UsersDiscussion::getDiscussion);
 
-        User user = SecurityUtils.getCurrentUser();
-        List<Long> discussionIds = discussions.stream().map(Discussion::getId).toList();
-        List<UsersDiscussion> userDiscussionSides = usersDiscussionRepository.findByUserAndDiscussionIdIn(user, discussionIds);
-
-        return discussions.map(discussion -> {
-            Optional<UsersDiscussion> userDiscussionSide = userDiscussionSides
-                    .stream()
-                    .filter(usersDiscussion -> usersDiscussion.getDiscussion().getId().equals(discussion.getId()))
-                    .findFirst();
-
-            return new DiscussionWithUserParticipation(discussion, userDiscussionSide.get().getSide(), discussion.getCreator().getUsername());
-        });
+        return decorateDiscussions(discussions);
     }
 
     @Override
-    public Page<Discussion> getRecommendedUserDiscussions(Pageable pageable) {
+    public Page<DiscussionWithUserParticipation> getRecommendedUserDiscussions(Pageable pageable) {
         // TOOD - implement this
         Pageable spacePaging = PageRequest.of(0, 100);
         // Fetch all spaces the user is subscribed to
@@ -96,7 +85,26 @@ public class UserDiscussionServiceImpl implements IUserDiscussionService {
                 .map(Space::getId)
                 .toList();
         // Fetch all discussions from these spaces
-        return discussionRepository
+        Page<Discussion> discussions = discussionRepository
                 .findBySpaceIdIn(spaceIds, pageable);
+
+        return decorateDiscussions(discussions);
+    }
+
+    private Page<DiscussionWithUserParticipation> decorateDiscussions(Page<Discussion> discussions) {
+        User user = SecurityUtils.getCurrentUser();
+        List<Long> discussionIds = discussions.stream().map(Discussion::getId).toList();
+        List<UsersDiscussion> userDiscussionSides = usersDiscussionRepository.findByUserAndDiscussionIdIn(user, discussionIds);
+
+        return discussions.map(discussion -> {
+            Optional<UsersDiscussion> userDiscussion = userDiscussionSides
+                    .stream()
+                    .filter(usersDiscussion -> usersDiscussion.getDiscussion().getId().equals(discussion.getId()))
+                    .findFirst();
+
+            UsersDiscussion.Side side = userDiscussion.map(UsersDiscussion::getSide).orElse(null);
+
+            return new DiscussionWithUserParticipation(discussion, side, discussion.getCreator().getUsername());
+        });
     }
 }

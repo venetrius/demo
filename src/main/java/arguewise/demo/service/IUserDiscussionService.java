@@ -11,5 +11,5 @@ public interface IUserDiscussionService {
 
     Page<DiscussionWithUserParticipation> findDiscussionsByUserId(Long discussionId, Pageable pageable);
 
-    Page<Discussion> getRecommendedUserDiscussions(Pageable pageable);
+    Page<DiscussionWithUserParticipation> getRecommendedUserDiscussions(Pageable pageable);
 }
