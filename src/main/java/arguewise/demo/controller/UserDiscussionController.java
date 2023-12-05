@@ -1,5 +1,4 @@
 package arguewise.demo.controller;
-
 import arguewise.demo.dto.Discussion.DiscussionResponseDTO;
 import arguewise.demo.dto.userDiscussion.JoinDiscussionDTO;
 import arguewise.demo.model.User;

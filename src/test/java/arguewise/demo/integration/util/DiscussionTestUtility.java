@@ -8,7 +8,7 @@ import arguewise.demo.model.Space;
 import arguewise.demo.model.User;
 import arguewise.demo.model.UsersDiscussion;
 import arguewise.demo.repository.DiscussionRepository;
-import arguewise.demo.repository.UserDiscussionRepository;
+import arguewise.demo.repository.UsersDiscussionRepository;
 import com.github.javafaker.Faker;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,7 +37,7 @@ public class DiscussionTestUtility {
     private DiscussionRepository discussionRepository;
 
     @Autowired
-    private UserDiscussionRepository userDiscussionRepository;
+    private UsersDiscussionRepository usersDiscussionRepository;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -88,6 +88,6 @@ public class DiscussionTestUtility {
     }
 
     public Optional<UsersDiscussion> findUserDiscussionByUserIdAndDiscussionId(int userId, Long id1) {
-        return userDiscussionRepository.findByUserIdAndDiscussionId(userId, id1);
+        return usersDiscussionRepository.findByUserIdAndDiscussionId(userId, id1);
     }
 }

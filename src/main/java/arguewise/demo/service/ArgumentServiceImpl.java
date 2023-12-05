@@ -7,7 +7,7 @@ import arguewise.demo.exception.NotFoundException;
 import arguewise.demo.model.*;
 import arguewise.demo.repository.ArgumentRepository;
 import arguewise.demo.repository.DiscussionRepository;
-import arguewise.demo.repository.UserDiscussionRepository;
+import arguewise.demo.repository.UsersDiscussionRepository;
 import arguewise.demo.security.utils.SecurityUtils;
 import arguewise.demo.types.EntityType;
 import arguewise.demo.types.VoteType;
@@ -37,7 +37,7 @@ public class ArgumentServiceImpl implements IArgumentService {
     private IDiscussionService discussionService;
 
     @Autowired
-    private UserDiscussionRepository userDiscussionRepository;
+    private UsersDiscussionRepository usersDiscussionRepository;
 
     @Autowired
     private UserActionValidator userActionValidator;
@@ -133,7 +133,7 @@ public class ArgumentServiceImpl implements IArgumentService {
         }
 
         User currentUser = SecurityUtils.getCurrentUser();
-        Optional<UsersDiscussion> usersDiscussion = userDiscussionRepository.findByUserIdAndDiscussionId(currentUser.getId(), discussionId);
+        Optional<UsersDiscussion> usersDiscussion = usersDiscussionRepository.findByUserIdAndDiscussionId(currentUser.getId(), discussionId);
         if(usersDiscussion.isEmpty()) {
             return Collections.EMPTY_LIST;
         }

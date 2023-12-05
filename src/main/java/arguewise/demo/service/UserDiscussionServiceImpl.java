@@ -10,7 +10,6 @@ import arguewise.demo.model.User;
 import arguewise.demo.model.UserSpace;
 import arguewise.demo.model.UsersDiscussion;
 import arguewise.demo.repository.DiscussionRepository;
-import arguewise.demo.repository.UserDiscussionRepository;
 import arguewise.demo.repository.UserRepository;
 import arguewise.demo.repository.UsersDiscussionRepository;
 import arguewise.demo.security.utils.SecurityUtils;
@@ -20,20 +19,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserDiscussionServiceImpl implements IUserDiscussionService {
 
     @Autowired
-       private UserDiscussionRepository userDiscussionRepository;
-
-    // TODO TODO before commit resolve this
-    @Autowired
-     private UsersDiscussionRepository usersDiscussionRepository;
+    private UsersDiscussionRepository usersDiscussionRepository;
 
 
     @Autowired
@@ -54,7 +47,7 @@ public class UserDiscussionServiceImpl implements IUserDiscussionService {
             throw new NotFoundException("Discussion not found");
         }
 
-        Optional<UsersDiscussion> existingUsersDiscussion = userDiscussionRepository.findByUserAndDiscussion(user, discussion.get());
+        Optional<UsersDiscussion> existingUsersDiscussion = usersDiscussionRepository.findByUserAndDiscussion(user, discussion.get());
 
         if (existingUsersDiscussion.isPresent()) {
             if (existingUsersDiscussion.get().getSide() == joinDiscussionDTO.getSide()) {
@@ -67,12 +60,12 @@ public class UserDiscussionServiceImpl implements IUserDiscussionService {
         }
 
         UsersDiscussion usersDiscussion = new UsersDiscussion(user, discussion.get(), joinDiscussionDTO.getSide());
-        userDiscussionRepository.save(usersDiscussion);
+        usersDiscussionRepository.save(usersDiscussion);
     }
 
     @Override
     public Page<DiscussionWithUserParticipation> findDiscussionsByUserId(Long userId, Pageable pageable) {
-        Page<UsersDiscussion> usersDiscussions = userDiscussionRepository.findByUserId(userId, pageable);
+        Page<UsersDiscussion> usersDiscussions = usersDiscussionRepository.findByUserId(userId, pageable);
 
         Page<Discussion> discussions = usersDiscussions
                 .map(UsersDiscussion::getDiscussion);
