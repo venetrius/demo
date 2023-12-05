@@ -4,19 +4,22 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { Link, useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../../contexts/settings'
+import { hashPassword } from '../../util/hash.js';
 
 const Login = () => {
   const { login } = useAuth();
   let navigate = useNavigate();
 
   const onFinish = async (values) => {
-    console.log('Authenticating user: ', values.email);
+    const { password, email } = values
+    const hash = await hashPassword(password + email)
+    
     const response = await fetch(`${getApiUrl()}/api/auth/authenticate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(values),
+      body: JSON.stringify({ email, password: hash }),
     });
 
     if (response.ok) {
