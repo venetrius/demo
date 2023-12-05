@@ -3,12 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Row, Col, Typography, Card, Statistic } from 'antd';
 import { useSpaces } from '../../contexts/SpaceContext';
 import { useDiscussions } from '../../contexts/SpaceDiscussionContext';
-
+import { useAuth } from '../../contexts/AuthContext';
 import DiscussionItem from '../Discsussion/DiscussionItem';
 
 const { Title } = Typography;
 
 const SpaceDetailsPage = () => {
+  const { authInitialized } = useAuth();
   const { spaceId } = useParams();
   const { fetchSpace } = useSpaces();
   const { discussions, fetchDiscussions, joinDiscussion } = useDiscussions();
@@ -20,7 +21,7 @@ const SpaceDetailsPage = () => {
   useEffect(() => {
     loadSpace();
     fetchDiscussions(spaceId);
-  }, []);
+  }, [authInitialized]);
 
   const loadSpace = async () => {
     console.log('loadSpace', spaceId);
