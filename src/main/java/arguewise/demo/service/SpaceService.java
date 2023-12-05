@@ -76,6 +76,7 @@ public class SpaceService implements ISpaceService {
 
 
         List<Discussion> discussions = space.get().getDiscussions();
+        // TODO DRY used in multiple places
         List<Long> discussionIds = discussions.stream().map(Discussion::getId).toList();
         List<UsersDiscussion> userDiscussionSides = usersDiscussionRepository.findByUserAndDiscussionIdIn(user, discussionIds);
 

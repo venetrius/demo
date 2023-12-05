@@ -1,5 +1,6 @@
 package arguewise.demo.service;
 
+import arguewise.demo.dto.Discussion.DiscussionWithUserParticipation;
 import arguewise.demo.dto.userDiscussion.JoinDiscussionDTO;
 import arguewise.demo.exception.ConflictingRequestException;
 import arguewise.demo.exception.NotFoundException;
@@ -11,6 +12,7 @@ import arguewise.demo.model.UsersDiscussion;
 import arguewise.demo.repository.DiscussionRepository;
 import arguewise.demo.repository.UserDiscussionRepository;
 import arguewise.demo.repository.UserRepository;
+import arguewise.demo.repository.UsersDiscussionRepository;
 import arguewise.demo.security.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +29,12 @@ import java.util.stream.Collectors;
 public class UserDiscussionServiceImpl implements IUserDiscussionService {
 
     @Autowired
-    private UserDiscussionRepository userDiscussionRepository;
+       private UserDiscussionRepository userDiscussionRepository;
+
+    // TODO TODO before commit resolve this
+    @Autowired
+     private UsersDiscussionRepository usersDiscussionRepository;
+
 
     @Autowired
     private UserRepository userRepository;
@@ -63,10 +71,24 @@ public class UserDiscussionServiceImpl implements IUserDiscussionService {
     }
 
     @Override
-    public Page<Discussion> findDiscussionsByUserId(Long userId, Pageable pageable) {
+    public Page<DiscussionWithUserParticipation> findDiscussionsByUserId(Long userId, Pageable pageable) {
         Page<UsersDiscussion> usersDiscussions = userDiscussionRepository.findByUserId(userId, pageable);
-        return usersDiscussions
+
+        Page<Discussion> discussions = usersDiscussions
                 .map(UsersDiscussion::getDiscussion);
+
+        User user = SecurityUtils.getCurrentUser();
+        List<Long> discussionIds = discussions.stream().map(Discussion::getId).toList();
+        List<UsersDiscussion> userDiscussionSides = usersDiscussionRepository.findByUserAndDiscussionIdIn(user, discussionIds);
+
+        return discussions.map(discussion -> {
+            Optional<UsersDiscussion> userDiscussionSide = userDiscussionSides
+                    .stream()
+                    .filter(usersDiscussion -> usersDiscussion.getDiscussion().getId().equals(discussion.getId()))
+                    .findFirst();
+
+            return new DiscussionWithUserParticipation(discussion, userDiscussionSide.get().getSide(), discussion.getCreator().getUsername());
+        });
     }
 
     @Override
