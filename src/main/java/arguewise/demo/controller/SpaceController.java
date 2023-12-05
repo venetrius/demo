@@ -60,7 +60,7 @@ public class SpaceController {
     public List<DiscussionResponseDTO> getSpaceDiscussions(@PathVariable Long id) {
         return spaceService.getDiscussionBySpaceId(id)
                 .stream()
-                .map(discussion -> new DiscussionResponseDTO(discussion))
+                .map(DiscussionResponseDTO::new)
                 .collect(Collectors.toList());
     }
 

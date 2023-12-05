@@ -1,5 +1,6 @@
 package arguewise.demo.service;
 
+import arguewise.demo.dto.Discussion.DiscussionWithUserParticipation;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
 
@@ -9,7 +10,7 @@ import java.util.Optional;
 public interface ISpaceService {
     List<Space> getAllSpaces();
 
-    List<Discussion> getDiscussionBySpaceId(Long id);
+    List<DiscussionWithUserParticipation> getDiscussionBySpaceId(Long id);
 
     Optional<Space> getSpaceById(Long id);
 

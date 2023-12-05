@@ -1,5 +1,6 @@
 package arguewise.demo.service;
 
+import arguewise.demo.dto.Discussion.DiscussionWithUserParticipation;
 import arguewise.demo.dto.space.SpaceResponseDTO;
 import arguewise.demo.dto.space.SpaceStatisticsDTO;
 import arguewise.demo.exception.NotFoundException;
@@ -7,8 +8,11 @@ import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
 import arguewise.demo.model.User;
 import arguewise.demo.model.UserSpace;
+import arguewise.demo.model.UsersDiscussion;
+import arguewise.demo.repository.DiscussionRepository;
 import arguewise.demo.repository.SpaceRepository;
 import arguewise.demo.repository.UserSpaceRepository;
+import arguewise.demo.repository.UsersDiscussionRepository;
 import arguewise.demo.security.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,9 @@ public class SpaceService implements ISpaceService {
 
     @Autowired
     private UserSpaceRepository userSpaceRepository;
+
+    @Autowired
+    private UsersDiscussionRepository usersDiscussionRepository;
 
     public Page<SpaceResponseDTO> getAllSpacesWithUserJoinInfo(Pageable pageable) {
         User user = SecurityUtils.getCurrentUser();
@@ -59,12 +66,27 @@ public class SpaceService implements ISpaceService {
     }
 
     @Override
-    public List<Discussion> getDiscussionBySpaceId(Long id) {
+    public List<DiscussionWithUserParticipation> getDiscussionBySpaceId(Long id) {
         Optional<Space> space = spaceRepository.findById(id);
         if (space.isEmpty()) {
             throw new NotFoundException("Space with id " + id + " not found");
         }
-        return space.get().getDiscussions();
+
+        User user = SecurityUtils.getCurrentUser();
+
+
+        List<Discussion> discussions = space.get().getDiscussions();
+        List<Long> discussionIds = discussions.stream().map(Discussion::getId).toList();
+        List<UsersDiscussion> userDiscussionSides = usersDiscussionRepository.findByUserAndDiscussionIdIn(user, discussionIds);
+
+        return discussions.stream().map(discussion -> {
+            UsersDiscussion.Side side = userDiscussionSides.stream()
+                    .filter(userDiscussionSide -> userDiscussionSide.getDiscussion().getId().equals(discussion.getId()))
+                    .findFirst()
+                    .map(UsersDiscussion::getSide)
+                    .orElse(null);
+            return new DiscussionWithUserParticipation(discussion, side, discussion.getCreator().getUsername());
+        }).toList();
     }
 
     @Override
