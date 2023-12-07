@@ -3,7 +3,7 @@ package arguewise.demo.controller;
 import arguewise.demo.dto.Discussion.DiscussionResponseDTO;
 import arguewise.demo.dto.space.SpaceResponseDTO;
 import arguewise.demo.model.Space;
-import arguewise.demo.service.SpaceService;
+import arguewise.demo.service.ISpaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,9 +20,8 @@ import java.util.stream.Collectors;
 @RequestMapping("api/spaces")
 public class SpaceController {
 
-    // TODO should reference the service interface
     @Autowired
-    private SpaceService spaceService;
+    private ISpaceService spaceService;
 
     @GetMapping
     public ResponseEntity<Page<SpaceResponseDTO>> getAllSpaces(Pageable pageable) {

@@ -38,6 +38,7 @@ public class SpaceService implements ISpaceService {
     @Autowired
     private UsersDiscussionRepository usersDiscussionRepository;
 
+    @Override
     public Page<SpaceResponseDTO> getAllSpacesWithUserJoinInfo(Pageable pageable) {
         User user = SecurityUtils.getCurrentUser();
         Map<Long, UserSpace> userSpacesMap = new HashMap<>();
