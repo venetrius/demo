@@ -5,6 +5,7 @@ import arguewise.demo.dto.argument.PutArgumentVoteDTO;
 import arguewise.demo.dto.argument.UpdateArgumentDTO;
 import arguewise.demo.model.Argument;
 import arguewise.demo.model.Discussion;
+import arguewise.demo.model.UsersDiscussion;
 import arguewise.demo.service.IArgumentService;
 import arguewise.demo.service.IDiscussionService;
 import arguewise.demo.types.VoteType;
@@ -78,6 +79,12 @@ public class ArgumentController {
         }
 
         if(argument.getDiscussion().getStatus() != Discussion.DiscussionStatus.ACTIVE) {
+            return ResponseEntity.badRequest().build();
+        }
+        UsersDiscussion.Side side = discussionService.getCurrentUsersSide(argument.getDiscussion());
+        UsersDiscussion.Side argumentSide = argumentService.getArgumentSide(argument);
+
+        if(side == null || side != argumentSide) {
             return ResponseEntity.badRequest().build();
         }
         VoteType validated = VoteType.valueOf(inputData.getVoteType().toUpperCase());

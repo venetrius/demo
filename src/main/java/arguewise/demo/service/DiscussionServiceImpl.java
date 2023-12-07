@@ -102,7 +102,8 @@ public class DiscussionServiceImpl implements IDiscussionService {
         }
     }
 
-    private UsersDiscussion.Side getCurrentUsersSide(Discussion discussion) {
+    @Override
+    public UsersDiscussion.Side getCurrentUsersSide(Discussion discussion) {
         User user = SecurityUtils.getCurrentUser();
         if(user == null) {
             return null;
@@ -113,4 +114,17 @@ public class DiscussionServiceImpl implements IDiscussionService {
         }
         return usersDiscussion.getSide();
     }
+
+    @Override
+    public UsersDiscussion.Side getSideOfUser(Discussion discussion, User user) {
+        if(user == null) {
+            return null;
+        }
+        UsersDiscussion usersDiscussion = usersDiscussionRepository.findByUserAndDiscussion(user, discussion).orElse(null);
+        if(usersDiscussion == null) {
+            return null;
+        }
+        return usersDiscussion.getSide();
+    }
+
 }

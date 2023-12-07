@@ -4,6 +4,7 @@ import arguewise.demo.domain.ArgumentDetails;
 import arguewise.demo.dto.argument.CreateArgumentDTO;
 import arguewise.demo.dto.argument.UpdateArgumentDTO;
 import arguewise.demo.model.Argument;
+import arguewise.demo.model.UsersDiscussion;
 import arguewise.demo.types.VoteType;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +19,6 @@ public interface IArgumentService {
     Collection<ArgumentDetails> findAllByDiscussionId(Long discussionId);
     Argument createArgument(Long discussionId, CreateArgumentDTO createArgumentDTO);
     void voteOnArgument(Long argumentId, VoteType voteType);
+    UsersDiscussion.Side getArgumentSide(Argument argument);
 }
 

@@ -158,8 +158,13 @@ public class ArgumentServiceImpl implements IArgumentService {
 
     @Override
     public void voteOnArgument(Long argumentId, VoteType voteType) {
-        // TODO test if user is allowed to vote on this argument
         voteService.castVote(argumentId, EntityType.ARGUMENT, voteType);
+    }
+
+    @Override
+    public UsersDiscussion.Side getArgumentSide(Argument argument) {
+        User creator = argument.getAuthor();
+        return discussionService.getSideOfUser(argument.getDiscussion(), creator);
     }
 
     private void isUserRecordOrThrow(Argument argument) {
