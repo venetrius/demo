@@ -44,7 +44,7 @@ const DiscussionItem = ({ discussion, handleJoinDiscussion }) => {
   const renderTimeStamps = () => {
     return (
       <Text type="secondary" style={{ display: 'block', margin: '8px 0' }}>
-        Created by: {discussion.creatorId} |{' '}
+        Created by: {discussion.creatorName} |{' '}
         {moment(discussion.creationTimestamp).format('MMM DD, YYYY')} | Time limit:{' '}
         {moment(discussion.timeLimit).format('MMM DD, YYYY h[h] m[m]')}
       </Text>
