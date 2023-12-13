@@ -3,6 +3,7 @@ package arguewise.demo.repository;
 import arguewise.demo.model.Discussion;
 
 import arguewise.demo.model.Space;
+import arguewise.demo.model.User;
 import arguewise.demo.types.EntityType;
 import arguewise.demo.types.VoteType;
 import org.springframework.data.domain.Page;
@@ -42,4 +43,23 @@ public interface DiscussionRepository extends JpaRepository< Discussion, Long> {
 
     long countByStatus(Discussion.DiscussionStatus status);
     Page<Discussion> findByStatus(Discussion.DiscussionStatus status, PageRequest pageable);
+
+//    @Query("Select count(*) from Discussions where status = :status and id in (select discussion.id from UsersDiscussions where user = :user)")
+//    long countByUserAndStatus(@Param("user") User user, @Param("status") Discussion.DiscussionStatus discussionStatus);
+
+//    @Query("SELECT COUNT(d) FROM Discussion d WHERE d.status = :status AND d.id IN (SELECT ud.discussion.id FROM UsersDiscussion ud WHERE ud.user = :user)")
+//    long countByUserAndStatus(@Param("user") User user, @Param("status") Discussion.DiscussionStatus discussionStatus);
+
+    @Query("SELECT COUNT(d) FROM Discussion d WHERE d.status = :status AND d IN (SELECT ud.discussion FROM UsersDiscussion ud WHERE ud.user = :user)")
+    long countByUserAndStatus(@Param("user") User user, @Param("status") Discussion.DiscussionStatus discussionStatus);
+
+//    @Query("Select d from Discussions d where d.status = :status and d.id in (select ud.discussion.id from UsersDiscussions ud where ud.user = :user)")
+//    Page<Discussion> findByUserAndStatus(User user, Discussion.DiscussionStatus discussionStatus, Pageable pageable);
+
+//    @Query("Select count(*) from Discussions where status = :status and id in (select discussion.id from UsersDiscussions where user = :user)")
+//    Page<Discussion> findByUserAndStatus(User user, Discussion.DiscussionStatus discussionStatus, PageRequest singleItem);
+
+    @Query("SELECT d FROM Discussion d WHERE d.status = :status AND d IN (SELECT ud.discussion FROM UsersDiscussion ud WHERE ud.user = :user)")
+    Page<Discussion> findByUserAndStatus(@Param("user") User user, @Param("status") Discussion.DiscussionStatus discussionStatus, Pageable pageable);
+
 }

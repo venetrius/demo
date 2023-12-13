@@ -57,20 +57,27 @@ public class ChatBotRunner {
     @Autowired
     private ContentStrategyDecider contentStrategyDecider;
 
-    @Scheduled(cron = "0 */30 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     public String run() {
         logger.info("Running ChatBotRunner at: " + java.time.LocalDateTime.now());
         User user = contentStrategyDecider.chooseUser();
-        Actions action = contentStrategyDecider.chooseAction();
+        Actions action = Actions.CREATE_NEW_SUGGESTION; //contentStrategyDecider.chooseAction();
         try {
             String result;
-            if(action == Actions.CREATE_NEW_ARGUMENT) {
-                result = createArgument(user);
-            } else if(action == Actions.CREATE_NEW_DISCUSSION) {
-                result = createDiscussion(user);
-            } else {
-                throw new RuntimeException("Not implemented yet");
+            switch (action) {
+                case CREATE_NEW_ARGUMENT:
+                    result = createArgument(user);
+                    break;
+                case CREATE_NEW_DISCUSSION:
+                    result =  createDiscussion(user);
+                    break;
+                case CREATE_NEW_SUGGESTION:
+                    result = createSuggestion(user);
+                    break;
+                default:
+                    throw new RuntimeException("Not implemented yet");
             }
+
             logger.info("ChatBotRunner finished at: " + java.time.LocalDateTime.now());
             return result;
         } catch (Exception e) {
@@ -98,5 +105,11 @@ public class ChatBotRunner {
         Argument argument = argumentRepository.save(new Argument(createArgumentDTO, user, discussion));
         System.out.println(gson.toJson(new ArgumentResponseDTO(argument)));
         return gson.toJson(new ArgumentResponseDTO(argument));
+    }
+
+    private String createSuggestion(User user) {
+        Argument argument = contentStrategyDecider.chooseArgument(user);
+
+        return null;
     }
 }
