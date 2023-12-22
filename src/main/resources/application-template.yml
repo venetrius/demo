@@ -42,8 +42,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: PATH_PATTERN_PARSER
-spring.jpa:
-  generate-ddl: true
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
 SECRET_KEY: "JWT-SECRET-KEY"
 CLIENT_URL: "http://localhost:3000"
 logging:
