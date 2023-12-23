@@ -1,6 +1,7 @@
 package arguewise.demo.service;
 
 import arguewise.demo.domain.ArgumentDetails;
+import arguewise.demo.dto.Discussion.DiscussionWithUserParticipation;
 import arguewise.demo.dto.argument.CreateArgumentDTO;
 import arguewise.demo.dto.argument.UpdateArgumentDTO;
 import arguewise.demo.exception.NotFoundException;
@@ -146,13 +147,12 @@ public class ArgumentServiceImpl implements IArgumentService {
     @Override
     public Argument createArgument(Long discussionId, CreateArgumentDTO createArgumentDTO) {
         User creator = SecurityUtils.getCurrentUser();
-        Discussion discussion = discussionRepository.findById(discussionId).orElseThrow(() -> new NotFoundException("Discussion not found"));
-
+        DiscussionWithUserParticipation discussion = discussionService.findById(discussionId);
         if(!userActionValidator.canCreateArgument(creator.getId(), discussionId)) {
             throw new IllegalArgumentException("Can only create an Argument for a Discussion if joined");
         }
 
-        Argument newArgument = new Argument(createArgumentDTO, creator, discussion);
+        Argument newArgument = new Argument(createArgumentDTO, creator, discussion.getCurrentUsersSide(),  discussion.getDiscussion());
         return argumentRepository.save(newArgument);
     }
 

@@ -101,7 +101,7 @@ public class ChatBotRunner {
         UsersDiscussion.Side side = UsersDiscussion.Side.PRO;
 
         CreateArgumentDTO createArgumentDTO = argumentCreator.createArgument(discussion, side);
-        Argument argument = argumentRepository.save(new Argument(createArgumentDTO, user, discussion));
+        Argument argument = argumentRepository.save(new Argument(createArgumentDTO, user, side, discussion));
         System.out.println(gson.toJson(new ArgumentResponseDTO(argument)));
         return gson.toJson(new ArgumentResponseDTO(argument));
     }
