@@ -3,6 +3,7 @@ package arguewise.demo.repository;
 import arguewise.demo.model.Discussion;
 
 import arguewise.demo.model.Space;
+import arguewise.demo.model.User;
 import arguewise.demo.types.EntityType;
 import arguewise.demo.types.VoteType;
 import org.springframework.data.domain.Page;
@@ -42,4 +43,8 @@ public interface DiscussionRepository extends JpaRepository< Discussion, Long> {
 
     long countByStatus(Discussion.DiscussionStatus status);
     Page<Discussion> findByStatus(Discussion.DiscussionStatus status, PageRequest pageable);
+
+    @Query("SELECT d FROM Discussion d WHERE d.status = :status AND d IN (SELECT ud.discussion FROM UsersDiscussion ud WHERE ud.user = :user)")
+    Page<Discussion> findByUserAndStatus(@Param("user") User user, @Param("status") Discussion.DiscussionStatus discussionStatus, Pageable pageable);
+
 }
