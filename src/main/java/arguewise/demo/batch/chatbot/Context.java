@@ -17,8 +17,12 @@ public class Context {
              "- A user can post an argument to support their opinion\n" +
              "Argument:\n" +
              "- Part of a discussion, the goal of an argument is to convey information why the pro / contra is the right side\n" +
+             "- An argument is dividied into suggestion points, each representing a core atomic idea / support for the argument" +
              "Suggestion:\n" +
-             "- A way to refine arguments. Suggest edits to an argument which is on the same side as you\n";
+             "- A way to refine arguments. Suggest edits to an argument which is on the same side as you\n" +
+             "- Suggestion Statuses: ACTIVE, ACCEPTED, REJECTED\n" +
+             "- Suggestion Types: REVISION (suggest to replace an argument point with a new text)\n"
+            ;
 
      public static final String createDiscussionPrompt =
              "Please suggest a new discussion in space with id 1.\n" +
@@ -37,4 +41,13 @@ public class Context {
                 "  \"side\": \"PLACEHOLDER_SIDE\",\n" +
                 "  \"details\": [\"A list of sub-points. Other users might suggest changes having sub points might help to make specific suggestions  \"],\n" +
                 "}\n";
+    public static final String createSuggestionPrompt = "Please suggest a new unique suggestion.\n" +
+            "Please use this JSON format:\n" +
+            "{\n" +
+            "  \"argument_id\": \"PLACEHOLDER_ARGUMENT_ID\",\n" +
+            "  \"section\": \"the id of the section to replace with new suggestion\",\n" +
+//            "  \"position\": \"PLACEHOLDER_POSITION\",\n" +
+            "  \"text\": \"PLACEHOLDER_TEXT\",\n" +
+            "  \"comment\": \"PLACEHOLDER_COMMENT\",\n" +
+            "}\n";
 }

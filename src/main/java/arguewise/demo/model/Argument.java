@@ -28,9 +28,17 @@ public class Argument {
     @JoinColumn(name = "discussion_id", nullable = false)
     private Discussion discussion;
 
+    // TODO should be able to reference discussion without loading whole entity
+    // @Column(name = "discussion_id")
+    // private Long discussionId;
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = false, insertable = false, updatable = false)
     private User author;
+
+    @Column(name = "author_id")
+    private Long authorId;
 
     @NotBlank(message = "Title is required")
     @Size(max = 100, message = "Title should be no longer than 100 characters")
@@ -47,7 +55,9 @@ public class Argument {
 
     public Argument(CreateArgumentDTO dto, User author, UsersDiscussion.Side side, Discussion discussion) {
         this.discussion = discussion;
+//        this.discussionId = discussion.getId();
         this.author = author;
+        this.authorId = (long) author.getId();
         this.title = dto.getTitle();
         this.argumentDetails = processArgumentDetails(dto.getDetails());
         this.argumentDetails.forEach(detail -> detail.setArgument(this));

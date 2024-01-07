@@ -3,19 +3,17 @@ package arguewise.demo.batch.chatbot;
 import arguewise.demo.batch.chatbot.argument.ArgumentCreator;
 import arguewise.demo.batch.chatbot.content.management.Actions;
 import arguewise.demo.batch.chatbot.content.management.ContentStrategyDecider;
+import arguewise.demo.batch.chatbot.suggestion.ISuggestionCreator;
 import arguewise.demo.dto.Discussion.CreateDiscussionDTO;
 import arguewise.demo.dto.Discussion.DiscussionResponseDTO;
 import arguewise.demo.dto.argument.ArgumentResponseDTO;
 import arguewise.demo.dto.argument.CreateArgumentDTO;
-import arguewise.demo.model.Argument;
-import arguewise.demo.model.Discussion;
-import arguewise.demo.model.Space;
-import arguewise.demo.model.User;
-import arguewise.demo.model.UsersDiscussion;
-import arguewise.demo.repository.ArgumentRepository;
-import arguewise.demo.repository.DiscussionRepository;
-import arguewise.demo.repository.SpaceRepository;
-import arguewise.demo.repository.UserRepository;
+import arguewise.demo.dto.suggestion.CreateSuggestionDTO;
+import arguewise.demo.dto.suggestion.SuggestionResponseDTO;
+import arguewise.demo.exception.NotFoundException;
+import arguewise.demo.model.*;
+
+import arguewise.demo.repository.*;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +22,8 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -43,10 +43,19 @@ public class ChatBotRunner {
     private SpaceRepository spaceRepository;
 
     @Autowired
+    private ISuggestionCreator suggestionCreator;
+
+    @Autowired
     private DiscussionRepository discussionRepository;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UsersDiscussionRepository usersDiscussionRepository;
+
+    @Autowired
+    private SuggestionRepository suggestionRepository;
 
     @Autowired
     private ArgumentCreator argumentCreator;
@@ -57,31 +66,25 @@ public class ChatBotRunner {
     @Autowired
     private ContentStrategyDecider contentStrategyDecider;
 
-    @Scheduled(cron = "0 */30 * * * *")
+    // @Scheduled(cron = "0 */30 * * * *")
     public String run() {
         logger.info("Running ChatBotRunner at: " + java.time.LocalDateTime.now());
         User user = contentStrategyDecider.chooseUser();
-        Actions action = contentStrategyDecider.chooseAction();
+        Actions action = Actions.CREATE_NEW_SUGGESTION; // contentStrategyDecider.chooseAction();
+
+        logger.info("Selected action:" + action);
+
         try {
-            String result;
-            switch (action) {
-                case CREATE_NEW_ARGUMENT:
-                    result = createArgument(user);
-                    break;
-                case CREATE_NEW_DISCUSSION:
-                    result = createDiscussion(user);
-                    break;
-                case CREATE_NEW_SUGGESTION:
-                    result = createSuggestion(user);
-                    break;
-                default:
-                    throw new RuntimeException("Not implemented yet");
-            }
+            String result = switch (action) {
+                case CREATE_NEW_ARGUMENT -> createArgument(user);
+                case CREATE_NEW_DISCUSSION -> createDiscussion(user);
+                case CREATE_NEW_SUGGESTION -> createSuggestion(user);
+                default -> throw new RuntimeException("Not implemented yet");
+            };
             logger.info("ChatBotRunner finished at: " + java.time.LocalDateTime.now());
             return result;
         } catch (Exception e) {
             logger.error("Error while performing action: " + action + " for user: " + user.getEmail());
-            e.printStackTrace();
             throw e;
         }
 
@@ -98,15 +101,59 @@ public class ChatBotRunner {
     private String createArgument(User user) {
 
         Discussion discussion = contentStrategyDecider.chooseDiscussion();
+        // TODO should set side based on response from the AI in argumentCreator
         UsersDiscussion.Side side = UsersDiscussion.Side.PRO;
-
+        createUserDiscussion(user, discussion, side);
         CreateArgumentDTO createArgumentDTO = argumentCreator.createArgument(discussion, side);
         Argument argument = argumentRepository.save(new Argument(createArgumentDTO, user, side, discussion));
         System.out.println(gson.toJson(new ArgumentResponseDTO(argument)));
         return gson.toJson(new ArgumentResponseDTO(argument));
     }
 
-    private String createSuggestion(User user) {
-        return null;
+    private void createUserDiscussion(User user, Discussion discussion, UsersDiscussion.Side side) {
+        Optional<UsersDiscussion> usersDiscussionOptional = usersDiscussionRepository.findByUserAndDiscussion(user, discussion);
+        if(usersDiscussionOptional.isEmpty()) {
+            usersDiscussionRepository.save(new UsersDiscussion(user, discussion, side));
+        } else {
+            UsersDiscussion usersDiscussion = usersDiscussionOptional.get();
+            if(usersDiscussion.getSide() != side) {
+                throw new RuntimeException("Side does not match when creating argument: " + usersDiscussion.getSide() + " vs " + side);
+            }
+        }
     }
+
+    private String createSuggestion(User user) {
+        Optional<Argument> argument = contentStrategyDecider.chooseArgument(user);
+        if(argument.isEmpty()) {
+            return null;
+        }
+
+        Optional<CreateSuggestionDTO> createSuggestionDTO = suggestionCreator.createSuggestion(argument.get());
+        if(createSuggestionDTO.isEmpty()) {
+            return "Failed to create suggestion";
+        }
+        
+        Suggestion suggestion = createSuggestion(createSuggestionDTO.get(), user);
+        return gson.toJson(new SuggestionResponseDTO(suggestion));
+    }
+
+    public Suggestion createSuggestion(CreateSuggestionDTO dto, User user) {
+        Argument argument = argumentRepository.findById(dto.getArgumentId())
+                .orElseThrow(() -> new NotFoundException("Argument not found"));
+
+        Suggestion suggestion = new Suggestion();
+        suggestion.setArgument(argument);
+        suggestion.setUser(user);
+        suggestion.setType(dto.getType());
+        suggestion.setSection(dto.getSection());
+        suggestion.setPosition(dto.getPosition());
+        suggestion.setText(dto.getText());
+        suggestion.setComment(dto.getComment());
+        suggestion.setArgumentVersion(dto.getArgumentVersion());
+        suggestion.setStatus(Suggestion.SuggestionStatus.ACTIVE);
+
+        return suggestionRepository.save(suggestion);
+    }
+
+
 }
