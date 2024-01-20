@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AiClientWrapper implements IAiClientWrapper {
@@ -40,6 +41,7 @@ public class AiClientWrapper implements IAiClientWrapper {
 //                "  \"timeLimit\": \"2023-12-31T23:59:59\"\n" +
 //                "}";
 //        return mockResponse;
+        System.out.println("request:" + messageList.stream().map(ChatMessage::getContent).collect(Collectors.joining()));
         ChatCompletionRequest completionRequest = getChatWithDefaultOptions();
         completionRequest.setMessages(messageList);
         String result =  service.createChatCompletion(completionRequest).getChoices().get(0).getMessage().getContent();
