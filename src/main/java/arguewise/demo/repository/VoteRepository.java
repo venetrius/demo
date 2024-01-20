@@ -1,5 +1,6 @@
 package arguewise.demo.repository;
 
+import arguewise.demo.model.User;
 import arguewise.demo.model.Vote;
 import arguewise.demo.types.EntityType;
 import arguewise.demo.types.VoteType;
@@ -16,6 +17,11 @@ import java.util.Optional;
 public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     Optional<Vote> findByUserIdAndEntityIdAndEntityType(Long userId, Long entityId, EntityType entityType);
+
+    long countByEntityTypeAndUser(EntityType entityType, User user);
+
+    @Query("SELECT v.id FROM Vote v WHERE v.entityType = :entityType AND v.user = :user")
+    List<Long> findIdForEntityTypeAndUser(@Param("entityType") EntityType entityType, @Param("user") User user);
 
     @Query("SELECT v.entityId FROM Vote v WHERE v.user.id = :userId AND v.entityId IN :entityIds AND v.entityType = :entityType AND v.voteType = :voteType")
     List<Long> findLikedByUserForEntities(@Param("userId") Long userId, @Param("entityIds") Collection<Long> entityIds, @Param("entityType") EntityType entityType, @Param("voteType") VoteType voteType);

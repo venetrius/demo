@@ -37,8 +37,16 @@ public class VoteService {
         return voteRepository.findVoteCountsForEntity(entityIds, entityType, voteType);
     }
 
+    public long getNumberOfVoteForEntityTypeAndUser(EntityType entityType, User user) {
+        return voteRepository.countByEntityTypeAndUser(entityType, user);
+    }
+
     public List<Long> findLikedByUserForEntities(Long userId, List<Long> entityIds, EntityType entityType, VoteType voteType) {
         return voteRepository.findLikedByUserForEntities(userId, entityIds, entityType, voteType);
+    }
+
+    public List<Long> findIdForForEntityTypeAndUser(EntityType entityType, User user) {
+        return voteRepository.findIdForEntityTypeAndUser(entityType, user);
     }
 
     public void deleteVote(Long entityID, EntityType entityType) {
