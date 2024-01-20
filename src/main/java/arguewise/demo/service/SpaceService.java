@@ -153,4 +153,9 @@ public class SpaceService implements ISpaceService {
         }
         return space.get().getTotalLikes();
     }
+
+    @Override
+    public long getSpaceCount() {
+        return spaceRepository.count();
+    }
 }

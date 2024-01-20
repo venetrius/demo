@@ -30,4 +30,6 @@ public interface ISpaceService {
     void unlikeSpace(Long id);
 
     int getTotalLikes(Long id);
+
+    long getSpaceCount();
 }
