@@ -8,4 +8,8 @@ public enum Actions {
     CREATE_NEW_VOTE,
     JOIN_DISCUSSION,
     JOIN_SPACE,
+    VOTE_SPACE,
+    VOTE_DISCUSSION,
+    VOTE_ARGUMENT,
+    VOTE_SUBMISSION,
 }
