@@ -5,6 +5,7 @@ import arguewise.demo.dto.space.SpaceResponseDTO;
 import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -32,4 +33,6 @@ public interface ISpaceService {
     int getTotalLikes(Long id);
 
     long getSpaceCount();
+
+    Page<Space> getSpacesWhereIdNotIn(PageRequest pageRequest, List<Long> likedSpaces);
 }

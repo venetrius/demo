@@ -2,8 +2,11 @@ package arguewise.demo.repository;
 
 import arguewise.demo.model.Space;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SpaceRepository extends JpaRepository<Space, Integer> {
@@ -13,5 +16,6 @@ public interface SpaceRepository extends JpaRepository<Space, Integer> {
 
     void deleteById(long id);
 
+    Page<Space> findByIdNotIn(List<Long> spacesIdsToExclude, PageRequest pageRequest);
 }
 
