@@ -50,4 +50,10 @@ public class Context {
             "  \"text\": \"PLACEHOLDER_TEXT\",\n" +
             "  \"comment\": \"PLACEHOLDER_COMMENT\",\n" +
             "}\n";
+    public static final String likeSpacePrompt = "Please select a space you would like to follow \n" +
+            "Please use this JSON format:\n" +
+            "{\n" +
+            "spaceId:" + "PLACEHOLDER_SPACE_ID" +
+            "}"
+            ;
 }
