@@ -2,10 +2,8 @@ package arguewise.demo.batch.chatbot.space;
 
 import arguewise.demo.batch.chatbot.Context;
 import arguewise.demo.batch.chatbot.IAiClientWrapper;
-import arguewise.demo.model.Discussion;
 import arguewise.demo.model.Space;
 import arguewise.demo.model.User;
-import arguewise.demo.model.UsersDiscussion;
 import arguewise.demo.service.ISpaceService;
 import arguewise.demo.service.IUserSpaceService;
 import arguewise.demo.service.VoteService;
@@ -19,13 +17,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @AllArgsConstructor
 public class SpaceVoter {
+    private static final Logger logger = LoggerFactory.getLogger(SpaceVoter.class);
+
     private final ISpaceService spaceService;
 
     private final VoteService voteService;
@@ -39,13 +40,13 @@ public class SpaceVoter {
 
     // TODO reconsider return type
     public String voteSpace(User user) {
-        System.out.println("User: " + user.getId());
+        logger.info("voteSpace User: " + user.getId());
         List<Space> spaces = loadSpacesToChooseFrom(user);
         if(spaces == null || spaces.isEmpty()) {
-            System.out.println("returning from voteSpace with nothing");
+            logger.debug("returning from voteSpace with nothing");
             return "";
         }
-        System.out.println("loaded spaces: " +
+        logger.debug("loaded spaces: " +
                 spaces
                 .stream()
                 .map(Space::getId)
@@ -55,17 +56,17 @@ public class SpaceVoter {
         List<ChatMessage> messages = createMessageList(spaces);
         String responseString = aiServiceProvider.getResponse(messages);
         JsonObject rootObj = parser.parse(responseString);
-        System.out.println(responseString);
+        logger.debug("responseString: " + responseString);
 
         long spaceId = Long.parseLong(
                 rootObj.get("spaceId")
                         .toString()
                         .replace("\"", "")
         );
-        System.out.println("spaceId:" + spaceId);
+        logger.debug("spaceId:" + spaceId);
 
         voteService.castVoteInternal(spaceId, EntityType.SPACE, VoteType.UPVOTE, user);
-        System.out.println("saved");
+        logger.info("saved new space vote");
         return "User " + user.getId() + " joined space with id: " + spaceId;
     }
 
@@ -73,7 +74,7 @@ public class SpaceVoter {
         List<Space> spaces = new ArrayList<>();
         long totalNumberOfSpaces = spaceService.getSpaceCount();
         long numberOfLikedSpaces = voteService.getNumberOfVoteForEntityTypeAndUser(EntityType.SPACE, user);
-        System.out.println("totalNumberOfSpaces: " + totalNumberOfSpaces + ", numberOfLikedSpaces: " + numberOfLikedSpaces);
+        logger.debug("totalNumberOfSpaces: " + totalNumberOfSpaces + ", numberOfLikedSpaces: " + numberOfLikedSpaces);
 
         if(totalNumberOfSpaces == numberOfLikedSpaces || numberOfLikedSpaces > 5) return null;
         if(numberOfLikedSpaces == 0 || numberOfLikedSpaces  * 100 / totalNumberOfSpaces < 80) {
@@ -86,11 +87,8 @@ public class SpaceVoter {
             } else {
                 spaces = spaceService.getSpacesWhereIdNotIn(pageRequest, likedSpaces).get().toList();
             }
-            System.out.println(
-                    likedSpaces
-            );
             if(spaces.isEmpty()) return null;
-            System.out.println("size:" + spaces.size());
+            logger.debug("size:" + spaces.size());
             return spaces;
         }
         return spaces;
