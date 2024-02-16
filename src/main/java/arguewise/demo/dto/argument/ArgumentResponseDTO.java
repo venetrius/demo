@@ -6,6 +6,7 @@ import arguewise.demo.model.ArgumentDetail;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -26,7 +27,7 @@ public class ArgumentResponseDTO {
         this.discussionID = argument.getDiscussion().getId();
         this.authorId = argument.getAuthor().getId();
         this.title = argument.getTitle();
-        this.argumentDetails = argument.getArgumentDetails().stream().map(ArgumentDetail::getText).toList();
+        this.argumentDetails = formatArgumentDetails(argument.getArgumentDetails());
         this.creationTimestamp = argument.getCreationTimestamp().toString();
         this.numberOfLikes = 0l;
         this.isLikedByCurrentUser = false;
@@ -38,9 +39,18 @@ public class ArgumentResponseDTO {
         this.discussionID = argument.getDiscussion().getId();
         this.authorId = argument.getAuthor().getId();
         this.title = argument.getTitle();
-        this.argumentDetails = argument.getArgumentDetails().stream().map(ArgumentDetail::getText).toList();
+        this.argumentDetails = formatArgumentDetails(argument.getArgumentDetails());
         this.creationTimestamp = argument.getCreationTimestamp().toString();
         this.numberOfLikes = argumentDetails.getNumberOfLikes();
         this.isLikedByCurrentUser = argumentDetails.isLikedByCurrentUser();
+    }
+
+    // TODO only works if position follows an arithmetic progression with a starting value of 1
+    private List<String> formatArgumentDetails(List<ArgumentDetail> details) {
+        String[] res = new String[details.size()];
+        details.forEach(
+                a -> res[a.getPosition() - 1] = a.getText()
+        );
+        return  Arrays.stream(res).toList();
     }
 }
