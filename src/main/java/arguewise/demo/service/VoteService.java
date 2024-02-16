@@ -20,6 +20,11 @@ public class VoteService {
     public void castVote(Long entityId, EntityType entityType, VoteType voteType) {
         User currentUser = SecurityUtils.getCurrentUser();
         long userId = currentUser.getId();
+        castVoteInternal(entityId ,entityType, voteType, currentUser);
+    }
+
+    public void castVoteInternal(Long entityId, EntityType entityType, VoteType voteType, User user) {
+        long userId = user.getId();
         Optional<Vote> existingVote = voteRepository.findByUserIdAndEntityIdAndEntityType(userId, entityId, entityType);
 
         if (existingVote.isPresent()) {
@@ -28,7 +33,7 @@ public class VoteService {
             vote.setVoteType(voteType);
             voteRepository.save(vote);
         } else {
-            Vote vote = new Vote(currentUser, entityId, entityType, voteType);
+            Vote vote = new Vote(user, entityId, entityType, voteType);
             voteRepository.save(vote);
         }
     }
