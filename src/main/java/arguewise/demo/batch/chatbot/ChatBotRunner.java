@@ -3,6 +3,7 @@ package arguewise.demo.batch.chatbot;
 import arguewise.demo.batch.chatbot.argument.ArgumentCreator;
 import arguewise.demo.batch.chatbot.content.management.Actions;
 import arguewise.demo.batch.chatbot.content.management.ContentStrategyDecider;
+import arguewise.demo.batch.chatbot.space.SpaceVoter;
 import arguewise.demo.batch.chatbot.suggestion.ISuggestionCreator;
 import arguewise.demo.dto.Discussion.CreateDiscussionDTO;
 import arguewise.demo.dto.Discussion.DiscussionResponseDTO;
@@ -61,16 +62,19 @@ public class ChatBotRunner {
     private ArgumentCreator argumentCreator;
 
     @Autowired
+    private SpaceVoter spaceVoter;
+
+    @Autowired
     private Gson gson;
 
     @Autowired
     private ContentStrategyDecider contentStrategyDecider;
 
-    // @Scheduled(cron = "0 */30 * * * *")
+// @Scheduled(cron = "0 */30 * * * *")
     public String run() {
         logger.info("Running ChatBotRunner at: " + java.time.LocalDateTime.now());
         User user = contentStrategyDecider.chooseUser();
-        Actions action = Actions.CREATE_NEW_SUGGESTION; // contentStrategyDecider.chooseAction();
+        Actions action = contentStrategyDecider.chooseAction();
 
         logger.info("Selected action:" + action);
 
@@ -79,6 +83,7 @@ public class ChatBotRunner {
                 case CREATE_NEW_ARGUMENT -> createArgument(user);
                 case CREATE_NEW_DISCUSSION -> createDiscussion(user);
                 case CREATE_NEW_SUGGESTION -> createSuggestion(user);
+                case VOTE_SPACE -> spaceVoter.voteSpace(user);
                 default -> throw new RuntimeException("Not implemented yet");
             };
             logger.info("ChatBotRunner finished at: " + java.time.LocalDateTime.now());

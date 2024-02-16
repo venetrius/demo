@@ -32,8 +32,10 @@ public class ContentStrategyDecider {
 
     private final UsersDiscussionRepository usersDiscussionRepository;
 
+
+    // TODO this randomly select an action, could react to changes eg, if someone adds a comment to his arguments etc
     public Actions chooseAction() {
-        int randomNum = ThreadLocalRandom.current().nextInt(1, 4);
+        int randomNum = ThreadLocalRandom.current().nextInt(0, Actions.values().length);
         return Actions.values()[randomNum];
     }
 
