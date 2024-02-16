@@ -68,6 +68,11 @@ public class SpaceService implements ISpaceService {
     }
 
     @Override
+    public Page<Space> getAllSpaces(Pageable pageable) {
+        return  spaceRepository.findAll(pageable);
+    }
+
+    @Override
     public List<DiscussionWithUserParticipation> getDiscussionBySpaceId(Long id) {
         Optional<Space> space = spaceRepository.findById(id);
         if (space.isEmpty()) {

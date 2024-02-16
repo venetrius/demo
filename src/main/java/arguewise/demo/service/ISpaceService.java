@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface ISpaceService {
     List<Space> getAllSpaces();
 
+    Page<Space> getAllSpaces(Pageable pageable);
+
     List<DiscussionWithUserParticipation> getDiscussionBySpaceId(Long id);
 
     Optional<Space> getSpaceById(Long id);
