@@ -25,6 +25,7 @@ public class SuggestionResponseDTO {
     private LocalDateTime createdTimestamp;
     private Long numberOfLikes;
     private boolean isLikedByCurrentUser;
+    private Suggestion.SuggestionStatus status;
 
     public SuggestionResponseDTO(Suggestion suggestion) {
         this.id = suggestion.getId();
@@ -37,6 +38,7 @@ public class SuggestionResponseDTO {
         this.comment = suggestion.getComment();
         this.argumentVersion = suggestion.getArgumentVersion();
         this.createdTimestamp = suggestion.getCreatedTimestamp();
+        this.status = suggestion.getStatus();
     }
 
     public SuggestionResponseDTO(SuggestionDetails suggestionDetails) {
@@ -51,6 +53,7 @@ public class SuggestionResponseDTO {
         this.comment = suggestion.getComment();
         this.argumentVersion = suggestion.getArgumentVersion();
         this.createdTimestamp = suggestion.getCreatedTimestamp();
+        this.status = suggestionDetails.getSuggestion().getStatus();
 
         this.numberOfLikes = suggestionDetails.getNumberOfLikes();
         this.isLikedByCurrentUser = suggestionDetails.isLikedByCurrentUser();
