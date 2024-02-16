@@ -22,4 +22,7 @@ public interface ArgumentRepository extends JpaRepository<Argument, Long> {
     List<String> findTitlesByDiscussionIdAndProSide(@Param("discussionId") Long discussionId, @Param("side")UsersDiscussion.Side side);
 
     List<Argument> findAllByDiscussionIdInAndSide(List<Long> discussionIds, UsersDiscussion.Side side);
+
+    @Query("SELECT p FROM Argument p JOIN FETCH p.argumentDetails WHERE p.id = (:id)")
+    public Argument findByIdAndFetchDetailsEagerly(@Param("id") Long id);
 }

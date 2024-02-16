@@ -11,6 +11,7 @@ import arguewise.demo.types.EntityType;
 import arguewise.demo.types.VoteType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -48,20 +49,7 @@ public class SuggestionStatusJob {
         List<Long> suggestionsToMerge = new ArrayList<>();
         List<Long> suggestionsToReject = new ArrayList<>();
 
-        Map<Long,Long> suggestionToVoteCount = new HashMap<>();
-        // aggregate downvotes and upvotes
-        // TODO create a settings class to handle logic related to votes
-        for (Object[] vote : votes) {
-            Long suggestionId = (Long) vote[0];
-            VoteType voteType = (VoteType) vote[1];
-            Long count = (Long) vote[2];
-            long voteValue = voteType == VoteType.UPVOTE ? count : -count;
-            if(!suggestionToVoteCount.containsKey(suggestionId)) {
-                suggestionToVoteCount.put(suggestionId, voteValue);
-            } else {
-                suggestionToVoteCount.put(suggestionId, suggestionToVoteCount.get(suggestionId) + voteValue);
-            }
-        }
+        Map<Long, Long> suggestionToVoteCount = getSugestionIdToCountMap(votes);
 
         // collect suggestions to merge and reject
         for (Map.Entry<Long, Long> entry : suggestionToVoteCount.entrySet()) {
@@ -69,9 +57,10 @@ public class SuggestionStatusJob {
             Long voteCount = entry.getValue();
             if (voteCount < -2) {
                 suggestionsToReject.add(suggestionId);
-            } else if (voteCount > 2) {
+            } else if (voteCount >= 2) {
                 suggestionsToMerge.add(suggestionId);
             }
+            System.out.println("SuggestionId: " + suggestionId + " voteCount: " + voteCount);
         }
 
 
@@ -88,9 +77,10 @@ public class SuggestionStatusJob {
         // merge suggestions
         for (Long suggestionId : suggestionsToMerge) {
             Suggestion suggestion = suggestionRepository.findById(suggestionId).get();
-            Argument argument = suggestion.getArgument();
+            Argument argument =  argumentRepository.findByIdAndFetchDetailsEagerly(suggestion.getArgument().getId());
             List<ArgumentDetail> details = argument.getArgumentDetails();
             ArgumentDetail detail = details.get(Integer.parseInt(suggestion.getSection()));
+
             detail.setText(suggestion.getText());
             argumentRepository.save(argument);
             suggestion.setStatus(Suggestion.SuggestionStatus.ACCEPTED);
@@ -98,5 +88,24 @@ public class SuggestionStatusJob {
         }
 
         logger.info("SuggestionStatusService finished at: " + LocalDateTime.now());
+    }
+
+    @NotNull
+    private static Map<Long, Long> getSugestionIdToCountMap(List<Object[]> votes) {
+        Map<Long,Long> suggestionToVoteCount = new HashMap<>();
+        // aggregate downvotes and upvotes
+        // TODO create a settings class to handle logic related to votes
+        for (Object[] vote : votes) {
+            Long suggestionId = (Long) vote[0];
+            VoteType voteType = (VoteType) vote[1];
+            Long count = (Long) vote[2];
+            long voteValue = voteType == VoteType.UPVOTE ? count : -count;
+            if(!suggestionToVoteCount.containsKey(suggestionId)) {
+                suggestionToVoteCount.put(suggestionId, voteValue);
+            } else {
+                suggestionToVoteCount.put(suggestionId, suggestionToVoteCount.get(suggestionId) + voteValue);
+            }
+        }
+        return suggestionToVoteCount;
     }
 }
