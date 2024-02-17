@@ -97,8 +97,8 @@ public class SuggestionService implements ISuggestionService {
 
         List<Long> suggestionIds = suggestions.stream().map(Suggestion::getId).toList();
 
-        List<Object[]> votes = voteService.getNumberOfVotesForEntities(EntityType.SUGGESTION, suggestionIds, VoteType.UPVOTE);
-        Map<Long, Long> likeCountsMap = votes.stream()
+        List<Object[]> upVotes = voteService.getNumberOfVotesForEntities(EntityType.SUGGESTION, suggestionIds, VoteType.UPVOTE);
+        Map<Long, Long> likeCountsMap = upVotes.stream()
                 .collect(Collectors.toMap(
                         row -> (Long) row[0],  // entityId
                         row -> (Long) row[1])  // count
@@ -106,11 +106,19 @@ public class SuggestionService implements ISuggestionService {
 
         Set<Long> likedArgumentIdsSet = new HashSet<>(voteService.findLikedByUserForEntities(userId, suggestionIds, EntityType.SUGGESTION, VoteType.UPVOTE));
 
+        List<Object[]> downVotes = voteService.getNumberOfVotesForEntities(EntityType.SUGGESTION, suggestionIds, VoteType.DOWNVOTE);
+        Map<Long, Long> dislikeCountMap = downVotes.stream()
+                .collect(Collectors.toMap(
+                        row -> (Long) row[0],  // entityId
+                        row -> (Long) row[1])  // count
+                );
+
         return suggestions.stream()
                 .map(suggestion -> {
                     long likesCount = likeCountsMap.getOrDefault(suggestion.getId(), 0L);
+                    long dislikesCount = dislikeCountMap.getOrDefault(suggestion.getId(), 0L);
                     boolean likedByUser = likedArgumentIdsSet.contains(suggestion.getId());
-                    return new SuggestionDetails(suggestion, likesCount, likedByUser);
+                    return new SuggestionDetails(suggestion, likesCount, dislikesCount ,likedByUser);
                 })
                 .toList();
     }
