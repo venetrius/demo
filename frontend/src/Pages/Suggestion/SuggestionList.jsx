@@ -32,7 +32,7 @@ const SuggestionList = ({ argument }) => {
     return (
         <Collapse activeKey={activePanelKey} onChange={setActivePanelKey}>
             {Object.keys(suggestionsByArgumentPoints).map((section, index) => {
-                const sectionText = argument.argumentDetails[section]
+                const sectionText = argument.argumentDetails[section] || "Addition(s)"
                 const sectionTitle = `${section} - ${sectionText.slice(0,30)}...`
                 return (
                     <Panel 
@@ -59,7 +59,7 @@ const SuggestionList = ({ argument }) => {
                                 <VoteButton 
                                     onVote={(voteType) => voteOnSuggestion(argument.id, suggestion.id, voteType)}
                                     onUnvote={() => deleteSuggestionVote(argument.id, suggestion.id)}
-                                    votes={suggestion.numberOfLikes}
+                                    votes={suggestion.numberOfLikes - suggestion.numberOfDislikes}
                                     userVote={suggestion.likedByCurrentUser ? 1 : 0}
                                 />
                             </div>
