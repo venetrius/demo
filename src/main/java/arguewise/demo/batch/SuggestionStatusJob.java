@@ -3,6 +3,7 @@ package arguewise.demo.batch;
 import arguewise.demo.model.Argument;
 import arguewise.demo.model.ArgumentDetail;
 import arguewise.demo.model.Suggestion;
+import arguewise.demo.repository.ArgumentDetailRepository;
 import arguewise.demo.repository.ArgumentRepository;
 import arguewise.demo.repository.SuggestionRepository;
 import arguewise.demo.repository.VoteRepository;
@@ -32,6 +33,8 @@ public class SuggestionStatusJob {
 
     private final ArgumentRepository argumentRepository;
 
+    private final ArgumentDetailRepository argumentDetailRepository;
+
     private final VoteRepository voteRepository;
 
     private final VoteService voteService;
@@ -46,7 +49,7 @@ public class SuggestionStatusJob {
 
         List<Object[]> votes = voteRepository.findVoteCountsForEntity(activeSuggestions, EntityType.SUGGESTION);
 
-        List<Long> suggestionsToMerge = new ArrayList<>();
+        List<Long> suggestionsToResolve = new ArrayList<>();
         List<Long> suggestionsToReject = new ArrayList<>();
 
         Map<Long, Long> suggestionToVoteCount = getSugestionIdToCountMap(votes);
@@ -55,16 +58,16 @@ public class SuggestionStatusJob {
         for (Map.Entry<Long, Long> entry : suggestionToVoteCount.entrySet()) {
             Long suggestionId = entry.getKey();
             Long voteCount = entry.getValue();
-            if (voteCount < -2) {
+            if (voteCount <= -2) {
                 suggestionsToReject.add(suggestionId);
             } else if (voteCount >= 2) {
-                suggestionsToMerge.add(suggestionId);
+                suggestionsToResolve.add(suggestionId);
             }
             System.out.println("SuggestionId: " + suggestionId + " voteCount: " + voteCount);
         }
 
 
-        logger.info("Suggestions to merge: " + suggestionsToMerge.size());
+        logger.info("Suggestions to merge: " + suggestionsToResolve.size());
         logger.info("Suggestions to reject: " + suggestionsToReject.size());
 
         // reject suggestions
@@ -75,19 +78,44 @@ public class SuggestionStatusJob {
         }
 
         // merge suggestions
-        for (Long suggestionId : suggestionsToMerge) {
-            Suggestion suggestion = suggestionRepository.findById(suggestionId).get();
-            Argument argument =  argumentRepository.findByIdAndFetchDetailsEagerly(suggestion.getArgument().getId());
-            List<ArgumentDetail> details = argument.getArgumentDetails();
-            ArgumentDetail detail = details.get(Integer.parseInt(suggestion.getSection()));
-
-            detail.setText(suggestion.getText());
-            argumentRepository.save(argument);
-            suggestion.setStatus(Suggestion.SuggestionStatus.ACCEPTED);
-            suggestionRepository.save(suggestion);
+        for (Long suggestionId : suggestionsToResolve) {
+            resolveSuggestion(suggestionId);
         }
 
         logger.info("SuggestionStatusService finished at: " + LocalDateTime.now());
+    }
+
+    private void resolveSuggestion(Long suggestionId) {
+        Suggestion suggestion = suggestionRepository.findById(suggestionId).get();
+        if(suggestion.getType() == Suggestion.SuggestionType.REVISION){
+            mergeSuggestion(suggestion);
+        } else if(suggestion.getType() == Suggestion.SuggestionType.ADDITION) {
+            addSuggestion(suggestion);
+        }
+    }
+
+    private void mergeSuggestion(Suggestion suggestion) {
+        Argument argument =  argumentRepository.findByIdAndFetchDetailsEagerly(suggestion.getArgument().getId());
+        List<ArgumentDetail> details = argument.getArgumentDetails();
+        ArgumentDetail detail = details.get(Integer.parseInt(suggestion.getSection()));
+
+        detail.setText(suggestion.getText());
+        argumentRepository.save(argument);
+        suggestion.setStatus(Suggestion.SuggestionStatus.ACCEPTED);
+        suggestionRepository.save(suggestion);
+    }
+
+    // TODO test me
+    private void addSuggestion(Suggestion suggestion) {
+        Argument argument =  argumentRepository.findByIdAndFetchDetailsEagerly(suggestion.getArgument().getId());
+        ArgumentDetail argumentDetail = new ArgumentDetail();
+        argumentDetail.setArgument(argument);
+        argumentDetail.setText(suggestion.getText());
+        argumentDetail.setPosition(argument.getArgumentDetails().size() + 1);
+        // TODO should be in single transaction
+        argumentDetailRepository.save(argumentDetail);
+        suggestion.setStatus(Suggestion.SuggestionStatus.ACCEPTED);
+        suggestionRepository.save(suggestion);
     }
 
     @NotNull
