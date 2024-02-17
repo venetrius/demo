@@ -8,4 +8,8 @@ SET side = (
       AND ud.user_id = arguments.author_id
 );
 
+UPDATE arguments
+SET side = 'PRO'
+WHERE side is null;
+
 ALTER TABLE arguments ALTER COLUMN side SET NOT NULL;
