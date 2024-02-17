@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, Select, InputNumber, message } from 'antd';
 import { useArguments } from '../../contexts/ArgumentContext';
 
@@ -8,41 +8,42 @@ const { TextArea } = Input;
 const SuggestionForm = (props) => {
     const [form] = Form.useForm();
     const { addSuggestion } = useArguments();
+    const [suggestionType, setSuggestionType] = useState("REVISION")
 
     const handleSubmit = async (values) => {
         console.log('Received values of form:', values);
         const sucess = await addSuggestion(props.argument.id, values)
-        if(sucess) {
+        if (sucess) {
             form.resetFields();
             message.success('Suggestion submitted successfully');
         } else {
             message.error('Error submitting suggestion');
         }
     };
-    if(! props.argument) return "Loading..."
+    if (!props.argument) return "Loading..."
 
     const renderSelectSection = () => {
         return (
-       <Select>
-            {props.argument.argumentDetails.map((detail, index) => (
-                <Select.Option key={index} value={index}>
-                    {`${index + 1} - ${detail.slice(0,30)}...`}
-                </Select.Option>
-            ))}
-        </Select>
+            <Select>
+                {props.argument.argumentDetails.map((detail, index) => (
+                    <Select.Option key={index} value={index}>
+                        {`${index + 1} - ${detail.slice(0, 30)}...`}
+                    </Select.Option>
+                ))}
+            </Select>
         )
     }
 
     return (
         <Form form={form} layout="vertical" onFinish={handleSubmit}
-         initialValues={{ type: "REVISION", argumentId: props.argument.id, argumentVersion: 1 }}
+            initialValues={{ type: "REVISION", argumentId: props.argument.id, argumentVersion: 1 }}
         >
             <Form.Item
                 name="argumentId"
                 label="Argument ID"
                 style={{ display: 'none' }}
             >
-                <InputNumber style={{ width: '100%' }}/>
+                <InputNumber style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item
                 name="argumentVersion"
@@ -56,20 +57,22 @@ const SuggestionForm = (props) => {
                 name="type"
                 label="Type"
             >
-                <Select  disabled >
+                <Select onChange={type => setSuggestionType(type)}>
                     <Option value="REVISION">REVISION</Option>
-                    <Option value="TYPE_2">Type 2</Option>
-                    <Option value="TYPE_3">Type 3</Option>
+                    <Option value="ADDITION">ADDITION</Option>
                 </Select>
             </Form.Item>
 
-            <Form.Item
-                name="section"
-                label="Section"
-                rules={[{ required: true, message: 'Please input the section!' }]}
-            >
-               {renderSelectSection()}
-            </Form.Item>
+            {suggestionType === "REVISION" &&
+                <Form.Item
+                    name="section"
+                    label="Section"
+                    rules={[{ required: true, message: 'Please input the section!' }]}
+
+                >
+                    {renderSelectSection()}
+                </Form.Item>
+            }
 
 
             <Form.Item
