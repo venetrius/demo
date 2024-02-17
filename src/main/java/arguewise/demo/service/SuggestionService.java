@@ -4,6 +4,7 @@ import arguewise.demo.domain.suggestion.SuggestionDetails;
 import arguewise.demo.dto.suggestion.CreateSuggestionDTO;
 import arguewise.demo.exception.NotFoundException;
 import arguewise.demo.model.Argument;
+import arguewise.demo.model.ArgumentDetail;
 import arguewise.demo.model.Suggestion;
 import arguewise.demo.model.User;
 import arguewise.demo.repository.ArgumentRepository;
@@ -39,7 +40,7 @@ public class SuggestionService implements ISuggestionService {
         suggestion.setArgument(argument);
         suggestion.setUser(user);
         suggestion.setType(dto.getType());
-        suggestion.setSection(dto.getSection());
+        suggestion.setSection(getSection(dto, argument));
         suggestion.setPosition(dto.getPosition());
         suggestion.setText(dto.getText());
         suggestion.setComment(dto.getComment());
@@ -47,6 +48,14 @@ public class SuggestionService implements ISuggestionService {
         suggestion.setStatus(Suggestion.SuggestionStatus.ACTIVE);
 
         return suggestionRepository.save(suggestion);
+    }
+
+// TODO also update suggestionStatus service !
+    private String getSection(CreateSuggestionDTO dto, Argument argument) {
+        if(dto.getType() == Suggestion.SuggestionType.REVISION) {
+            return dto.getSection();
+        }
+        return String.valueOf(argument.getArgumentDetails().size() + 1);
     }
 
     public Suggestion getSuggestion(Long id) {
