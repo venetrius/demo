@@ -1,6 +1,7 @@
 # ArgueWise
 
 ## Introduction
+
 ArgueWise is a platform designed to foster structured, respectful, and productive discussions among individuals or groups with differing opinions. It's built to encourage understanding, critical thinking, and help participants find common ground or develop new ideas.
 
 ## Key Features
